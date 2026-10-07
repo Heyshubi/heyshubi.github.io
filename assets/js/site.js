@@ -285,30 +285,58 @@
     $$(".dl-item", dlMenu).forEach(a => a.addEventListener("click", () => setTimeout(closeDl, 0)));
   }
 
-  // Privacy: one message's journey. Typed on the phone, sealed into code,
-  // carried to KEYBO's AI, answered, carried back sealed, opened on the
-  // phone. Runs only while it is on screen.
+  // Privacy: one message's journey. The person types a message with a
+  // typo or two; it seals into code in place; travels encrypted to KEYBO;
+  // KEYBO fixes it; it travels back encrypted; and it opens as the fixed
+  // message. Runs only while on screen.
   const journey = $(".journey");
   if (journey) {
+    const typed = "hey r u free tmrw for the meetng?";
+    const fixedMsg = "Hey, are you free tomorrow for the meeting?";
+    const text = $(".j-text", journey), status = $(".ai-status", journey), pcode = $(".pcode", journey);
+    const vid = $(".ai-art video", journey);
     const hex = "0123456789abcdef";
-    const garble = len => Array.from({ length: len }, (_, i) => (i % 5 === 4 ? " " : hex[(Math.random() * 16) | 0])).join("");
-    const codes = $$(".msg .code", journey), pcode = $(".pcode", journey);
-    const steps = [[0, 1100], [1, 700], [2, 1500], [3, 1000], [4, 1500], [5, 2600]];
-    let i = 0, t = 0, shuffle = 0, on = false;
-    const scramble = () => { codes.forEach(c => c.textContent = garble(26)); pcode.textContent = garble(14); };
-    const tick = () => {
-      const [state, wait] = steps[i];
-      journey.dataset.s = state;
-      i = (i + 1) % steps.length;
-      t = setTimeout(tick, wait);
+    const code = len => Array.from({ length: len }, (_, i) => (i % 5 === 4 ? " " : hex[(Math.random() * 16) | 0])).join("");
+    let timers = [], shuffle = 0, on = false;
+    const later = (ms, f) => timers.push(setTimeout(f, ms));
+    const stopAll = () => { timers.forEach(clearTimeout); timers = []; clearInterval(shuffle); };
+    // turn `from` into `to`, left to right, scrambling what is not done yet
+    const morph = (to, ms, sealed) => new Promise(done => {
+      const t0 = performance.now(), n = Math.max(to.length, text.textContent.length);
+      clearInterval(shuffle);
+      shuffle = setInterval(() => {
+        const k = Math.min(1, (performance.now() - t0) / ms);
+        const fixedUpTo = Math.round(k * n);
+        text.textContent = Array.from({ length: n }, (_, i) => i < fixedUpTo ? (to[i] || "") : (to[i] === " " ? " " : hex[(Math.random() * 16) | 0])).join("");
+        if (k >= 1) { clearInterval(shuffle); text.textContent = to; done(); }
+      }, 40);
+    });
+    const run = () => {
+      if (!on) return;
+      stopAll();
+      journey.classList.remove("sealed");
+      journey.dataset.s = "0"; status.textContent = "Ready"; text.textContent = "";
+      [...typed].forEach((ch, i) => later(120 + i * 48, () => { text.textContent += ch; }));
+      let t = 120 + typed.length * 48 + 500;
+      later(t, () => { journey.dataset.s = "1"; journey.classList.add("sealed"); morph(code(typed.length), 520); });
+      t += 750;
+      later(t, () => { journey.dataset.s = "2"; pcode.textContent = code(14); status.textContent = "Receiving 🔒"; });
+      t += 1350;
+      later(t, () => { journey.dataset.s = "3"; status.textContent = "Fixing"; if (vid) vid.play().catch(() => {}); });
+      t += 1700;
+      later(t, () => { journey.dataset.s = "4"; status.textContent = "Sent back 🔒"; pcode.textContent = code(14); text.textContent = code(fixedMsg.length); });
+      t += 1450;
+      later(t, () => { journey.dataset.s = "5"; journey.classList.remove("sealed"); morph(fixedMsg, 650); });
+      t += 3200;
+      later(t, () => { journey.dataset.s = "6"; status.textContent = "Done, nothing kept"; });
+      later(t + 900, run);
     };
-    if (reduce) journey.dataset.s = "5";
+    if (reduce) { journey.dataset.s = "5"; text.textContent = fixedMsg; status.textContent = "Done, nothing kept"; }
     else new IntersectionObserver(([e]) => {
       if (e.isIntersecting === on) return;
       on = e.isIntersecting;
       journey.classList.toggle("run", on);
-      clearTimeout(t); clearInterval(shuffle);
-      if (on) { i = 0; scramble(); shuffle = setInterval(scramble, 140); tick(); }
+      if (on) { if (vid) vid.preload = "auto"; run(); } else { stopAll(); if (vid) vid.pause(); }
     }, { threshold: 0.3 }).observe(journey);
   }
 
@@ -529,12 +557,31 @@
         .forEach(n => { const i = new Image(); i.src = `assets/keybo/walker/${n}-strip.png`; });
       new Image().src = "assets/keybo/walker/look-grid.webp";
     };
-    let preloaded = false;
+    let preloaded = false, retired = false;
     if (reduce) walker.className = "walker idle";
     else new IntersectionObserver(([e]) => {
-      on = e.isIntersecting; last = 0;
+      on = e.isIntersecting && !retired; last = 0;
       if (on) { if (!preloaded) { preloaded = true; preload(); } requestAnimationFrame(frame); }
     }, { rootMargin: "200px 0px" }).observe(walker.closest(".walkway"));
+
+    // Real-time 3D KEYBO (assets/js/keybo3d.js, three.js, the Blender rig):
+    // loaded only when the walkway is near and only if the model is there
+    // and WebGL works. Then it takes over and the sprite walker retires.
+    const floorEl = walker.closest(".walk-floor"), MODEL = "assets/keybo/3d/keybo.glb";
+    const webgl = (() => { try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; } })();
+    if (webgl && location.protocol !== "file:") {
+      const io3d = new IntersectionObserver(([e]) => {
+        if (!e.isIntersecting) return;
+        io3d.disconnect();
+        fetch(MODEL, { method: "HEAD" }).then(r => {
+          if (!r.ok) return;
+          return import(new URL("assets/js/keybo3d.js", document.baseURI).href)
+            .then(m => m.start({ host: floorEl, modelUrl: MODEL, reduce }))
+            .then(() => { retired = true; on = false; walker.hidden = true; floorEl.classList.add("is-3d"); });
+        }).catch(() => {});
+      }, { rootMargin: "600px 0px" });
+      io3d.observe(floorEl);
+    }
   }
 
   $("#year").textContent = new Date().getFullYear();

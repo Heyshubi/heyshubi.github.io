@@ -499,32 +499,55 @@ p { margin: 0; }
 .soon-pop .btn { min-height: 42px; font-size: 14px; width: 100%; }
 .soon-x { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer; background: var(--card-2); font-size: 18px; line-height: 1; }
 
-/* Privacy: the journey of a message, encrypted both ways.
-   site.js steps data-s through 0-5: 0 typed, 1 sealed on the phone,
-   2 travelling, 3 the AI writes, 4 the answer travels back sealed,
-   5 opened on the phone. Transforms and opacity only. */
+/* Privacy: one message's journey. A person types it on their phone (a
+   popup shows what they typed); it seals into code and travels to KEYBO
+   at its laptop; KEYBO fixes it and sends it back sealed; the popup opens
+   on the fixed message. site.js steps data-s 0-6. The person is a phone
+   in hand until the Animation session's character render lands. */
 .journey {
-  grid-column: 1 / -1; display: grid; grid-template-columns: 240px minmax(0, 1fr) 150px; align-items: center; gap: 18px;
-  margin-top: 10px; padding: 26px 28px; border-radius: 26px; background: rgba(255, 255, 255, .5);
+  grid-column: 1 / -1; display: grid; grid-template-columns: 270px minmax(0, 1fr) 250px; align-items: end; gap: 12px;
+  margin-top: 10px; padding: 26px 28px 22px; border-radius: 26px; background: rgba(255, 255, 255, .5);
 }
-.node { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.actor { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .cap { font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: rgba(20, 23, 8, .62); text-align: center; line-height: 1.35; }
 .cap small { font-weight: 600; text-transform: none; letter-spacing: 0; font-size: 12px; }
-.screen { width: 100%; min-height: 128px; padding: 14px 12px; border-radius: 22px; background: #fff; box-shadow: 0 0 0 6px var(--ink), 0 14px 30px rgba(20, 23, 8, .2); display: flex; flex-direction: column; gap: 8px; justify-content: flex-end; }
-.msg { position: relative; max-width: 90%; padding: 8px 11px; border-radius: 14px; font-size: 13px; line-height: 1.35; transition: opacity .3s ease, transform .4s cubic-bezier(.16, 1, .3, 1), background-color .3s ease, color .3s ease; }
-.msg.out { align-self: flex-end; background: var(--lime); color: var(--ink); border-bottom-right-radius: 5px; }
-.msg.in { align-self: flex-start; background: #EEF0E6; color: var(--ink); border-bottom-left-radius: 5px; opacity: 0; transform: translateY(8px) scale(.96); }
-.msg .code { position: absolute; inset: 0; padding: 8px 11px; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12px; font-weight: 600; white-space: nowrap; overflow: hidden; opacity: 0; transition: opacity .25s ease; }
-.msg .plain { transition: opacity .25s ease; }
-.journey[data-s="1"] .msg.out, .journey[data-s="2"] .msg.out, .journey[data-s="3"] .msg.out, .journey[data-s="4"] .msg.out { background: var(--ink); color: #CCFA00; }
-.journey[data-s="1"] .msg.out .plain, .journey[data-s="2"] .msg.out .plain, .journey[data-s="3"] .msg.out .plain, .journey[data-s="4"] .msg.out .plain { opacity: 0; }
-.journey[data-s="1"] .msg.out .code, .journey[data-s="2"] .msg.out .code, .journey[data-s="3"] .msg.out .code, .journey[data-s="4"] .msg.out .code { opacity: 1; }
-.journey[data-s="4"] .msg.in, .journey[data-s="5"] .msg.in { opacity: 1; transform: none; }
-.journey[data-s="4"] .msg.in { background: var(--ink); color: #CCFA00; }
-.journey[data-s="4"] .msg.in .plain { opacity: 0; }
-.journey[data-s="4"] .msg.in .code { opacity: 1; }
+.actor-art { position: relative; width: 100%; height: 170px; display: grid; place-items: end center; }
+.actor-art video, .actor-art img { width: 190px; height: 190px; object-fit: contain; margin-bottom: -12px; }
 
-.lane { position: relative; height: 120px; }
+/* the popup over the person's phone */
+.pop {
+  position: relative; width: 100%; padding: 12px 14px 14px; border-radius: 18px; background: #fff; color: var(--ink);
+  box-shadow: 0 14px 34px rgba(20, 23, 8, .16); min-height: 112px;
+}
+.pop::after { content: ""; position: absolute; left: 50%; bottom: -8px; width: 16px; height: 16px; margin-left: -8px; background: #fff; transform: rotate(45deg); border-radius: 3px; }
+.pop-top { display: flex; align-items: center; gap: 7px; margin-bottom: 8px; font-size: 11.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: rgba(20, 23, 8, .5); }
+.pop-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--lime-600); }
+.j-bubble {
+  position: relative; min-height: 3.1em; padding: 9px 12px; border-radius: 14px 14px 4px 14px; background: var(--lime); color: var(--ink);
+  font-size: 14px; line-height: 1.4; overflow: hidden; overflow-wrap: anywhere; transition: background-color .3s ease, color .3s ease;
+}
+.j-caret { display: inline-block; width: 2px; height: 1em; margin-left: 1px; vertical-align: -2px; background: var(--ink); animation: blink 1s steps(1) infinite; }
+.journey:not([data-s="0"]) .j-caret { display: none; }
+.journey.sealed .j-bubble { background: var(--ink); color: #CCFA00; font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: 12.5px; letter-spacing: .02em; }
+.journey[data-s="5"] .j-bubble, .journey[data-s="6"] .j-bubble { background: #EFFCBD; }
+.j-fixed { position: absolute; right: 12px; bottom: -11px; padding: 3px 9px; border-radius: 999px; background: var(--ink); color: #CCFA00; font-size: 11px; font-weight: 700; opacity: 0; transform: translateY(4px) scale(.9); transition: opacity .3s ease, transform .4s cubic-bezier(.16, 1, .3, 1); }
+.journey[data-s="5"] .j-fixed, .journey[data-s="6"] .j-fixed { opacity: 1; transform: none; }
+
+/* the phone in hand (until the person render lands) */
+.handset { width: 86px; height: 150px; margin-bottom: 4px; border-radius: 20px; background: var(--ink); padding: 7px; transform: rotate(-8deg); box-shadow: 0 16px 30px rgba(20, 23, 8, .25); }
+.handset-screen { height: 100%; border-radius: 14px; background: #fff; display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; padding: 8px; }
+.handset-screen i { height: 7px; border-radius: 4px; background: #E3E8D2; }
+.handset-screen i:last-child { width: 70%; background: var(--lime); align-self: flex-end; }
+.journey[data-s="0"] .handset { animation: tap .32s ease-in-out infinite alternate; }
+@keyframes tap { to { transform: rotate(-8deg) translateY(2px); } }
+
+/* KEYBO's side */
+.pop-ai { min-height: 0; padding: 10px 14px; text-align: center; font-size: 13.5px; font-weight: 700; }
+.ai-status { display: inline-flex; align-items: center; gap: 6px; }
+.journey[data-s="3"] .ai-status::after { content: ""; width: 18px; height: 6px; background: radial-gradient(circle, var(--ink) 2px, transparent 2.5px) 0 50% / 6px 6px repeat-x; animation: dots 1s steps(4) infinite; }
+@keyframes dots { from { width: 0; } to { width: 24px; } }
+
+.lane { position: relative; height: 150px; align-self: center; }
 .wire { position: absolute; left: 0; right: 0; top: 50%; height: 2px; margin-top: -1px; background-image: linear-gradient(90deg, rgba(20, 23, 8, .45) 50%, transparent 50%); background-size: 12px 2px; animation: wire 1.2s linear infinite; animation-play-state: paused; }
 .journey.run .wire { animation-play-state: running; }
 @keyframes wire { to { background-position: 12px 0; } }
@@ -539,21 +562,18 @@ p { margin: 0; }
 .journey[data-s="2"] .packet { left: calc(100% - 150px); opacity: 1; transform: translate(0, -50%) scale(1); }
 .journey[data-s="3"] .packet { left: calc(100% - 150px); opacity: 0; transition: opacity .2s ease; }
 .journey[data-s="4"] .packet { left: 0; opacity: 1; transform: translate(0, -50%) scale(1); transition: left 1.3s cubic-bezier(.65, 0, .35, 1) .1s, opacity .3s ease, transform .35s ease; }
-.lane .cap { position: absolute; left: 0; right: 0; bottom: 0; }
+.lane .cap { position: absolute; left: 0; right: 0; bottom: 6px; }
 
-.core { position: relative; width: 92px; height: 92px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #CCFA00; box-shadow: 0 0 0 8px rgba(255, 255, 255, .6), 0 14px 30px rgba(20, 23, 8, .25); }
-.core svg { width: 40px; height: 40px; transition: transform .6s cubic-bezier(.16, 1, .3, 1); }
-.core::after { content: ""; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid var(--ink); opacity: 0; }
-.journey[data-s="3"] .core svg { transform: rotate(90deg) scale(1.15); }
-.journey[data-s="3"] .core::after { animation: ping 1s ease-out; }
-@keyframes ping { from { opacity: .6; transform: scale(.9); } to { opacity: 0; transform: scale(1.35); } }
-
-@media (max-width: 760px) {
-  .journey { grid-template-columns: minmax(0, 1fr) 96px; padding: 20px 16px; gap: 12px 14px; }
-  .journey .phone { grid-column: 1; grid-row: 1; }
+@media (max-width: 860px) {
+  .journey { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); padding: 18px 14px; gap: 14px 10px; }
+  .journey .you { grid-column: 1; grid-row: 1; }
   .journey .ai { grid-column: 2; grid-row: 1; }
-  .journey .lane { grid-column: 1 / -1; grid-row: 2; height: 56px; }
-  .core { width: 70px; height: 70px; } .core svg { width: 30px; height: 30px; }
+  .journey .lane { grid-column: 1 / -1; grid-row: 2; height: 54px; }
+  .actor-art { height: 120px; }
+  .actor-art video, .actor-art img { width: 140px; height: 140px; }
+  .handset { width: 62px; height: 108px; border-radius: 15px; padding: 5px; }
+  .pop { padding: 10px 11px 12px; min-height: 100px; }
+  .j-bubble { font-size: 12.5px; }
   .packet { padding: 6px 9px; font-size: 10.5px; }
   .packet .pcode { display: none; }
   .journey[data-s="2"] .packet, .journey[data-s="3"] .packet { left: calc(100% - 44px); }
@@ -690,3 +710,13 @@ p { margin: 0; }
 .walker-dust i:nth-child(1) { --dx: -60px; } .walker-dust i:nth-child(2) { --dx: 0px; --dy: -24px; } .walker-dust i:nth-child(3) { --dx: 60px; }
 @keyframes dust { from { opacity: .9; transform: translate(-8px, -4px) scale(.6); } to { opacity: 0; transform: translate(calc(var(--dx) - 8px), calc(var(--dy, -10px))) scale(1.6); } }
 @media (max-width: 700px) { .walk-floor { height: 160px; } .walker { --s: 128px; } }
+
+/* Real-time 3D KEYBO (keybo3d.js). The floor grows tall enough to be
+   picked up and dropped from a height. */
+.walk-floor.is-3d { height: 400px; }
+.kb3d { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+.walker-say-3d { position: absolute; transform: translate(-50%, 6px) scale(.9); }
+.walker-say-3d.show { transform: translate(-50%, 0) scale(1); }
+.kb3d-dust { position: absolute; bottom: 14px; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: color-mix(in srgb, var(--muted) 30%, transparent); pointer-events: none; animation: kbdust .7s ease-out forwards; }
+@keyframes kbdust { from { opacity: .85; transform: translate(0, 0) scale(calc(var(--s) * .5)); } to { opacity: 0; transform: translate(var(--dx), -26px) scale(calc(var(--s) * 1.8)); } }
+@media (max-width: 700px) { .walk-floor.is-3d { height: 320px; } }

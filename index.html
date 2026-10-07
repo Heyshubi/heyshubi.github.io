@@ -33,7 +33,13 @@
     d.classList.add("js");
   })();
 </script>
-<link rel="stylesheet" href="assets/css/site.css?v=20261007175257">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+<link rel="stylesheet" href="assets/css/site.css?v=20261007180355">
 
 <script type="application/ld+json">
 {
@@ -177,23 +183,31 @@
         </div>
         <p class="more">The keys work without Full Access; only the AI buttons need it. <a href="https://heyshubi.github.io/privacy/ios/">Read the privacy policy →</a></p>
       </div>
-      <div class="journey" aria-label="Your message is encrypted on its way to KEYBO's AI and back">
-        <div class="node phone">
-          <div class="screen">
-            <div class="msg out"><span class="plain">Running late, start without me?</span><span class="code" aria-hidden="true"></span></div>
-            <div class="msg in"><span class="plain">Sure! Starting now. See you soon 👋</span><span class="code" aria-hidden="true"></span></div>
+      <div class="journey" aria-label="A message typed on a phone is encrypted on its way to KEYBO, fixed, and sent back encrypted">
+        <div class="actor you">
+          <div class="pop">
+            <div class="pop-top"><span class="pop-dot"></span>Message</div>
+            <div class="j-bubble"><span class="j-text"></span><span class="j-caret"></span></div>
+            <span class="j-fixed">✓ Fixed by KEYBO</span>
           </div>
-          <span class="cap">Your phone</span>
+          <div class="actor-art you-art" aria-hidden="true">
+            <div class="handset"><div class="handset-screen"><i></i><i></i><i></i></div></div>
+          </div>
+          <span class="cap">You, typing</span>
         </div>
         <div class="lane" aria-hidden="true">
           <div class="wire"></div>
           <div class="packet"><svg class="icon"><use href="#i-lock"/></svg><span class="pcode">a7f3 9c2e 41bd</span></div>
           <span class="cap">Encrypted, both ways</span>
         </div>
-        <div class="node ai" aria-hidden="true">
-          <div class="core"><svg viewBox="0 0 24 24"><use href="#spark-fill"/></svg></div>
-          <span class="cap">KEYBO AI<br><small>answers, keeps nothing</small></span>
+        <div class="actor ai" aria-hidden="true">
+          <div class="pop pop-ai"><span class="ai-status">Ready</span></div>
+          <div class="actor-art ai-art">
+            <video muted loop playsinline preload="none" poster="assets/keybo/clip-idle.png" width="720" height="720"><source src="assets/keybo/loop-laptop.mov" type='video/mp4; codecs="hvc1"'><source src="assets/keybo/loop-laptop.webm" type="video/webm"></video>
+          </div>
+          <span class="cap">KEYBO AI<br><small>fixes it, keeps nothing</small></span>
         </div>
+      </div>
       </div>
     </div>
   </div>
@@ -466,6 +480,7 @@
   <div class="wrap walk-wrap">
     <p class="walk-hint">This is KEYBO. Say hi. Tap it, gently.</p>
     <div class="walk-floor">
+      <span class="walker-say walker-say-3d" aria-hidden="true"></span>
       <div class="walker" tabindex="0" role="button" aria-label="KEYBO the mascot. Tap to poke it.">
         <span class="walker-say" aria-hidden="true"></span>
         <div class="walker-body">
@@ -499,6 +514,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261007175257" defer></script>
+<script src="assets/js/site.js?v=20261007180355" defer></script>
 </body>
 </html>
