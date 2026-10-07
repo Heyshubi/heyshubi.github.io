@@ -33,7 +33,7 @@
     d.classList.add("js");
   })();
 </script>
-<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/site.css?v=20261007162215">
 
 <script type="application/ld+json">
 {
@@ -172,92 +172,105 @@
   </div>
 </section>
 
-<!-- AI features: cards that stack as you scroll -->
-<section class="section stack-section" id="features" data-rail="AI features">
-  <div class="wrap">
-    <div class="head reveal">
-      <span class="kicker">AI features</span>
-      <h2>Everything you write, <span class="hl">better in one tap</span>.</h2>
-      <p>A row of AI buttons sits right above your keys. No copying into another app, no switching back.</p>
-    </div>
-
-    <div class="stack">
-      <article class="stack-card" style="--i:0" data-video="reply">
-        <div class="copy">
-          <span class="num">01 · Smart Reply</span>
-          <h3>Copy a message. Get the perfect reply.</h3>
-          <p class="desc">Don't know what to say? Copy what you got, tap Reply, and pick an answer.</p>
-          <ul class="ticks">
-            <li><b>Short, medium or long</b>: a quick "on my way" or a proper answer</li>
+<!-- AI features: one at a time. On large screens the section holds still
+     while you scroll and the features take turns; on phones they are a list. -->
+<section class="features" id="features" data-rail="AI features">
+  <div class="tour" style="--steps:6">
+    <div class="tour-pin wrap">
+      <div class="tour-side">
+        <div class="tour-head">
+          <span class="kicker">AI features</span>
+          <h2>Everything you write, <span class="hl">better in one tap</span>.</h2>
+        </div>
+        <ol class="tour-list" role="list">
+        <li class="tour-item on" style="--o:0">
+          <button class="tour-tab" type="button" data-step="0"><span class="n">01</span><span class="t">Smart Reply</span></button>
+          <div class="tour-body"><div>
+            <h3>Copy a message. Get the perfect reply.</h3>
+            <p>Don't know what to say? Copy what you got, tap Reply, and pick an answer.</p>
+            <ul class="ticks">
+              <li><b>Short, medium or long</b>: a quick "on my way" or a proper answer</li>
             <li><b>In your tone</b>: friendly for friends, professional for work</li>
             <li><b>One tap</b> puts it in your message box</li>
-          </ul>
-        </div>
-        <div class="visual">
-          <div class="clip"><video muted loop playsinline preload="none" poster="assets/videos/reply.jpg" width="600" height="1304" aria-label="KEYBO writing a reply to a copied message: Reply, Medium, Friendly, then one tap puts it in the message box"><source src="assets/videos/reply.mp4" type="video/mp4"></video></div>
-        </div>
-      </article>
-
-      <article class="stack-card" style="--i:1" data-video="tones">
-        <div class="copy">
-          <span class="num">02 · Tones</span>
-          <h3>Same message. The right tone.</h3>
-          <p class="desc">Type it once and let KEYBO say it the way it should sound.</p>
-          <ul class="ticks">
-            <li><b>15 tones</b>, from Friendly and Professional to Funny and Romantic</li>
+            </ul>
+          </div></div>
+        </li>
+        <li class="tour-item" style="--o:2">
+          <button class="tour-tab" type="button" data-step="1"><span class="n">02</span><span class="t">Tones</span></button>
+          <div class="tour-body"><div>
+            <h3>Same message. The right tone.</h3>
+            <p>Type it once and let KEYBO say it the way it should sound.</p>
+            <ul class="ticks">
+              <li><b>15 tones</b>, from Friendly and Professional to Funny and Romantic</li>
             <li><b>Your own tones</b>: describe one, like "calm and to the point"</li>
             <li><b>Sticky tones</b> keep every reply in your tone (Premium)</li>
-          </ul>
-        </div>
-        <div class="visual">
-          <div class="clip"><video muted loop playsinline preload="none" poster="assets/videos/tones.jpg" width="600" height="1304" aria-label="KEYBO rewriting a message in a Professional tone, with three versions to pick from"><source src="assets/videos/tones.mp4" type="video/mp4"></video></div>
-        </div>
-      </article>
-
-      <article class="stack-card" style="--i:2" data-video="fix-rewrite">
-        <div class="copy">
-          <span class="num">03 · Fix &amp; Rewrite</span>
-          <h3>Clean, confident writing in a tap.</h3>
-          <p class="desc">Typos, grammar and clumsy sentences, sorted before you hit send.</p>
-          <ul class="ticks">
-            <li><b>Fix</b> corrects spelling, grammar and punctuation, keeping your words</li>
+            </ul>
+          </div></div>
+        </li>
+        <li class="tour-item" style="--o:4">
+          <button class="tour-tab" type="button" data-step="2"><span class="n">03</span><span class="t">Fix &amp; Rewrite</span></button>
+          <div class="tour-body"><div>
+            <h3>Clean, confident writing in a tap.</h3>
+            <p>Typos, grammar and clumsy sentences, sorted before you hit send.</p>
+            <ul class="ticks">
+              <li><b>Fix</b> corrects spelling, grammar and punctuation, keeping your words</li>
             <li><b>Rewrite</b> gives three clearer versions to choose from</li>
             <li><b>Undo and redo</b> up to ten AI edits</li>
-          </ul>
-        </div>
-        <div class="visual">
-          <div class="clip"><video muted loop playsinline preload="none" poster="assets/videos/fix-rewrite.jpg" width="600" height="1304" aria-label="KEYBO fixing typos with Fix, then offering three versions with Rewrite"><source src="assets/videos/fix-rewrite.mp4" type="video/mp4"></video></div>
-        </div>
-      </article>
-
-      <article class="stack-card" style="--i:3" data-video="translate">
-        <div class="copy">
-          <span class="num">04 · Translate</span>
-          <h3>Write in yours. Send in theirs.</h3>
-          <p class="desc">Translate a message into 35 languages without leaving the chat.</p>
-          <ul class="ticks">
-            <li><b>35 languages</b>, including Spanish, French, German, Arabic and Japanese</li>
+            </ul>
+          </div></div>
+        </li>
+        <li class="tour-item" style="--o:6">
+          <button class="tour-tab" type="button" data-step="3"><span class="n">04</span><span class="t">Translate</span></button>
+          <div class="tour-body"><div>
+            <h3>Write in yours. Send in theirs.</h3>
+            <p>Translate a message into 35 languages without leaving the chat.</p>
+            <ul class="ticks">
+              <li><b>35 languages</b>, including Spanish, French, German, Arabic and Japanese</li>
             <li><b>The whole message or a selection</b>, straight from the keyboard</li>
             <li><b>Undo</b> brings your original back in a tap</li>
-          </ul>
-        </div>
-        <div class="visual">
-          <div class="clip"><video muted loop playsinline preload="none" poster="assets/videos/translate.jpg" width="600" height="1304" aria-label="KEYBO translating a message into Spanish, then Undo bringing the original back"><source src="assets/videos/translate.mp4" type="video/mp4"></video></div>
-        </div>
-      </article>
-
-      <article class="stack-card" style="--i:4" data-video="voice">
-        <div class="copy">
-          <span class="num">05 · Voice notes</span>
-          <h3>Got a voice note? Read it instead.</h3>
-          <p class="desc">Share a voice note to KEYBO and it turns into text, right on your phone.</p>
-          <ul class="ticks">
-            <li><b>Transcribed on your device</b>; the audio never leaves it</li>
+            </ul>
+          </div></div>
+        </li>
+        <li class="tour-item" style="--o:8">
+          <button class="tour-tab" type="button" data-step="4"><span class="n">05</span><span class="t">Voice notes</span></button>
+          <div class="tour-body"><div>
+            <h3>Got a voice note? Read it instead.</h3>
+            <p>Share a voice note to KEYBO and it turns into text, right on your phone.</p>
+            <ul class="ticks">
+              <li><b>Transcribed on your device</b>; the audio never leaves it</li>
             <li><b>Reply in a tap</b> once you've read it</li>
             <li><b>Free</b>, with no daily limit</li>
-          </ul>
+            </ul>
+          </div></div>
+        </li>
+        <li class="tour-item" style="--o:10">
+          <button class="tour-tab" type="button" data-step="5"><span class="n">06</span><span class="t">Your AI toolbar</span></button>
+          <div class="tour-body"><div>
+            <h3>Your AI, your way, in every app.</h3>
+            <p>Chats, email, notes, social: anywhere there's a text box, KEYBO is there.</p>
+            <ul class="ticks">
+              <li><b>Arrange the AI buttons</b> so the ones you use most come first</li>
+            <li><b>Your favourite tone</b> is always one tap away</li>
+            <li><b>Works everywhere</b> you type</li>
+            </ul>
+          </div></div>
+        </li>
+        </ol>
+      </div>
+      <div class="tour-stage">
+        <div class="tour-visual on" style="--o:1" data-step="0">
+          <div class="clip" style="background-image:url(assets/videos/reply.jpg)"><video muted loop playsinline preload="none" poster="assets/videos/reply.jpg" width="600" height="1304" aria-label="KEYBO writing a reply to a copied message: Reply, Medium, Friendly, then one tap puts it in the message box"><source src="assets/videos/reply.mp4" type="video/mp4"></video></div>
         </div>
-        <div class="visual">
+        <div class="tour-visual" style="--o:3" data-step="1">
+          <div class="clip" style="background-image:url(assets/videos/tones.jpg)"><video muted loop playsinline preload="none" poster="assets/videos/tones.jpg" width="600" height="1304" aria-label="KEYBO rewriting a message in a Professional tone, with three versions to pick from"><source src="assets/videos/tones.mp4" type="video/mp4"></video></div>
+        </div>
+        <div class="tour-visual" style="--o:5" data-step="2">
+          <div class="clip" style="background-image:url(assets/videos/fix-rewrite.jpg)"><video muted loop playsinline preload="none" poster="assets/videos/fix-rewrite.jpg" width="600" height="1304" aria-label="KEYBO fixing typos with Fix, then offering three versions with Rewrite"><source src="assets/videos/fix-rewrite.mp4" type="video/mp4"></video></div>
+        </div>
+        <div class="tour-visual" style="--o:7" data-step="3">
+          <div class="clip" style="background-image:url(assets/videos/translate.jpg)"><video muted loop playsinline preload="none" poster="assets/videos/translate.jpg" width="600" height="1304" aria-label="KEYBO translating a message into Spanish, then Undo bringing the original back"><source src="assets/videos/translate.mp4" type="video/mp4"></video></div>
+        </div>
+        <div class="tour-visual" style="--o:9" data-step="4">
           <div class="demo">
             <div class="demo-top"><span class="av">🎙️</span><span><b>Voice note from Aman</b>Shared to KEYBO</span></div>
             <div class="voice"><span class="play">▶</span><span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="dur">0:12</span></div>
@@ -266,20 +279,7 @@
             <p class="note">🔒 Transcribed on this phone</p>
           </div>
         </div>
-      </article>
-
-      <article class="stack-card" style="--i:5" data-video="toolbar">
-        <div class="copy">
-          <span class="num">06 · Your AI toolbar</span>
-          <h3>Your AI, your way, in every app.</h3>
-          <p class="desc">Chats, email, notes, social: anywhere there's a text box, KEYBO is there.</p>
-          <ul class="ticks">
-            <li><b>Arrange the AI buttons</b> so the ones you use most come first</li>
-            <li><b>Your favourite tone</b> is always one tap away</li>
-            <li><b>Works everywhere</b> you type</li>
-          </ul>
-        </div>
-        <div class="visual">
+        <div class="tour-visual" style="--o:11" data-step="5">
           <div class="demo">
             <div class="demo-top"><span class="av">⚙️</span><span><b>Your toolbar</b>Drag to reorder</span></div>
             <div class="order">
@@ -293,7 +293,7 @@
             <div class="chips"><span class="chip static">💬 Chats</span><span class="chip static">✉️ Email</span><span class="chip static">📝 Notes</span><span class="chip static">📸 Social</span><span class="chip static">📄 Docs</span></div>
           </div>
         </div>
-      </article>
+      </div>
     </div>
   </div>
 </section>
@@ -432,6 +432,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js" defer></script>
+<script src="assets/js/site.js?v=20261007162215" defer></script>
 </body>
 </html>

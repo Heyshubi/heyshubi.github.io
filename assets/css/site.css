@@ -201,48 +201,73 @@ p { margin: 0; }
 
 .card { background: var(--card); border-radius: 22px; box-shadow: inset 0 0 0 1px var(--line), var(--shadow); }
 
-/* AI features: cards that stack as you scroll.
-   Each card sticks a little lower than the last, so the one arriving slides
-   over it and the ones underneath sink back (site.js sets the transform). */
-.stack { position: relative; }
-.stack-card {
-  position: sticky; top: calc(96px + var(--i) * 16px);
-  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; align-items: center;
-  min-height: min(540px, calc(100vh - 150px)); padding: 48px 52px; margin-bottom: 56px;
-  border-radius: 32px; background: var(--card);
-  box-shadow: inset 0 0 0 1px var(--line), 0 -12px 40px rgba(20, 23, 8, .07);
-  transform-origin: 50% 0; will-change: transform;
+/* AI features, one at a time.
+   Large screens: the section holds still (sticky) for a stretch of scroll;
+   the list on the left opens one feature at a time and its video fades in
+   on the right. Nothing piles up. Phones: a plain list, video under each. */
+.features { position: relative; background: var(--bg); }
+.tour { position: relative; height: calc(100vh - 68px + var(--steps) * 62vh); }
+.tour-pin {
+  position: sticky; top: 68px; height: calc(100vh - 68px);
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 72px; align-items: center;
 }
-.stack-card:last-child { margin-bottom: 0; }
-.stack-card::after { content: ""; position: absolute; inset: 0; border-radius: inherit; background: #141708; opacity: var(--dim, 0); pointer-events: none; }
-:root[data-theme="dark"] .stack-card { box-shadow: inset 0 0 0 1px var(--line), 0 -12px 40px rgba(0, 0, 0, .5); }
-:root[data-theme="dark"] .stack-card::after { background: #000; }
-.stack-card .num { font-family: var(--font-display); font-weight: 600; font-size: 13.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
-.stack-card h3 { font-size: clamp(28px, 3vw, 40px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; margin: 12px 0 14px; }
-.stack-card .desc { font-size: 18px; color: var(--muted); }
-.stack-card .visual { width: 100%; max-width: 440px; justify-self: center; }
+.tour-head h2 { font-size: clamp(30px, 3.2vw, 42px); margin-bottom: 28px; }
+.tour-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.tour-item { position: relative; padding-left: 22px; }
+.tour-item::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 3px; border-radius: 3px; background: var(--line); transition: background-color .3s ease; }
+.tour-item.on::before { background: var(--lime-600); }
+.tour-tab {
+  display: flex; align-items: baseline; gap: 14px; width: 100%; padding: 10px 0; border: 0; background: none; cursor: pointer; text-align: left;
+  font-family: var(--font-display); font-weight: 600; font-size: 18px; letter-spacing: -0.01em; color: var(--muted); transition: color .25s ease;
+}
+.tour-tab .n { font-size: 13px; letter-spacing: .08em; color: var(--muted); font-weight: 600; }
+.tour-tab:hover { color: var(--text); }
+.tour-item.on .tour-tab { color: var(--text); font-size: 20px; }
+.tour-item.on .tour-tab .n { color: var(--accent); }
+.tour-body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .45s cubic-bezier(.2, .7, .2, 1); }
+.tour-body > div { overflow: hidden; }
+.tour-item.on .tour-body { grid-template-rows: 1fr; }
+.tour-body h3 { font-size: 24px; margin: 2px 0 8px; }
+.tour-body p { color: var(--muted); font-size: 16.5px; }
+.tour-body .ticks { margin: 14px 0 12px; gap: 9px; }
+.tour-body .ticks li { font-size: 15px; }
+.tour-stage { position: relative; height: min(580px, calc(100vh - 160px)); }
+.tour-visual {
+  position: absolute; inset: 0; display: grid; place-items: center;
+  opacity: 0; transform: translateY(18px) scale(.98); transition: opacity .45s ease, transform .55s cubic-bezier(.2, .7, .2, 1);
+  pointer-events: none;
+}
+.tour-visual.on { opacity: 1; transform: none; pointer-events: auto; }
+.tour-visual .demo { max-width: 440px; }
+@media (min-width: 961px) and (max-height: 760px) { .tour-body .ticks { display: none; } .tour-head h2 { margin-bottom: 16px; } }
+
+@media (max-width: 960px), (max-height: 600px) {
+  .features { padding: 72px 0; }
+  .tour { height: auto; }
+  .tour-pin { position: static; height: auto; display: flex; flex-direction: column; align-items: stretch; gap: 0; }
+  .tour-side, .tour-list, .tour-stage { display: contents; }
+  .tour-head { order: -1; text-align: center; margin-bottom: 8px; }
+  .tour-item, .tour-visual { order: var(--o); }
+  .tour-item { padding-left: 0; margin-top: 44px; }
+  .tour-item::before { display: none; }
+  .tour-tab { pointer-events: none; padding: 0 0 6px; font-size: 14px; color: var(--accent); }
+  .tour-item.on .tour-tab { font-size: 14px; color: var(--accent); }
+  .tour-tab .t { text-transform: uppercase; letter-spacing: .1em; }
+  .tour-tab .n { color: var(--accent); }
+  .tour-body, .tour-item.on .tour-body { grid-template-rows: 1fr; }
+  .tour-body h3 { font-size: 26px; }
+  .tour-body .ticks { display: none; }
+  .tour-visual, .tour-visual.on { position: static; opacity: 1; transform: none; margin-top: 20px; pointer-events: auto; }
+}
+
 /* The real keyboard, recorded in Messages. The clips are full phone
    screens; the action is all in the lower half, so they are shown from
    there down: message box, AI buttons, keyboard. */
-.clip { width: 100%; max-width: 360px; margin: 0 auto; aspect-ratio: 600 / 760; overflow: hidden; border-radius: 28px; background: #E4E6EA; box-shadow: 0 0 0 8px var(--card-2), 0 0 0 9px var(--line), 0 18px 40px rgba(20, 23, 8, .12); }
+.clip { width: 100%; max-width: 360px; margin: 0 auto; aspect-ratio: 600 / 760; overflow: hidden; border-radius: 28px; background: #E4E6EA 50% 100% / cover no-repeat; box-shadow: 0 0 0 8px var(--card-2), 0 0 0 9px var(--line), 0 18px 40px rgba(20, 23, 8, .12); }
 .clip video { width: 100%; height: 100%; object-fit: cover; object-position: 50% 100%; }
+.tour-stage .clip { height: 100%; width: auto; max-width: none; }
+@media (max-width: 960px), (max-height: 600px) { .tour-stage .clip, .clip { width: 100%; height: auto; max-width: 320px; border-radius: 24px; } }
 .tag { display: inline-block; padding: 2px 9px; border-radius: 999px; background: var(--lime); color: var(--ink); font-family: var(--font-body); font-size: 11.5px; font-weight: 700; letter-spacing: .02em; vertical-align: 1px; }
-@media (max-width: 900px) {
-  .stack-card { top: calc(80px + var(--i) * 10px); grid-template-columns: minmax(0, 1fr); gap: 18px; min-height: 0; padding: 26px 22px; margin-bottom: 32px; border-radius: 26px; }
-  .stack-card h3 { font-size: 26px; margin: 8px 0 8px; }
-  .stack-card .desc { font-size: 16px; }
-  .stack-card .ticks { display: none; }
-  /* A stuck card taller than the screen would hide its own bottom. */
-  .stack-card .demo { padding: 16px; }
-  .stack-card .demo-top, .stack-card .strip { display: none; }
-  .stack-card .order div:nth-child(n+5) { display: none; }
-  .stack-card .reply { padding: 10px 12px; font-size: 14.5px; }
-  .clip { max-width: 290px; border-radius: 24px; }
-}
-@media (max-width: 900px) and (max-height: 760px) {
-  .stack-card { top: calc(74px + var(--i) * 6px); }
-  .stack-card .desc, .stack-card .demo > .label, .stack-card .demo > .label + .chips { display: none; }
-}
 
 /* Tick lists */
 .ticks { list-style: none; margin: 26px 0 0; padding: 0; display: grid; gap: 13px; }
@@ -423,3 +448,4 @@ p { margin: 0; }
   .js .reveal { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
+.rail.aside { opacity: 0; pointer-events: none; }

@@ -1,5 +1,5 @@
-// KEYBO website: theme toggle, header, side rail, the stacking feature
-// cards with their recordings, and KEYBO's hero loop.
+// KEYBO website: theme toggle, header, side rail, the AI feature tour
+// with its recordings, and KEYBO's hero loop.
 // Scroll work is one requestAnimationFrame at most, transforms only.
 
 (() => {
@@ -65,62 +65,71 @@
   new IntersectionObserver(([e]) => rail.classList.toggle("show", !e.isIntersecting), { threshold: 0, rootMargin: "-40% 0px 0px 0px" })
     .observe($(".hero"));
 
-  // Feature cards that stack in 3D. Each card is sticky a little lower than
-  // the last; as the next one slides over it, it sinks back and dims. Runs
-  // only while the stack is on screen, once per frame at most.
-  const stack = $(".stack");
-  const cards = $$(".stack-card");
+  // AI features, one at a time. On large screens the section holds still
+  // while you scroll through it, and the step follows the scroll; tapping a
+  // feature scrolls to it. On phones it is a plain list, and whichever clip
+  // is on screen plays. Only one video ever plays.
+  const tour = $(".tour");
+  const items = $$(".tour-item");
+  const visuals = $$(".tour-visual");
   const counter = $('.rail a[data-for="features"] small');
-  if (stack && cards.length) {
-    let ticking = false, visible = false;
+  const pinned = () => getComputedStyle($(".tour-pin")).position === "sticky";
+  const playOnly = v => {
+    $$(".tour video").forEach(o => { if (o !== v) o.pause(); });
+    if (v && !reduce) { v.preload = "auto"; v.play().catch(() => {}); }
+  };
+  let step = -1;
+  const show = i => {
+    if (i === step) return;
+    step = i;
+    items.forEach((el, k) => el.classList.toggle("on", k === i));
+    visuals.forEach((el, k) => el.classList.toggle("on", k === i));
+    if (counter) counter.textContent = `${String(i + 1).padStart(2, "0")} / ${String(items.length).padStart(2, "0")}`;
+    if (pinned()) playOnly(visuals[i].querySelector("video"));
+  };
+  if (reduce) $$(".tour video").forEach(v => v.controls = true);
+
+  if (tour && items.length) {
+    let ticking = false, near = false;
+    const travel = () => tour.offsetHeight - (innerHeight - 68);
     const update = () => {
       ticking = false;
-      const tops = cards.map(c => c.getBoundingClientRect().top);
-      const heights = cards.map(c => c.offsetHeight);
-      const n = cards.length;
-      const cover = new Array(n).fill(0);
-      for (let i = 0; i < n - 1; i++) {
-        const dist = tops[i + 1] - tops[i];
-        const full = heights[i] + 56, stacked = 16;
-        cover[i] = Math.min(1, Math.max(0, 1 - (dist - stacked) / (full - stacked)));
-      }
-      let current = 0;
-      for (let i = 0; i < n; i++) {
-        let depth = 0;
-        for (let j = i; j < n - 1; j++) depth += cover[j];
-        const enter = i === 0 ? 1 : cover[i - 1];
-        if (enter > 0.5) current = i;
-        const scale = 1 - Math.min(depth, 4) * 0.045;
-        const tilt = reduce ? 0 : (1 - enter) * 9;
-        cards[i].style.transform = `perspective(1400px) rotateX(${tilt.toFixed(2)}deg) scale(${scale.toFixed(4)})`;
-        cards[i].style.setProperty("--dim", (Math.min(depth, 3) * 0.045).toFixed(3));
-      }
-      if (counter) counter.textContent = `${String(current + 1).padStart(2, "0")} / ${String(n).padStart(2, "0")}`;
-      playActive(current);
+      if (!pinned()) return;
+      const p = Math.min(0.9999, Math.max(0, (68 - tour.getBoundingClientRect().top) / travel()));
+      show(Math.floor(p * items.length));
     };
-    const onScroll = () => { if (visible && !ticking) { ticking = true; requestAnimationFrame(update); } };
-    new IntersectionObserver(([e]) => { visible = e.isIntersecting; if (visible) onScroll(); }, { rootMargin: "200px 0px" }).observe(stack);
+    const onScroll = () => { if (near && !ticking) { ticking = true; requestAnimationFrame(update); } };
+    new IntersectionObserver(([e]) => {
+      near = e.isIntersecting;
+      if (near) { step = -1; onScroll(); } else $$(".tour video").forEach(v => v.pause());
+    }, { rootMargin: "100px 0px" }).observe(tour);
     addEventListener("scroll", onScroll, { passive: true });
     addEventListener("resize", onScroll, { passive: true });
+
+    $$(".tour-tab").forEach(t => t.addEventListener("click", () => {
+      if (!pinned()) return;
+      const i = +t.dataset.step;
+      const top = tour.getBoundingClientRect().top + scrollY - 68 + (i + 0.5) / items.length * travel();
+      scrollTo({ top, behavior: reduce ? "auto" : "smooth" });
+    }));
+
+    // Phones: the clip on screen plays.
+    const vo = new IntersectionObserver(entries => {
+      if (pinned()) return;
+      for (const e of entries) {
+        const v = e.target.querySelector("video");
+        if (!v) continue;
+        if (e.isIntersecting) playOnly(v); else v.pause();
+      }
+    }, { threshold: 0.6 });
+    visuals.forEach(v => vo.observe(v));
   }
 
-  // The feature recordings: only the card on top plays, and a clip loads
-  // only when its card comes up. With reduced motion they wait for a tap.
-  let playing = -1;
-  function playActive(i) {
-    if (i === playing || reduce) return;
-    playing = i;
-    cards.forEach((c, k) => {
-      const v = c.querySelector("video");
-      if (!v) return;
-      if (k === i) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause();
-    });
-  }
-  if (reduce) $$(".clip video").forEach(v => v.controls = true);
-  // Off screen, nothing plays.
-  if (stack) new IntersectionObserver(([e]) => {
-    if (!e.isIntersecting) { $$(".clip video").forEach(v => v.pause()); playing = -1; }
-  }).observe(stack);
+  // The rail steps aside while the features hold the screen; their own
+  // list does the same job there.
+  const featuresSection = $("#features");
+  if (featuresSection) new IntersectionObserver(([e]) => rail.classList.toggle("aside", e.isIntersecting && pinned()),
+    { rootMargin: "-30% 0px -30% 0px" }).observe(featuresSection);
 
   // KEYBO's hero loop: large screens only, after load, paused off screen.
   // Phones keep the still, which is the loop's own first frame.
