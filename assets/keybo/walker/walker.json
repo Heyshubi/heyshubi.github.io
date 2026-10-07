@@ -73,5 +73,27 @@
   },
   "notes": "Every file has an @2x twin at 640. Frames marked front are pixel-identical to front.png, and the lying frames (fall's last, dizzy's last, getup's first) are identical to each other, so strips chain without a jump. floor_y is where the standing feet meet the floor, in a 320 cell; lying, he reaches about 4 px lower (nearer the camera). walk-left is rendered, not mirrored, so the K E Y B O keycaps read correctly. stride_px is the screen distance one 16-frame walk cycle covers in a 320 cell (planted feet stay flat and still): move him stride_px / 0.667 s = 64.7 px/s at 320, scaled with the cell size. The turn strips start on the walk's frame 0 exactly, so end the cycle on frame 0, then play the turn.",
   "stride_px": 43.2,
-  "speed_px_per_s": 64.7
+  "speed_px_per_s": 64.7,
+  "look_grid": {
+    "file": "look-grid.png",
+    "webp": "look-grid.webp",
+    "cell": 320,
+    "cols": 17,
+    "rows": 5,
+    "yaw": [
+      -80,
+      80,
+      10
+    ],
+    "pitch": [
+      20,
+      -20,
+      -10
+    ],
+    "front_cell": {
+      "row": 2,
+      "col": 8
+    },
+    "about": "rows top to bottom look up (+20) to down (-20); columns left to right look screen-left (-80) to screen-right (+80); the body turns and tilts about the hips on planted feet; the eyes lead a little; the centre cell is front.png"
+  }
 }

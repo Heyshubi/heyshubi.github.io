@@ -644,8 +644,13 @@ p { margin: 0; }
 .walker:focus-visible .walker-body { outline: 3px solid var(--lime-600); outline-offset: -10px; border-radius: 30px; }
 .walker-body, .w-front, .w-strip { position: absolute; inset: 0; }
 .w-front img { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; user-select: none; }
-/* looking: the whole front turns and tilts toward the cursor (site.js eases --yaw/--pitch) */
-.w-front { transform: perspective(520px) rotateY(var(--yaw, 0deg)) rotateX(var(--pitch, 0deg)); transform-origin: 50% 70%; }
+/* Looking: the Blender look grid, 17 columns of yaw (-80..+80 in 10 deg)
+   by 5 rows of pitch (+20 up .. -20 down), 320 px cells. site.js eases the
+   aim like a spring and picks the cell (--lx, --ly). The legs stay planted;
+   the body turns about the hips like a head on a neck. */
+.w-look { position: absolute; inset: 0; display: none; background: url("../keybo/walker/look-grid.webp") no-repeat; background-size: 1700% 500%; background-position: var(--lx, 50%) var(--ly, 50%); }
+.walker.look .w-look { display: block; }
+.walker.look .w-front { display: none; }
 .w-eyes { transform: translate(var(--ex, 0px), var(--ey, 0px)); transition: transform .12s ease-out; }
 .w-strip { display: none; background-repeat: no-repeat; background-size: calc(var(--n) * 100%) 100%; }
 .walker-shadow { position: absolute; left: 26%; right: 26%; bottom: calc(var(--s) * 43 / 320 - 5px); height: 10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(20, 23, 8, .22), transparent); }

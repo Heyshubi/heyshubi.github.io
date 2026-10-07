@@ -457,13 +457,15 @@
       return Math.hypot(mouse.x - c.cx, mouse.y - c.cy) < R();
     };
     // Turning to look: the whole KEYBO turns (yaw) and tilts (pitch) toward
-    // the cursor, eased like a spring. Until the Animation session's look
-    // grid arrives this turns the front render in 3D; the eyes follow too.
+    // the cursor, eased like a spring, shown from the Blender look grid
+    // (17 x 5 cells: yaw -80..+80 by 10, pitch +20..-20 by 10).
     let yaw = 0, pitch = 0;
     const aim = (ty, tp) => {
-      yaw += (ty - yaw) * 0.16; pitch += (tp - pitch) * 0.16;
-      walker.style.setProperty("--yaw", yaw.toFixed(2) + "deg");
-      walker.style.setProperty("--pitch", pitch.toFixed(2) + "deg");
+      yaw += (ty - yaw) * 0.18; pitch += (tp - pitch) * 0.18;
+      const col = Math.round((Math.max(-80, Math.min(80, yaw)) + 80) / 10);
+      const row = Math.round((20 - Math.max(-20, Math.min(20, pitch))) / 10);
+      walker.style.setProperty("--lx", (col / 16 * 100).toFixed(4) + "%");
+      walker.style.setProperty("--ly", (row / 4 * 100).toFixed(4) + "%");
     };
     const frame = now => {
       if (!on) return;
@@ -498,8 +500,7 @@
         const c = centre(), r = R();
         const dx = Math.max(-1, Math.min(1, (mouse.x - c.cx) / r));
         const dy = Math.max(-1, Math.min(1, (mouse.y - c.cy) / r));
-        aim(dx * 34, -dy * 18);                        // turn toward it, tilt up or down
-        eyes(dx * 1.4, dy * 1.4);
+        aim(dx * 80, -dy * 20);                        // turn toward it, tilt up or down
         if (Math.random() < 0.004) speak(["Hi!", "Oh, hello", "👀"][(Math.random() * 3) | 0]);
       }
       if (!state) set("walk-" + side());
@@ -523,8 +524,11 @@
     walker.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); poke({}); } });
     addEventListener("pointermove", e => { mouse = { x: e.clientX, y: e.clientY }; }, { passive: true });
     document.documentElement.addEventListener("pointerleave", () => { mouse = null; });
-    const preload = () => ["wobble", "fall", "getup", "dizzy", "turn-from-right", "turn-from-left"]
-      .forEach(n => { const i = new Image(); i.src = `assets/keybo/walker/${n}-strip.png`; });
+    const preload = () => {
+      ["wobble", "fall", "getup", "dizzy", "turn-from-right", "turn-from-left"]
+        .forEach(n => { const i = new Image(); i.src = `assets/keybo/walker/${n}-strip.png`; });
+      new Image().src = "assets/keybo/walker/look-grid.webp";
+    };
     let preloaded = false;
     if (reduce) walker.className = "walker idle";
     else new IntersectionObserver(([e]) => {
