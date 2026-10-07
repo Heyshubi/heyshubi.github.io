@@ -294,7 +294,16 @@
     const typed = "hey r u free tmrw for the meetng?";
     const fixedMsg = "Hey, are you free tomorrow for the meeting?";
     const text = $(".j-text", journey), status = $(".ai-status", journey), pcode = $(".pcode", journey);
-    const vid = $(".ai-art video", journey);
+    // Each side is a loop with a one-shot that starts and ends on the
+    // loop's first frame: the one-shot plays over it, then hands back.
+    const stacks = $$(".clipstack", journey).map(st => ({ st, loop: $(".loop", st), once: $(".once", st) }));
+    const [you, ai] = stacks;
+    const oneShot = side => {
+      if (!side || reduce) return;
+      side.once.currentTime = 0;
+      side.once.play().then(() => side.st.classList.add("oneshot")).catch(() => {});
+      side.once.onended = () => { side.loop.currentTime = 0; side.loop.play().catch(() => {}); side.st.classList.remove("oneshot"); };
+    };
     const hex = "0123456789abcdef";
     const code = len => Array.from({ length: len }, (_, i) => (i % 5 === 4 ? " " : hex[(Math.random() * 16) | 0])).join("");
     let timers = [], shuffle = 0, on = false;
@@ -322,11 +331,11 @@
       t += 750;
       later(t, () => { journey.dataset.s = "2"; pcode.textContent = code(14); status.textContent = "Receiving 🔒"; });
       t += 1350;
-      later(t, () => { journey.dataset.s = "3"; status.textContent = "Fixing"; if (vid) vid.play().catch(() => {}); });
+      later(t, () => { journey.dataset.s = "3"; status.textContent = "Fixing"; });
       t += 1700;
-      later(t, () => { journey.dataset.s = "4"; status.textContent = "Sent back 🔒"; pcode.textContent = code(14); text.textContent = code(fixedMsg.length); });
+      later(t, () => { journey.dataset.s = "4"; status.textContent = "Sent back 🔒"; pcode.textContent = code(14); text.textContent = code(fixedMsg.length); oneShot(ai); });
       t += 1450;
-      later(t, () => { journey.dataset.s = "5"; journey.classList.remove("sealed"); morph(fixedMsg, 650); });
+      later(t, () => { journey.dataset.s = "5"; journey.classList.remove("sealed"); morph(fixedMsg, 650); oneShot(you); });
       t += 3200;
       later(t, () => { journey.dataset.s = "6"; status.textContent = "Done, nothing kept"; });
       later(t + 900, run);
@@ -336,7 +345,8 @@
       if (e.isIntersecting === on) return;
       on = e.isIntersecting;
       journey.classList.toggle("run", on);
-      if (on) { if (vid) vid.preload = "auto"; run(); } else { stopAll(); if (vid) vid.pause(); }
+      stacks.forEach(x => { if (on) { x.loop.preload = x.once.preload = "auto"; x.loop.play().catch(() => {}); } else { x.loop.pause(); x.once.pause(); } });
+      if (on) run(); else stopAll();
     }, { threshold: 0.3 }).observe(journey);
   }
 

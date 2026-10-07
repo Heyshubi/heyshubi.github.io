@@ -503,17 +503,23 @@ p { margin: 0; }
 /* Privacy: one message's journey. A person types it on their phone (a
    popup shows what they typed); it seals into code and travels to KEYBO
    at its laptop; KEYBO fixes it and sends it back sealed; the popup opens
-   on the fixed message. site.js steps data-s 0-6. The person is a phone
-   in hand until the Animation session's character render lands. */
+   on the fixed message. site.js steps data-s 0-6. The person and KEYBO
+   are the Animation session's Cycles renders. */
 .journey {
-  grid-column: 1 / -1; display: grid; grid-template-columns: 270px minmax(0, 1fr) 250px; align-items: end; gap: 12px;
+  grid-column: 1 / -1; display: grid; grid-template-columns: 290px minmax(0, 1fr) 280px; align-items: end; gap: 12px;
   margin-top: 10px; padding: 26px 28px 22px; border-radius: 26px; background: rgba(255, 255, 255, .5);
 }
 .actor { position: relative; display: flex; flex-direction: column; align-items: center; gap: 8px; }
 .cap { font-size: 12.5px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: rgba(20, 23, 8, .62); text-align: center; line-height: 1.35; }
 .cap small { font-weight: 600; text-transform: none; letter-spacing: 0; font-size: 12px; }
-.actor-art { position: relative; width: 100%; height: 170px; display: grid; place-items: end center; }
-.actor-art video, .actor-art img { width: 190px; height: 190px; object-fit: contain; margin-bottom: -12px; }
+.actor-art { position: relative; width: 100%; display: grid; place-items: end center; }
+/* The person and KEYBO, rendered through one camera: same size, same top,
+   and they stand on one floor (soles at 624 of 720, so 13.3% hangs below). */
+.clipstack { --cs: 280px; position: relative; width: var(--cs); aspect-ratio: 1; margin-bottom: calc(var(--cs) * -0.133); }
+.clipstack video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity .14s ease; }
+.clipstack .once { opacity: 0; }
+.clipstack.oneshot .once { opacity: 1; }
+.clipstack.oneshot .loop { opacity: 0; }
 
 /* the popup over the person's phone */
 .pop {
@@ -533,14 +539,6 @@ p { margin: 0; }
 .journey[data-s="5"] .j-bubble, .journey[data-s="6"] .j-bubble { background: #EFFCBD; }
 .j-fixed { position: absolute; right: 12px; bottom: -11px; padding: 3px 9px; border-radius: 999px; background: var(--ink); color: #CCFA00; font-size: 11px; font-weight: 700; opacity: 0; transform: translateY(4px) scale(.9); transition: opacity .3s ease, transform .4s cubic-bezier(.16, 1, .3, 1); }
 .journey[data-s="5"] .j-fixed, .journey[data-s="6"] .j-fixed { opacity: 1; transform: none; }
-
-/* the phone in hand (until the person render lands) */
-.handset { width: 86px; height: 150px; margin-bottom: 4px; border-radius: 20px; background: var(--ink); padding: 7px; transform: rotate(-8deg); box-shadow: 0 16px 30px rgba(20, 23, 8, .25); }
-.handset-screen { height: 100%; border-radius: 14px; background: #fff; display: flex; flex-direction: column; justify-content: flex-end; gap: 5px; padding: 8px; }
-.handset-screen i { height: 7px; border-radius: 4px; background: #E3E8D2; }
-.handset-screen i:last-child { width: 70%; background: var(--lime); align-self: flex-end; }
-.journey[data-s="0"] .handset { animation: tap .32s ease-in-out infinite alternate; }
-@keyframes tap { to { transform: rotate(-8deg) translateY(2px); } }
 
 /* KEYBO's side */
 .pop-ai { min-height: 0; padding: 10px 14px; text-align: center; font-size: 13.5px; font-weight: 700; }
@@ -570,9 +568,7 @@ p { margin: 0; }
   .journey .you { grid-column: 1; grid-row: 1; }
   .journey .ai { grid-column: 2; grid-row: 1; }
   .journey .lane { grid-column: 1 / -1; grid-row: 2; height: 54px; }
-  .actor-art { height: 120px; }
-  .actor-art video, .actor-art img { width: 140px; height: 140px; }
-  .handset { width: 62px; height: 108px; border-radius: 15px; padding: 5px; }
+  .clipstack { --cs: 150px; }
   .pop { padding: 10px 11px 12px; min-height: 100px; }
   .j-bubble { font-size: 12.5px; }
   .packet { padding: 6px 9px; font-size: 10.5px; }
