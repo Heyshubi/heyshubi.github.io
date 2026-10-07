@@ -1,0 +1,20 @@
+{
+  "fps": 24,
+  "cell": 320,
+  "cell_2x": 640,
+  "floor_y": 277,
+  "strips": {
+    "walk":      {"file": "walk-strip.png",      "frames": 16, "loop": true, "facing": "right"},
+    "walk-left": {"file": "walk-left-strip.png", "frames": 16, "loop": true, "facing": "left"},
+    "wobble":    {"file": "wobble-strip.png",    "frames": 10, "from": "front", "to": "front"},
+    "fall":      {"file": "fall-strip.png",      "frames": 14, "from": "front", "to": "lying"},
+    "getup":     {"file": "getup-strip.png",     "frames": 14, "from": "lying", "to": "front"},
+    "dizzy":     {"file": "dizzy-strip.png",     "frames": 20, "from": "front", "to": "lying"}
+  },
+  "front": {
+    "still": "front.png",
+    "look": ["front-look-left.png", "front-look-center.png", "front-look-right.png"],
+    "eyes": {"base": "front-noeyes.png", "layer": "eyes.png", "nudge_px": {"x": 7, "y": 4}}
+  },
+  "notes": "Every file has an @2x twin at 640. Frames marked front are pixel-identical to front.png, and the lying frames (fall's last, dizzy's last, getup's first) are identical to each other, so strips chain without a jump. floor_y is where the standing feet meet the floor, in a 320 cell; lying, he reaches about 4 px lower (nearer the camera). walk-left is rendered, not mirrored, so the K E Y B O keycaps read correctly."
+}

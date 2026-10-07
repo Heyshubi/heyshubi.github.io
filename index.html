@@ -33,7 +33,7 @@
     d.classList.add("js");
   })();
 </script>
-<link rel="stylesheet" href="assets/css/site.css?v=20261007165016">
+<link rel="stylesheet" href="assets/css/site.css?v=20261007172823">
 
 <script type="application/ld+json">
 {
@@ -77,6 +77,7 @@
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
     <symbol id="i-chev" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
     <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.2l2.7 5.5 6 .9-4.35 4.25 1.03 6L12 17l-5.38 2.85 1.03-6L3.3 9.6l6-.9z"/></symbol>
+    <symbol id="spark-fill" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 0c.6 6.2 5.8 11.4 12 12-6.2.6-11.4 5.8-12 12-.6-6.2-5.8-11.4-12-12C6.2 11.4 11.4 6.2 12 0z"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
     <symbol id="logo-apple" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></symbol>
     <symbol id="logo-play" viewBox="0 0 24 24">
@@ -145,10 +146,6 @@
       </div>
     </div>
     <div class="hero-art" id="hero-art">
-      <div class="live" aria-hidden="true">
-        <div class="live-top"><span class="live-tone">Original</span><span class="live-hint">rewritten by KEYBO</span></div>
-        <p class="live-text">hey can u send me the file</p>
-      </div>
       <img src="assets/keybo/hero-still-720.png" srcset="assets/keybo/hero-still-720.png 720w, assets/keybo/hero-loop-poster.png 1080w" sizes="(max-width: 900px) 300px, 480px" alt="KEYBO, the keyboard mascot" width="720" height="720" fetchpriority="high">
     </div>
   </div>
@@ -167,7 +164,6 @@
           <circle cx="100" cy="121" r="7" fill="#141708"/>
           <rect x="96.5" y="123" width="7" height="15" rx="3.5" fill="#141708"/>
         </svg>
-        <div class="cipher" aria-hidden="true"><span class="cipher-text">See you at 8 tonight</span><small>encrypted on the way</small></div>
       </div>
       <div>
         <span class="kicker">Privacy first</span>
@@ -180,6 +176,24 @@
           <article class="promise"><svg class="icon"><use href="#i-key"/></svg><h3>Passwords stay private</h3><p>AI switches off in password fields.</p></article>
         </div>
         <p class="more">The keys work without Full Access; only the AI buttons need it. <a href="https://heyshubi.github.io/privacy/ios/">Read the privacy policy →</a></p>
+      </div>
+      <div class="journey" aria-label="Your message is encrypted on its way to KEYBO's AI and back">
+        <div class="node phone">
+          <div class="screen">
+            <div class="msg out"><span class="plain">Running late, start without me?</span><span class="code" aria-hidden="true"></span></div>
+            <div class="msg in"><span class="plain">Sure! Starting now. See you soon 👋</span><span class="code" aria-hidden="true"></span></div>
+          </div>
+          <span class="cap">Your phone</span>
+        </div>
+        <div class="lane" aria-hidden="true">
+          <div class="wire"></div>
+          <div class="packet"><svg class="icon"><use href="#i-lock"/></svg><span class="pcode">a7f3 9c2e 41bd</span></div>
+          <span class="cap">Encrypted, both ways</span>
+        </div>
+        <div class="node ai" aria-hidden="true">
+          <div class="core"><svg viewBox="0 0 24 24"><use href="#spark-fill"/></svg></div>
+          <span class="cap">KEYBO AI<br><small>answers, keeps nothing</small></span>
+        </div>
       </div>
     </div>
   </div>
@@ -291,32 +305,33 @@
     <div class="head reveal">
       <span class="kicker">How it works</span>
       <h2>Type. Tap. <span class="hl">Send.</span></h2>
-    </div>
-    <div class="steps3">
-      <article class="card step reveal"><h3>Type, or copy a message</h3><p>Write in any app as usual. To answer someone, copy their message first.</p></article>
-      <article class="card step reveal"><h3>Tap a KEYBO button</h3><p>Reply, a tone, Fix, Rewrite or Translate, right above your keys.</p></article>
-      <article class="card step reveal"><h3>Pick it and send</h3><p>Choose the version you like. Not quite right? Undo and try another.</p></article>
+      <p>Nothing new to learn. KEYBO works wherever you already type.</p>
     </div>
 
-    <div class="card setup reveal">
-      <div class="setup-top">
+    <ol class="how-steps">
+      <li class="reveal"><span class="how-n">1</span><h3>Type, or copy</h3><p>Write in any app as usual. To answer someone, copy their message.</p></li>
+      <li class="reveal"><span class="how-n">2</span><h3>Tap a KEYBO button</h3><p>Reply, a tone, Fix, Rewrite or Translate, right above your keys.</p></li>
+      <li class="reveal"><span class="how-n">3</span><h3>Pick it and send</h3><p>Choose the version you like. Not quite right? Undo and try another.</p></li>
+    </ol>
+
+    <div class="setup card reveal">
+      <div class="setup-intro">
         <h3>Set up in a minute</h3>
+        <p>Two steps, and the app walks you through both.</p>
         <div class="tabs" role="tablist" aria-label="Device">
           <button role="tab" type="button" aria-selected="true" aria-controls="setup-ios" id="tab-ios">iPhone &amp; iPad</button>
           <button role="tab" type="button" aria-selected="false" aria-controls="setup-android" id="tab-android">Android</button>
         </div>
       </div>
-      <div role="tabpanel" id="setup-ios" aria-labelledby="tab-ios">
-        <div class="setup-cols">
-          <div><h4>1. Allow KEYBO</h4><ol><li>Open <b>Settings</b> from the KEYBO app</li><li>Tap <b>Keyboards</b> and turn on <b>KEYBO</b></li><li>Turn on <b>Allow Full Access</b>, then tap <b>Allow</b></li></ol></div>
-          <div><h4>2. Choose KEYBO</h4><ol><li>Tap any text box so a keyboard opens</li><li><b>Touch and hold</b> the 🌐 globe key</li><li>Slide to <b>KEYBO</b> and let go</li></ol></div>
+      <div class="setup-steps">
+        <div role="tabpanel" id="setup-ios" aria-labelledby="tab-ios">
+          <div class="setup-step"><span class="step-tag">Step 1</span><h4>Allow KEYBO</h4><ol><li>Open <b>Settings</b> from the KEYBO app</li><li>Tap <b>Keyboards</b>, turn on <b>KEYBO</b></li><li>Turn on <b>Allow Full Access</b>, tap <b>Allow</b></li></ol></div>
+          <div class="setup-step"><span class="step-tag">Step 2</span><h4>Choose KEYBO</h4><ol><li>Tap any text box</li><li><b>Touch and hold</b> the 🌐 globe key</li><li>Slide to <b>KEYBO</b> and let go</li></ol></div>
+          <p class="hint">Full Access is only for the AI buttons. Typing works without it.</p>
         </div>
-        <p class="hint">Full Access is only for the AI buttons, which need the internet. Typing works without it.</p>
-      </div>
-      <div role="tabpanel" id="setup-android" aria-labelledby="tab-android" hidden>
-        <div class="setup-cols">
-          <div><h4>1. Turn it on</h4><ol><li>Open KEYBO and tap <b>Open keyboard settings</b></li><li>Switch <b>KEYBO</b> on</li><li>Android shows its standard keyboard notice; tap <b>OK</b></li></ol></div>
-          <div><h4>2. Make it your keyboard</h4><ol><li>Back in the app, tap <b>Choose KEYBO</b></li><li>Pick <b>KEYBO</b> from the list</li><li>Type something and tap <b>Fix</b> to try it</li></ol></div>
+        <div role="tabpanel" id="setup-android" aria-labelledby="tab-android" hidden>
+          <div class="setup-step"><span class="step-tag">Step 1</span><h4>Turn it on</h4><ol><li>Open KEYBO, tap <b>Open keyboard settings</b></li><li>Switch <b>KEYBO</b> on</li><li>Tap <b>OK</b> on Android's standard notice</li></ol></div>
+          <div class="setup-step"><span class="step-tag">Step 2</span><h4>Make it your keyboard</h4><ol><li>Back in the app, tap <b>Choose KEYBO</b></li><li>Pick <b>KEYBO</b> from the list</li><li>Type something and tap <b>Fix</b></li></ol></div>
         </div>
       </div>
     </div>
@@ -361,14 +376,27 @@
   </div>
 </section>
 
-<!-- Review -->
-<section class="section alt" id="review" data-rail="Review">
+<!-- Reviews: the wall shows real, approved reviews (assets/data/reviews.json,
+     or the reviews API once it is live); anyone can write one below. -->
+<section class="section alt" id="review" data-rail="Reviews">
   <div class="wrap">
-    <div class="review card reveal">
+    <div class="head reveal">
+      <span class="kicker">Reviews</span>
+      <h2>People are talking about <span class="hl">KEYBO</span>.</h2>
+      <p>Real reviews from people who use it. Write yours below.</p>
+    </div>
+  </div>
+
+  <div class="review-wall" aria-label="Reviews" hidden>
+    <div class="wall-col"></div><div class="wall-col"></div><div class="wall-col"></div><div class="wall-col"></div>
+  </div>
+
+  <div class="wrap">
+    <form class="review card reveal" id="review-form" novalidate>
       <div class="review-copy">
         <span class="kicker">Your review</span>
-        <h2>Loving KEYBO? <span class="hl">Say it in stars.</span></h2>
-        <p>Your rating helps more people find KEYBO, and your notes tell us what to build next.</p>
+        <h3>Loving KEYBO? <span class="hl">Say it in stars.</span></h3>
+        <p>Your review shows up here once it's checked. A 4 or 5 also helps people find KEYBO on the App Store.</p>
       </div>
       <div class="review-box">
         <div class="stars" role="radiogroup" aria-label="Your rating">
@@ -378,13 +406,19 @@
           <button type="button" role="radio" aria-checked="false" data-v="4" aria-label="4 stars"><svg><use href="#i-star"/></svg></button>
           <button type="button" role="radio" aria-checked="false" data-v="5" aria-label="5 stars"><svg><use href="#i-star"/></svg></button>
         </div>
-        <p class="review-msg" aria-live="polite">Tap a star to rate KEYBO.</p>
-        <div class="review-actions" hidden>
-          <a class="btn btn-ink review-store" data-store="ios" data-review href="https://apps.apple.com/app/id6816461506?action=write-review" target="_blank" rel="noopener"><svg class="icon" style="fill:currentColor;stroke:none"><use href="#logo-apple"/></svg>Review on the App Store</a>
-          <a class="btn btn-line review-mail" href="mailto:hellokeybo@gmail.com">Email us</a>
+        <div class="review-fields">
+          <label><span>Your name</span><input name="name" maxlength="40" autocomplete="given-name" required></label>
+          <label><span>City or country</span><input name="place" maxlength="40" autocomplete="address-level2"></label>
+          <label class="wide"><span>Your review</span><textarea name="text" rows="3" maxlength="600" required placeholder="What do you use KEYBO for?"></textarea></label>
+          <input class="hp" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+        </div>
+        <p class="review-msg" aria-live="polite">Tap the stars, then tell us more.</p>
+        <div class="review-actions">
+          <button class="btn btn-lime" type="submit">Post my review</button>
+          <a class="btn btn-ink review-store" data-store="ios" data-review href="https://apps.apple.com/app/id6816461506?action=write-review" target="_blank" rel="noopener" hidden><svg class="icon" style="fill:currentColor;stroke:none"><use href="#logo-apple"/></svg>Also on the App Store</a>
         </div>
       </div>
-    </div>
+    </form>
   </div>
 </section>
 
@@ -427,6 +461,24 @@
   </div>
 </section>
 
+<!-- KEYBO, out for a walk above the footer. -->
+<section class="walkway" aria-label="KEYBO walking about">
+  <div class="wrap walk-wrap">
+    <p class="walk-hint">This is KEYBO. Say hi. Tap it, gently.</p>
+    <div class="walk-floor">
+      <div class="walker" tabindex="0" role="button" aria-label="KEYBO the mascot. Tap to poke it.">
+        <span class="walker-say" aria-hidden="true"></span>
+        <div class="walker-body">
+          <div class="w-front"><img class="w-base" src="assets/keybo/walker/front-noeyes.png" alt="" width="320" height="320" loading="lazy" decoding="async" draggable="false"><img class="w-eyes" src="assets/keybo/walker/eyes.png" alt="" width="320" height="320" loading="lazy" decoding="async" draggable="false"></div>
+          <div class="w-strip"></div>
+        </div>
+        <span class="walker-shadow" aria-hidden="true"></span>
+        <span class="walker-dust" aria-hidden="true"><i></i><i></i><i></i></span>
+      </div>
+    </div>
+  </div>
+</section>
+
 </main>
 
 <footer class="site-footer">
@@ -446,6 +498,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261007165016" defer></script>
+<script src="assets/js/site.js?v=20261007172823" defer></script>
 </body>
 </html>

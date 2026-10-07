@@ -1,0 +1,4 @@
+{
+  "_note": "Real reviews only, as people wrote them. Each: name, place, lang (en, hinglish, hi, es, ...), rating 1-5, text, source (website, testflight, app-store, email). The website shows approved ones on the review wall; the backend admin will replace this file once it is live.",
+  "reviews": []
+}

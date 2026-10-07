@@ -97,13 +97,26 @@
   if (reduce) $$(".tour video").forEach(v => v.controls = true);
 
   if (tour && n) {
-    const travel = () => tour.offsetHeight - (innerHeight - 68);
-    const tourTop = () => tour.getBoundingClientRect().top + scrollY - 68;
+    // The held view's height and where it sticks: centred under the header.
+    const pin = $(".tour-pin");
+    let pinH = 620, pinTop = 68;
+    const measure = () => {
+      if (!pinned()) return;
+      pinH = pin.offsetHeight;
+      pinTop = Math.round(68 + Math.max(12, (innerHeight - 68 - pinH) / 2));
+      tour.style.setProperty("--pinh", pinH + "px");
+      tour.style.setProperty("--pintop", pinTop + "px");
+    };
+    measure();
+    addEventListener("resize", measure, { passive: true });
+    addEventListener("load", measure, { once: true });
+    const travel = () => tour.offsetHeight - pinH;
+    const tourTop = () => tour.getBoundingClientRect().top + scrollY - pinTop;
     const spot = i => tourTop() + (i + 0.5) / n * travel();
-    const stepAt = () => Math.min(n - 1, Math.max(0, Math.floor((68 - tour.getBoundingClientRect().top) / travel() * n)));
+    const stepAt = () => Math.min(n - 1, Math.max(0, Math.floor((pinTop - tour.getBoundingClientRect().top) / travel() * n)));
     const engaged = () => {
       const r = tour.getBoundingClientRect();
-      return r.top <= 70 && r.bottom >= innerHeight - 2;
+      return r.top <= pinTop + 2 && r.bottom >= pinTop + pinH - 2;
     };
 
     let ticking = false, near = false;
@@ -146,7 +159,16 @@
       }
       if (gesture === "new") {
         const target = stepAt() + dir;
-        if (now >= busyUntil && (target < 0 || target >= n)) { gesture = "pass"; return; }
+        if (now >= busyUntil && (target < 0 || target >= n)) {
+          // Leave in one go: just past the end going down, back to the
+          // section's heading going up, and hold the rest of the gesture.
+          e.preventDefault(); gesture = "step"; busyUntil = now + 350;
+          const html = document.documentElement, was = html.style.scrollBehavior;
+          html.style.scrollBehavior = "auto";
+          scrollTo(0, target >= n ? tourTop() + travel() + innerHeight * 0.35 : tourTop() - innerHeight * 0.45);
+          html.style.scrollBehavior = was;
+          return;
+        }
         e.preventDefault(); gesture = "step";
         if (now >= busyUntil) { busyUntil = now + 350; go(target); }
         return;
@@ -261,50 +283,31 @@
     $$(".dl-item", dlMenu).forEach(a => a.addEventListener("click", () => setTimeout(closeDl, 0)));
   }
 
-  // Hero: a message that rewrites itself, the way KEYBO does.
-  const live = $(".live");
-  if (live && !reduce) {
-    const versions = [
-      ["Original", "hey can u send me the file"],
-      ["Professional", "Could you please send me the file when you have a moment?"],
-      ["Friendly", "Hey! Could you send me the file when you get a sec? 😊"],
-      ["Funny", "Plot twist: I still need that file 🙃 Send it my way?"],
-      ["Spanish", "¿Me puedes enviar el archivo?"],
-    ];
-    const tone = $(".live-tone", live), text = $(".live-text", live);
-    let k = 0, timer = 0;
-    const next = () => {
-      k = (k + 1) % versions.length;
-      live.classList.add("swap");
-      setTimeout(() => { tone.textContent = versions[k][0]; text.textContent = versions[k][1]; live.classList.remove("swap"); }, 220);
+  // Privacy: one message's journey. Typed on the phone, sealed into code,
+  // carried to KEYBO's AI, answered, carried back sealed, opened on the
+  // phone. Runs only while it is on screen.
+  const journey = $(".journey");
+  if (journey) {
+    const hex = "0123456789abcdef";
+    const garble = len => Array.from({ length: len }, (_, i) => (i % 5 === 4 ? " " : hex[(Math.random() * 16) | 0])).join("");
+    const codes = $$(".msg .code", journey), pcode = $(".pcode", journey);
+    const steps = [[0, 1100], [1, 700], [2, 1500], [3, 1000], [4, 1500], [5, 2600]];
+    let i = 0, t = 0, shuffle = 0, on = false;
+    const scramble = () => { codes.forEach(c => c.textContent = garble(26)); pcode.textContent = garble(14); };
+    const tick = () => {
+      const [state, wait] = steps[i];
+      journey.dataset.s = state;
+      i = (i + 1) % steps.length;
+      t = setTimeout(tick, wait);
     };
-    new IntersectionObserver(([e]) => {
-      clearInterval(timer);
-      if (e.isIntersecting) timer = setInterval(next, 2600);
-    }).observe(live);
-  }
-
-  // Privacy: a line scrambles on its way out and comes back intact, which
-  // is what an encrypted connection does to your words.
-  const cipher = $(".cipher-text");
-  if (cipher && !reduce) {
-    const plain = cipher.textContent, glyphs = "abcdef0123456789";
-    let timer = 0;
-    const scramble = () => {
-      let t = 0;
-      const run = setInterval(() => {
-        t++;
-        const back = t > 14;                    // 14 frames out, 14 back
-        const keep = back ? Math.round((t - 14) / 14 * plain.length) : 0;
-        cipher.textContent = [...plain].map((c, i) => c === " " ? " " : i < keep ? c : glyphs[(Math.random() * 16) | 0]).join("");
-        cipher.classList.toggle("locked", !back || keep < plain.length);
-        if (t >= 28) { clearInterval(run); cipher.textContent = plain; cipher.classList.remove("locked"); }
-      }, 55);
-    };
-    new IntersectionObserver(([e]) => {
-      clearInterval(timer);
-      if (e.isIntersecting) { scramble(); timer = setInterval(scramble, 3800); }
-    }).observe(cipher);
+    if (reduce) journey.dataset.s = "5";
+    else new IntersectionObserver(([e]) => {
+      if (e.isIntersecting === on) return;
+      on = e.isIntersecting;
+      journey.classList.toggle("run", on);
+      clearTimeout(t); clearInterval(shuffle);
+      if (on) { i = 0; scramble(); shuffle = setInterval(scramble, 140); tick(); }
+    }, { threshold: 0.3 }).observe(journey);
   }
 
   // Numbers count up once, when they arrive.
@@ -326,25 +329,172 @@
     o.observe(el);
   });
 
-  // Leave a review: 4 or 5 stars go to the App Store; 1 to 3, to our inbox.
+  // Reviews. The wall shows real, approved reviews: from the reviews API
+  // once it is live (REVIEWS_API), else from assets/data/reviews.json. The
+  // form posts to the API; until the API is live it opens an email with the
+  // review filled in, so nothing anyone writes is lost.
+  const REVIEWS_API = "";   // e.g. "https://ai-keyboard-backend-production.up.railway.app"
+  const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const wall = $(".review-wall");
+  const showWall = list => {
+    list = (list || []).filter(r => r && r.text && r.name);
+    if (!wall || list.length < 3) return;           // a wall needs a few real ones
+    const cols = $$(".wall-col", wall);
+    const inner = document.createElement("div");
+    inner.className = "wall-inner";
+    cols.forEach(c => inner.appendChild(c));
+    wall.appendChild(inner);
+    const card = r => `<article class="rcard"><div class="rstars" aria-label="${r.rating || 5} out of 5">${"★".repeat(r.rating || 5)}</div><p>${esc(r.text)}</p><div class="who"><span class="av">${esc(r.name.trim()[0] || "K").toUpperCase()}</span><span><b>${esc(r.name)}</b>${r.place ? " · " + esc(r.place) : ""}</span></div></article>`;
+    cols.forEach((c, k) => {
+      const mine = list.filter((_, j) => j % cols.length === k);
+      const html = (mine.length ? mine : list).map(card).join("");
+      c.innerHTML = html + html;                      // twice, so the drift loops seamlessly
+      c.style.setProperty("--t", (48 + k * 9) + "s");
+    });
+    wall.hidden = false;
+  };
+  // On the owner's own machine (the local preview) the wall can show the
+  // sample reviews, marked as a preview. The live site never loads them,
+  // and the publish script never uploads them.
+  const localPreview = location.protocol === "file:" || ["127.0.0.1", "localhost", ""].includes(location.hostname);
+  const source = REVIEWS_API ? fetch(REVIEWS_API + "/reviews").then(r => r.json())
+    : location.protocol === "file:" ? Promise.resolve({ reviews: [] })
+    : fetch("assets/data/reviews.json").then(r => r.json());
+  source.then(d => d.reviews || []).catch(() => []).then(real => {
+    if (real.length >= 3 || !localPreview) return showWall(real);
+    return new Promise(done => {
+      const sc = document.createElement("script");
+      sc.src = "assets/data/reviews-sample.js";
+      sc.onload = () => { showWall((window.KEYBO_SAMPLE_REVIEWS || {}).reviews); done(); };
+      sc.onerror = done;
+      document.head.appendChild(sc);
+    });
+  }).catch(() => {});
+
+  const form = $("#review-form");
   const stars = $$(".stars button");
-  const msg = $(".review-msg"), actions = $(".review-actions");
-  const storeBtn = $(".review-store"), mailBtn = $(".review-mail");
+  const msg = $(".review-msg"), storeBtn = $(".review-store");
+  let rating = 0;
   stars.forEach(b => {
     b.addEventListener("click", () => {
-      const v = +b.dataset.v;
-      stars.forEach(o => { const on = +o.dataset.v <= v; o.classList.toggle("on", on); o.setAttribute("aria-checked", String(+o.dataset.v === v)); });
-      actions.hidden = false;
-      const happy = v >= 4;
-      msg.textContent = happy ? "Thank you! A quick App Store review helps others find KEYBO." : "Thanks for being honest. Tell us what to fix, and we'll get on it.";
-      storeBtn.hidden = !happy;
-      mailBtn.className = "btn review-mail " + (happy ? "btn-line" : "btn-lime");
-      mailBtn.textContent = happy ? "Email us" : "Tell us what to fix";
-      mailBtn.href = "mailto:hellokeybo@gmail.com?subject=" + encodeURIComponent(`KEYBO feedback: ${v}/5`) + "&body=" + encodeURIComponent(happy ? "What do you love most about KEYBO?\n\n" : "What would make KEYBO better for you?\n\n");
+      rating = +b.dataset.v;
+      stars.forEach(o => { o.classList.toggle("on", +o.dataset.v <= rating); o.setAttribute("aria-checked", String(+o.dataset.v === rating)); });
+      msg.classList.remove("ok");
+      msg.textContent = rating >= 4 ? "Thank you! Tell us a little more below." : "Thanks for being honest. What should we fix?";
     });
     b.addEventListener("mouseenter", () => stars.forEach(o => o.classList.toggle("hover", +o.dataset.v <= +b.dataset.v)));
     b.addEventListener("mouseleave", () => stars.forEach(o => o.classList.remove("hover")));
   });
+  if (form) form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    if (data.website) return;                          // a bot filled the hidden field
+    if (!rating) { msg.textContent = "Tap a star first."; return; }
+    if (!data.name.trim() || data.text.trim().length < 4) { msg.textContent = "Add your name and a few words."; return; }
+    const review = { rating, name: data.name.trim(), place: data.place.trim(), text: data.text.trim(), lang: navigator.language || "" };
+    let sent = false;
+    if (REVIEWS_API) {
+      try {
+        const r = await fetch(REVIEWS_API + "/reviews", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(review) });
+        sent = r.ok;
+      } catch (err) {}
+    }
+    if (!sent) {
+      const body = `Rating: ${rating}/5\nName: ${review.name}\nFrom: ${review.place}\n\n${review.text}\n`;
+      location.href = "mailto:hellokeybo@gmail.com?subject=" + encodeURIComponent(`KEYBO review: ${rating}/5`) + "&body=" + encodeURIComponent(body);
+    }
+    msg.classList.add("ok");
+    msg.textContent = sent ? "Thank you! Your review will appear once it's checked." : "Thanks! Your email app has it ready to send.";
+    storeBtn.hidden = rating < 4;
+    form.reset(); rating = 0; stars.forEach(o => o.classList.remove("on"));
+  });
+
+  // KEYBO, out for a walk, in the Animation session's Blender sprites.
+  // States: walk-r / walk-l (looping strips, moving along the floor),
+  // idle and look (the front, with the eye layer following the cursor),
+  // wobble (one poke), fall then down then getup (third poke), and dizzy
+  // then down then getup (a fast double tap on the head). Every strip
+  // starts and ends on the front or the lying frame, so they chain cleanly.
+  // Strip lengths at 24 fps: wobble 10, fall 14, getup 14, dizzy 20.
+  const walker = $(".walker");
+  if (walker) {
+    const floor = walker.parentElement, say = $(".walker-say", walker);
+    const MS = { wobble: 417, fall: 583, down: 1100, getup: 583, dizzy: 833 };
+    const SPEED = 0.05;          // px per ms; tuned to the stride once it is known
+    let x = 40, dir = 1, state = "", until = 0, on = false, last = 0;
+    let mouse = null, pokes = 0, pokeTimer = 0, headTap = 0, sayTimer = 0;
+    const W = () => floor.clientWidth - walker.offsetWidth;
+    const set = (st, ms) => {
+      if (st === state) return;
+      state = st; until = performance.now() + (ms || 0);
+      walker.className = "walker " + st;
+    };
+    const walk = () => set(dir > 0 ? "walk-r" : "walk-l");
+    const speak = text => {
+      say.textContent = text; say.classList.add("show");
+      clearTimeout(sayTimer); sayTimer = setTimeout(() => say.classList.remove("show"), 1300);
+    };
+    const eyes = (dx, dy) => {
+      const k = walker.offsetWidth / 320;            // the eye layer may move 7 x 4 px in a 320 cell
+      walker.style.setProperty("--ex", (Math.max(-1, Math.min(1, dx)) * 7 * k).toFixed(2) + "px");
+      walker.style.setProperty("--ey", (Math.max(-1, Math.min(1, dy)) * 4 * k).toFixed(2) + "px");
+    };
+    const centre = () => {
+      const r = floor.getBoundingClientRect();
+      return { cx: r.left + x + walker.offsetWidth / 2, cy: r.bottom - walker.offsetWidth * 0.55, top: r.top };
+    };
+    const frame = now => {
+      if (!on) return;
+      const dt = Math.min(50, now - (last || now)); last = now;
+      const once = ["wobble", "fall", "down", "getup", "dizzy"].includes(state);
+      if (once) {
+        if (now >= until) {
+          if (state === "fall" || state === "dizzy") { set("down", MS.down); walker.classList.add("landed"); }
+          else if (state === "down") { set("getup", MS.getup); speak("I'm okay!"); }
+          else set("idle", 350);
+        }
+      } else {
+        const c = centre();
+        const near = mouse && Math.abs(mouse.x - c.cx) < 240 && mouse.y > c.top - 260 && mouse.y < c.top + 260;
+        if (near) {
+          if (state !== "look") { set("look"); if (Math.random() < .5) speak(["Hi!", "Oh, hello", "👀"][(Math.random() * 3) | 0]); }
+          eyes((mouse.x - c.cx) / 160, (mouse.y - c.cy) / 160);
+        } else if (state === "look" || (state === "idle" && now >= until)) {
+          eyes(0, 0); walk();
+        } else if (state === "walk-r" || state === "walk-l") {
+          x += dir * dt * SPEED;
+          if (x <= 0 || x >= W()) { x = Math.max(0, Math.min(W(), x)); dir = -dir; set("idle", 700 + Math.random() * 1200); }
+          else if (Math.random() < 0.0012) set("idle", 900 + Math.random() * 1600);
+        } else if (!state) walk();
+      }
+      walker.style.setProperty("--x", x.toFixed(1) + "px");
+      requestAnimationFrame(frame);
+    };
+    const poke = e => {
+      if (["fall", "down", "getup", "dizzy"].includes(state)) return;
+      const r = walker.getBoundingClientRect();
+      const head = e.clientY && e.clientY < r.top + r.height * 0.5;
+      const now = performance.now();
+      if (head && now - headTap < 350) { headTap = 0; pokes = 0; speak("Wheee…"); set("dizzy", MS.dizzy); return; }
+      if (head) headTap = now;
+      pokes++;
+      clearTimeout(pokeTimer); pokeTimer = setTimeout(() => { pokes = 0; }, 900);
+      if (pokes >= 3) { pokes = 0; speak("Whoa!"); set("fall", MS.fall); }
+      else { speak(pokes === 1 ? "Hey!" : "Hey, stop it 😄"); state = ""; set("wobble", MS.wobble); }
+    };
+    walker.addEventListener("click", poke);
+    walker.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); poke({}); } });
+    addEventListener("pointermove", e => { mouse = { x: e.clientX, y: e.clientY }; }, { passive: true });
+    document.documentElement.addEventListener("pointerleave", () => { mouse = null; });
+    // Fetch the one-off strips ahead of the first poke, once KEYBO is near.
+    const preload = () => ["wobble", "fall", "getup", "dizzy"].forEach(n => { const i = new Image(); i.src = `assets/keybo/walker/${n}-strip.png`; });
+    let preloaded = false;
+    if (reduce) { walker.className = "walker idle"; }
+    else new IntersectionObserver(([e]) => {
+      on = e.isIntersecting; last = 0;
+      if (on) { if (!preloaded) { preloaded = true; preload(); } requestAnimationFrame(frame); }
+    }, { rootMargin: "200px 0px" }).observe(walker.closest(".walkway"));
+  }
 
   $("#year").textContent = new Date().getFullYear();
 })();
