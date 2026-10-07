@@ -448,18 +448,22 @@
       const r = floor.getBoundingClientRect();
       return { cx: r.left + x + walker.offsetWidth / 2, cy: r.bottom - walker.offsetWidth * 0.55, top: r.top };
     };
-    // Close enough to stop and watch the cursor; and, along its own strip
-    // of floor, far enough that it walks over to it.
+    // The region: a circle round KEYBO. Inside it, KEYBO stops and turns
+    // to watch the cursor; the moment the cursor leaves, it walks on.
+    const R = () => walker.offsetWidth * 1.7;
     const nearCursor = () => {
       if (!mouse) return false;
       const c = centre();
-      return Math.abs(mouse.x - c.cx) < 120 * walker.offsetWidth / 160 && mouse.y > c.top - 260 && mouse.y < c.top + 260;
+      return Math.hypot(mouse.x - c.cx, mouse.y - c.cy) < R();
     };
-    const cursorAhead = () => {
-      if (!mouse || nearCursor()) return 0;
-      const c = centre();
-      if (mouse.y < c.top - 200 || mouse.y > c.top + 230) return 0;
-      return Math.sign(mouse.x - c.cx);
+    // Turning to look: the whole KEYBO turns (yaw) and tilts (pitch) toward
+    // the cursor, eased like a spring. Until the Animation session's look
+    // grid arrives this turns the front render in 3D; the eyes follow too.
+    let yaw = 0, pitch = 0;
+    const aim = (ty, tp) => {
+      yaw += (ty - yaw) * 0.16; pitch += (tp - pitch) * 0.16;
+      walker.style.setProperty("--yaw", yaw.toFixed(2) + "deg");
+      walker.style.setProperty("--pitch", pitch.toFixed(2) + "deg");
     };
     const frame = now => {
       if (!on) return;
@@ -474,9 +478,7 @@
           stop(() => { dir = -dir; set("idle", 600 + Math.random() * 900); });
         } else if (state.startsWith("walk") && nearCursor()) {
           stop(() => set("look"));
-        } else if (state.startsWith("walk") && cursorAhead() === -dir) {
-          stop(() => { dir = -dir; walkOn(); });          // the cursor is behind: turn round and go to it
-        } else if (state.startsWith("walk") && !cursorAhead() && Math.random() < 0.0012) {
+        } else if (state.startsWith("walk") && Math.random() < 0.0012) {
           stop(() => set("idle", 1000 + Math.random() * 1600));
         }
         // a stop waits for the step to finish: walk frame 0 is where the turn begins
@@ -489,12 +491,15 @@
         else if (state === "getup" || state === "wobble") set("idle", 400);
         else if (state.startsWith("turn")) { const f = after; after = null; f ? f() : set("idle", 800); }
         else if (state.startsWith("unturn")) set("walk-" + side());
-        else if (state === "idle") { if (nearCursor()) set("look"); else { if (cursorAhead()) dir = cursorAhead(); walkOn(); } }
-        else if (state === "look" && !nearCursor()) { eyes(0, 0); if (cursorAhead()) dir = cursorAhead(); walkOn(); }
+        else if (state === "idle") { if (nearCursor()) set("look"); else walkOn(); }
+        else if (state === "look" && !nearCursor()) { eyes(0, 0); yaw = pitch = 0; aim(0, 0); walkOn(); }
       }
       if (state === "look" && mouse) {
-        const c = centre();
-        eyes((mouse.x - c.cx) / 160, (mouse.y - c.cy) / 160);
+        const c = centre(), r = R();
+        const dx = Math.max(-1, Math.min(1, (mouse.x - c.cx) / r));
+        const dy = Math.max(-1, Math.min(1, (mouse.y - c.cy) / r));
+        aim(dx * 34, -dy * 18);                        // turn toward it, tilt up or down
+        eyes(dx * 1.4, dy * 1.4);
         if (Math.random() < 0.004) speak(["Hi!", "Oh, hello", "👀"][(Math.random() * 3) | 0]);
       }
       if (!state) set("walk-" + side());

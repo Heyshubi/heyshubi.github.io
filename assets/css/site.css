@@ -644,6 +644,8 @@ p { margin: 0; }
 .walker:focus-visible .walker-body { outline: 3px solid var(--lime-600); outline-offset: -10px; border-radius: 30px; }
 .walker-body, .w-front, .w-strip { position: absolute; inset: 0; }
 .w-front img { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; user-select: none; }
+/* looking: the whole front turns and tilts toward the cursor (site.js eases --yaw/--pitch) */
+.w-front { transform: perspective(520px) rotateY(var(--yaw, 0deg)) rotateX(var(--pitch, 0deg)); transform-origin: 50% 70%; }
 .w-eyes { transform: translate(var(--ex, 0px), var(--ey, 0px)); transition: transform .12s ease-out; }
 .w-strip { display: none; background-repeat: no-repeat; background-size: calc(var(--n) * 100%) 100%; }
 .walker-shadow { position: absolute; left: 26%; right: 26%; bottom: calc(var(--s) * 43 / 320 - 5px); height: 10px; border-radius: 50%; background: radial-gradient(closest-side, rgba(20, 23, 8, .22), transparent); }
