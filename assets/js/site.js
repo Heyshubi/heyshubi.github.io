@@ -577,7 +577,7 @@
     // Real-time 3D KEYBO (assets/js/keybo3d.js, three.js, the Blender rig):
     // loaded only when the walkway is near and only if the model is there
     // and WebGL works. Then it takes over and the sprite walker retires.
-    const floorEl = walker.closest(".walk-floor"), MODEL = "assets/keybo/3d/keybo.glb";
+    const floorEl = walker.closest(".walk-floor"), MODEL = "assets/keybo/3d/keybo.glb?v=keybo2";
     const webgl = (() => { try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; } })();
     if (webgl && location.protocol !== "file:") {
       // Fetch it quietly once the page has loaded and gone idle, so KEYBO is
