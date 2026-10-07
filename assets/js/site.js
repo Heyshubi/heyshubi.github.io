@@ -209,8 +209,8 @@
       v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true;
       v.setAttribute("aria-hidden", "true");
       v.width = small ? 540 : 1080; v.height = v.width;
-      v.innerHTML = `<source src="assets/keybo/hero-loop${suffix}.mov" type='video/mp4; codecs="hvc1"'>` +
-                    `<source src="assets/keybo/hero-loop${suffix}.webm" type="video/webm">`;
+      v.innerHTML = `<source src="assets/keybo/hero-loop${suffix}.mov?v=keybo3" type='video/mp4; codecs="hvc1"'>` +
+                    `<source src="assets/keybo/hero-loop${suffix}.webm?v=keybo3" type="video/webm">`;
       v.addEventListener("playing", () => {
         const still = art.querySelector("img");
         if (still) still.style.visibility = "hidden";
