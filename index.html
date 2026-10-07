@@ -91,9 +91,9 @@
       <span class="wordmark">KEYBO</span>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="#features">Features</a></li>
-      <li><a href="#how">How it works</a></li>
       <li><a href="#privacy">Privacy</a></li>
+      <li><a href="#features">AI features</a></li>
+      <li><a href="#how">How it works</a></li>
       <li><a href="#pricing">Pricing</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
@@ -108,15 +108,17 @@
   </nav>
 </header>
 
+<nav class="rail" aria-label="Sections"></nav>
+
 <main id="top">
 
 <!-- Hero -->
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="pill"><i></i>AI keyboard for iPhone, iPad &amp; Android</span>
-      <h1>The keyboard that writes with you.</h1>
-      <p class="lede">Reply to any message, change its tone, fix your grammar or translate it into 35 languages, in one tap, right inside the app you're typing in.</p>
+      <span class="pill"><i></i>Private AI keyboard for iPhone, iPad &amp; Android</span>
+      <h1>Write better.<br>Stay private.</h1>
+      <p class="lede">KEYBO replies, fixes, rewrites and translates in one tap, right inside the app you're typing in. And your text leaves your phone only when you tap.</p>
       <div class="stores">
         <a class="store" data-appstore href="https://apps.apple.com/app/id6816461506" rel="noopener" aria-label="Download on the App Store">
           <svg><use href="#logo-apple"/></svg><span><small>Download on the</small><b>App Store</b></span>
@@ -127,9 +129,9 @@
       </div>
       <p class="store-note" data-release-note><b>iPhone &amp; iPad:</b> out 18 October &nbsp;·&nbsp; <b>Android:</b> coming soon</p>
       <div class="hero-ticks">
-        <span><svg class="icon"><use href="#i-tick"/></svg>Free to start</span>
-        <span><svg class="icon"><use href="#i-tick"/></svg>Works in every app</span>
         <span><svg class="icon"><use href="#i-tick"/></svg>Private by design</span>
+        <span><svg class="icon"><use href="#i-tick"/></svg>Works in every app</span>
+        <span><svg class="icon"><use href="#i-tick"/></svg>Free to start</span>
       </div>
     </div>
     <div class="hero-art" id="hero-art">
@@ -138,130 +140,203 @@
   </div>
 </section>
 
-<!-- Features -->
-<section class="section sheet" id="features">
+<!-- Privacy: the main promise -->
+<section class="section sheet" id="privacy" data-rail="Privacy">
+  <div class="wrap">
+    <div class="privacy-panel reveal">
+      <div class="shield" aria-hidden="true">
+        <svg viewBox="0 0 200 220">
+          <path d="M100 8 178 37v68c0 53-33 90-78 108C55 195 22 158 22 105V37z" fill="#141708"/>
+          <path d="M100 30 158 52v53c0 41-24 70-58 85-34-15-58-44-58-85V52z" fill="none" stroke="#CCFA00" stroke-opacity=".28" stroke-width="3"/>
+          <path d="M82 101V87a18 18 0 0 1 36 0v14" fill="none" stroke="#CCFA00" stroke-width="10" stroke-linecap="round"/>
+          <rect x="68" y="99" width="64" height="52" rx="12" fill="#CCFA00"/>
+          <circle cx="100" cy="121" r="7" fill="#141708"/>
+          <rect x="96.5" y="123" width="7" height="15" rx="3.5" fill="#141708"/>
+        </svg>
+      </div>
+      <div>
+        <span class="kicker">Privacy first</span>
+        <h2>Your words stay yours.</h2>
+        <p class="intro">A keyboard sees everything you type, so KEYBO is built to look away. Nothing leaves your phone until you ask for it.</p>
+        <div class="promises">
+          <article class="promise"><svg class="icon"><use href="#i-tap"/></svg><h3>Sent only when you tap</h3><p>Text leaves your phone only when you tap an AI button, over an encrypted connection. Never while you type.</p></article>
+          <article class="promise"><svg class="icon"><use href="#i-cloudoff"/></svg><h3>Not stored, never sold</h3><p>Your text is used to write the answer, then it's gone. No keystroke logging.</p></article>
+          <article class="promise"><svg class="icon"><use href="#i-lock"/></svg><h3>Passwords stay sealed</h3><p>Nothing typed in a password field is ever read or sent.</p></article>
+          <article class="promise"><svg class="icon"><use href="#i-phone"/></svg><h3>Learning stays on your phone</h3><p>Suggestions and the words KEYBO learns stay on your device. Erase them anytime.</p></article>
+        </div>
+        <p class="more">The keys work without Full Access; only the AI buttons need it. <a href="https://heyshubi.github.io/privacy/ios/">Read the privacy policy →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AI features: cards that stack as you scroll -->
+<section class="section stack-section" id="features" data-rail="AI features">
   <div class="wrap">
     <div class="head reveal">
-      <span class="kicker">What KEYBO does</span>
+      <span class="kicker">AI features</span>
       <h2>Everything you write, <span class="hl">better in one tap</span>.</h2>
       <p>A row of AI buttons sits right above your keys. No copying into another app, no switching back.</p>
     </div>
-    <div class="features">
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-reply"/></svg></div><h3>Smart Reply</h3><p>Copy the message you got, tap Reply, and pick a short, medium or long answer, ready to send.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-wand"/></svg></div><h3>15 tones</h3><p>Friendly, Professional, Polite, Funny, Confident, Romantic and more, with three versions to pick from.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-own"/></svg></div><h3>Your own tones</h3><p>Name a tone, describe how it should sound, and it becomes a button on your keyboard.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-check"/></svg></div><h3>Fix grammar</h3><p>Spelling, grammar and punctuation corrected in one tap. Your words stay yours.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-sparkles"/></svg></div><h3>Rewrite</h3><p>Clearer, smoother, more confident. Get three versions and keep the one that sounds like you.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-globe"/></svg></div><h3>Translate</h3><p>Into 35 languages, the whole message or only the part you select.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-chat"/></svg></div><h3>Hinglish</h3><p>Turn any message into natural, everyday Hinglish, the way you'd actually text it.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-pin"/></svg></div><h3>Sticky tones <span class="tag">Premium</span></h3><p>Pin Professional or Friendly and every reply keeps that tone until you change it.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-undo"/></svg></div><h3>Undo &amp; redo</h3><p>Didn't like the change? Take back up to ten AI edits, and bring them back again.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-wave"/></svg></div><h3>Voice notes to text</h3><p>Share a voice note to KEYBO and it's transcribed on your phone. The audio never leaves it.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-toolbar"/></svg></div><h3>Your AI toolbar</h3><p>Put the AI buttons you use most first, and your favourite tone always one tap away.</p></article>
-      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-apps"/></svg></div><h3>Works in every app</h3><p>Chats, email, notes, social: anywhere there's a text box, KEYBO is there.</p></article>
-    </div>
-  </div>
-</section>
 
-<!-- Demos -->
-<section class="section alt" id="demos">
-  <div class="wrap">
-    <div class="split">
-      <div class="copy reveal">
-        <span class="kicker">Smart Reply</span>
-        <h2>The right answer, <span class="hl">in one tap</span>.</h2>
-        <p>Got a message and don't know what to say? Copy it, tap <b>Reply</b>, and KEYBO writes answers for you to pick from.</p>
-        <ul class="ticks">
-          <li><b>Short, medium or long:</b> a quick "on my way" or a proper answer.</li>
-          <li><b>In your tone:</b> friendly for friends, professional for work.</li>
-          <li><b>Tap and it's in:</b> the reply lands in your message box, ready to send.</li>
-        </ul>
-      </div>
-      <div class="card demo reveal" id="reply-demo">
-        <div class="demo-top"><span class="av">R</span><span><b>Riya</b>Message you copied</span></div>
-        <div class="thread" id="reply-thread"><div class="bubble in">Are you coming tonight? Everyone's asking about you 🎉</div></div>
-        <div class="strip" aria-hidden="true"><span class="chip on static">Reply</span><span class="chip static">Friendly ▾</span><span class="chip static">Fix</span><span class="chip static">Rewrite</span><span class="chip static">Translate</span></div>
-        <div class="replies">
-          <button class="reply" type="button"><small>Short</small>Yes! See you there 🎉</button>
-          <button class="reply" type="button"><small>Medium</small>Yes, I'll be there! Running a little late, see you by 9.</button>
-          <button class="reply" type="button"><small>Long <span class="tag">Premium</span></small>Yes, I'm coming! I'm stuck at work a bit longer, so I'll be there by 9. Save me a seat, and tell everyone I said hi!</button>
+    <div class="stack">
+      <article class="stack-card" style="--i:0" data-video="reply">
+        <div class="copy">
+          <span class="num">01 · Smart Reply</span>
+          <h3>Copy a message. Get the perfect reply.</h3>
+          <p class="desc">Don't know what to say? Copy what you got, tap Reply, and pick an answer.</p>
+          <ul class="ticks">
+            <li><b>Short, medium or long</b>: a quick "on my way" or a proper answer</li>
+            <li><b>In your tone</b>: friendly for friends, professional for work</li>
+            <li><b>One tap</b> puts it in your message box</li>
+          </ul>
         </div>
-        <p class="note">Tap a reply to send it. Examples only; KEYBO writes fresh ones for every message.</p>
-      </div>
-    </div>
-
-    <div class="split flip">
-      <div class="copy reveal">
-        <span class="kicker">Tones</span>
-        <h2>Same message. <span class="hl">The right tone.</span></h2>
-        <p>Too blunt for your boss, too stiff for your friends? Type it once and let KEYBO say it the way it should sound.</p>
-        <ul class="ticks">
-          <li><b>15 tones</b>, from Friendly and Professional to Funny and Romantic.</li>
-          <li><b>Three versions</b> every time; keep the one you like.</li>
-          <li><b>Make your own:</b> describe a tone, like "calm and to the point", and it's yours.</li>
-        </ul>
-      </div>
-      <div class="card demo reveal" id="tone-demo">
-        <div class="demo-top"><span class="av">✍️</span><span><b>Your message</b>Tap a tone</span></div>
-        <div class="field" id="tone-field" aria-live="polite">hey can we move the meeting to tomorrow, something came up</div>
-        <div class="chips" role="group" aria-label="Tones">
-          <button class="chip on" type="button" data-tone="original">Original</button>
-          <button class="chip" type="button" data-tone="friendly">😊 Friendly</button>
-          <button class="chip" type="button" data-tone="professional">💼 Professional</button>
-          <button class="chip" type="button" data-tone="polite">🙏 Polite</button>
-          <button class="chip" type="button" data-tone="hinglish">Hinglish</button>
-          <button class="chip" type="button" data-tone="funny">😄 Funny</button>
-          <button class="chip" type="button" data-tone="concise">✂️ Concise</button>
+        <div class="visual">
+          <div class="demo" id="reply-demo">
+            <div class="demo-top"><span class="av">R</span><span><b>Riya</b>Message you copied</span></div>
+            <div class="thread" id="reply-thread"><div class="bubble in">Are you coming tonight? Everyone's asking about you 🎉</div></div>
+            <div class="strip" aria-hidden="true"><span class="chip on static">Reply</span><span class="chip static">Friendly ▾</span><span class="chip static">Fix</span><span class="chip static">Rewrite</span><span class="chip static">Translate</span></div>
+            <div class="replies">
+              <button class="reply" type="button"><small>Short</small>Yes! See you there 🎉</button>
+              <button class="reply" type="button"><small>Medium</small>Yes, I'll be there! Running a little late, see you by 9.</button>
+              <button class="reply" type="button"><small>Long <span class="tag">Premium</span></small>Yes, I'm coming! Stuck at work a bit longer, so I'll be there by 9. Save me a seat!</button>
+            </div>
+          </div>
         </div>
-        <p class="note">Examples of what each tone does.</p>
-      </div>
-    </div>
+      </article>
 
-    <div class="split">
-      <div class="copy reveal">
-        <span class="kicker">Translate</span>
-        <h2>Write in yours. <span class="hl">Send in theirs.</span></h2>
-        <p>Translate a message into any of 35 languages without leaving the chat. Select a few words to translate only those.</p>
-        <ul class="ticks">
-          <li><b>35 languages</b>, including Hindi, Bengali, Spanish, Arabic and Japanese.</li>
-          <li><b>Whole message or a selection</b>, straight from the keyboard.</li>
-          <li><b>Undo</b> brings your original back in a tap.</li>
-        </ul>
-      </div>
-      <div class="card demo reveal" id="translate-demo">
-        <div class="demo-top"><span class="av">🌍</span><span><b>See you tomorrow!</b>Pick a language</span></div>
-        <div class="chips" role="group" aria-label="Languages">
-          <button class="chip on" type="button" data-t="कल मिलते हैं!">Hindi</button>
-          <button class="chip" type="button" data-t="¡Nos vemos mañana!">Spanish</button>
-          <button class="chip" type="button" data-t="À demain !">French</button>
-          <button class="chip" type="button" data-t="また明日！">Japanese</button>
-          <button class="chip" type="button" data-t="কাল দেখা হবে!">Bengali</button>
-          <button class="chip" type="button" data-t="أراك غدًا!">Arabic</button>
+      <article class="stack-card" style="--i:1" data-video="tones">
+        <div class="copy">
+          <span class="num">02 · Tones</span>
+          <h3>Same message. The right tone.</h3>
+          <p class="desc">Type it once and let KEYBO say it the way it should sound.</p>
+          <ul class="ticks">
+            <li><b>15 tones</b>, from Friendly and Professional to Funny and Romantic</li>
+            <li><b>Your own tones</b>: describe one, like "calm and to the point"</li>
+            <li><b>Sticky tones</b> keep every reply in your tone (Premium)</li>
+          </ul>
         </div>
-        <div class="label">Translation</div>
-        <div class="out-line" id="translation" aria-live="polite">कल मिलते हैं!</div>
-      </div>
-    </div>
-  </div>
-</section>
+        <div class="visual">
+          <div class="demo" id="tone-demo">
+            <div class="demo-top"><span class="av">✍️</span><span><b>Your message</b>Tap a tone</span></div>
+            <div class="field" id="tone-field" aria-live="polite">hey can we move the meeting to tomorrow, something came up</div>
+            <div class="chips" role="group" aria-label="Tones">
+              <button class="chip on" type="button" data-tone="original">Original</button>
+              <button class="chip" type="button" data-tone="friendly">😊 Friendly</button>
+              <button class="chip" type="button" data-tone="professional">💼 Professional</button>
+              <button class="chip" type="button" data-tone="funny">😄 Funny</button>
+              <button class="chip" type="button" data-tone="custom">⭐ Calm &amp; clear <span class="tag">Your own</span></button>
+            </div>
+          </div>
+        </div>
+      </article>
 
-<!-- Screens -->
-<section class="section" id="screens">
-  <div class="wrap">
-    <div class="head reveal">
-      <span class="kicker">In the app</span>
-      <h2>Built into your keyboard. <span class="hl">Not another app.</span></h2>
-    </div>
-    <div class="shots">
-      <div class="shot reveal"><img src="assets/screens/iphone-1-replies.jpg" alt="KEYBO writing a reply on iPhone" loading="lazy" decoding="async" width="506" height="1100"></div>
-      <div class="shot reveal"><img src="assets/screens/iphone-2-tones.jpg" alt="KEYBO's tones with three versions of a message" loading="lazy" decoding="async" width="506" height="1100"></div>
-      <div class="shot reveal"><img src="assets/screens/iphone-3-hinglish.jpg" alt="Hinglish with KEYBO" loading="lazy" decoding="async" width="506" height="1100"></div>
+      <article class="stack-card" style="--i:2" data-video="fix-rewrite">
+        <div class="copy">
+          <span class="num">03 · Fix &amp; Rewrite</span>
+          <h3>Clean, confident writing in a tap.</h3>
+          <p class="desc">Typos, grammar and clumsy sentences, sorted before you hit send.</p>
+          <ul class="ticks">
+            <li><b>Fix</b> corrects spelling, grammar and punctuation, keeping your words</li>
+            <li><b>Rewrite</b> gives three clearer versions to choose from</li>
+            <li><b>Undo and redo</b> up to ten AI edits</li>
+          </ul>
+        </div>
+        <div class="visual">
+          <div class="demo" id="fix-demo">
+            <div class="demo-top"><span class="av">✓</span><span><b>Your message</b>Tap Fix or Rewrite</span></div>
+            <div class="field" id="fix-field" aria-live="polite">i realy wanna se u tmrw, its been to long since we talk</div>
+            <div class="chips" role="group" aria-label="Fix or Rewrite">
+              <button class="chip on" type="button" data-fix="original">Original</button>
+              <button class="chip" type="button" data-fix="fix">✓ Fix</button>
+              <button class="chip" type="button" data-fix="rewrite">✨ Rewrite</button>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="stack-card" style="--i:3" data-video="translate">
+        <div class="copy">
+          <span class="num">04 · Translate &amp; Hinglish</span>
+          <h3>Write in yours. Send in theirs.</h3>
+          <p class="desc">Translate into 35 languages without leaving the chat, or turn any message into natural Hinglish.</p>
+          <ul class="ticks">
+            <li><b>35 languages</b>, including Hindi, Bengali, Spanish, Arabic and Japanese</li>
+            <li><b>The whole message or a selection</b>, straight from the keyboard</li>
+            <li><b>Hinglish</b> the way you'd actually text it</li>
+          </ul>
+        </div>
+        <div class="visual">
+          <div class="demo" id="translate-demo">
+            <div class="demo-top"><span class="av">🌍</span><span><b>See you tomorrow!</b>Pick a language</span></div>
+            <div class="chips" role="group" aria-label="Languages">
+              <button class="chip on" type="button" data-t="कल मिलते हैं!">Hindi</button>
+              <button class="chip" type="button" data-t="Kal milte hain! 👋">Hinglish</button>
+              <button class="chip" type="button" data-t="¡Nos vemos mañana!">Spanish</button>
+              <button class="chip" type="button" data-t="À demain !">French</button>
+              <button class="chip" type="button" data-t="また明日！">Japanese</button>
+              <button class="chip" type="button" data-t="أراك غدًا!">Arabic</button>
+            </div>
+            <div class="label">Result</div>
+            <div class="out-line" id="translation" aria-live="polite">कल मिलते हैं!</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="stack-card" style="--i:4" data-video="voice">
+        <div class="copy">
+          <span class="num">05 · Voice notes</span>
+          <h3>Got a voice note? Read it instead.</h3>
+          <p class="desc">Share a voice note to KEYBO and it turns into text, right on your phone.</p>
+          <ul class="ticks">
+            <li><b>Transcribed on your device</b>; the audio never leaves it</li>
+            <li><b>Reply in a tap</b> once you've read it</li>
+            <li><b>Free</b>, with no daily limit</li>
+          </ul>
+        </div>
+        <div class="visual">
+          <div class="demo">
+            <div class="demo-top"><span class="av">🎙️</span><span><b>Voice note from Aman</b>Shared to KEYBO</span></div>
+            <div class="voice"><span class="play">▶</span><span class="bars" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><span class="dur">0:12</span></div>
+            <div class="label">Text</div>
+            <div class="field">Hey, running about ten minutes late. Start without me, I'll catch up!</div>
+            <p class="note">🔒 Transcribed on this phone</p>
+          </div>
+        </div>
+      </article>
+
+      <article class="stack-card" style="--i:5" data-video="toolbar">
+        <div class="copy">
+          <span class="num">06 · Your AI toolbar</span>
+          <h3>Your AI, your way, in every app.</h3>
+          <p class="desc">Chats, email, notes, social: anywhere there's a text box, KEYBO is there.</p>
+          <ul class="ticks">
+            <li><b>Arrange the AI buttons</b> so the ones you use most come first</li>
+            <li><b>Your favourite tone</b> is always one tap away</li>
+            <li><b>Works everywhere</b> you type</li>
+          </ul>
+        </div>
+        <div class="visual">
+          <div class="demo">
+            <div class="demo-top"><span class="av">⚙️</span><span><b>Your toolbar</b>Drag to reorder</span></div>
+            <div class="order">
+              <div><span class="grip">⋮⋮</span>Reply</div>
+              <div><span class="grip">⋮⋮</span>💼 Professional ▾</div>
+              <div><span class="grip">⋮⋮</span>Fix</div>
+              <div><span class="grip">⋮⋮</span>Rewrite</div>
+              <div><span class="grip">⋮⋮</span>Translate</div>
+            </div>
+            <div class="label">Works in</div>
+            <div class="chips"><span class="chip static">💬 Chats</span><span class="chip static">✉️ Email</span><span class="chip static">📝 Notes</span><span class="chip static">📸 Social</span><span class="chip static">📄 Docs</span></div>
+          </div>
+        </div>
+      </article>
     </div>
   </div>
 </section>
 
 <!-- How it works -->
-<section class="section alt" id="how">
+<section class="section alt" id="how" data-rail="How it works">
   <div class="wrap">
     <div class="head reveal">
       <span class="kicker">How it works</span>
@@ -298,29 +373,8 @@
   </div>
 </section>
 
-<!-- Privacy -->
-<section class="section" id="privacy">
-  <div class="wrap privacy">
-    <img class="privacy-art reveal" src="assets/keybo/pose-privacy-600.png" alt="KEYBO standing guard with a shield" loading="lazy" decoding="async" width="600" height="600">
-    <div>
-      <div class="head reveal">
-        <span class="kicker">Private by design</span>
-        <h2>Your words <span class="hl">stay yours</span>.</h2>
-        <p>A keyboard sees everything you type, so KEYBO is built to look away.</p>
-      </div>
-      <div class="promises">
-        <article class="card promise reveal"><svg class="icon"><use href="#i-tap"/></svg><h3>Sent only when you tap</h3><p>Text leaves your phone only when you tap an AI button, over an encrypted connection. Never while you type.</p></article>
-        <article class="card promise reveal"><svg class="icon"><use href="#i-cloudoff"/></svg><h3>Not stored, never sold</h3><p>Your text is used to write the answer and isn't kept afterwards. No keystroke logging.</p></article>
-        <article class="card promise reveal"><svg class="icon"><use href="#i-lock"/></svg><h3>Passwords stay sealed</h3><p>Nothing typed in a password field is ever read or sent.</p></article>
-        <article class="card promise reveal"><svg class="icon"><use href="#i-phone"/></svg><h3>Learning stays on your phone</h3><p>Words KEYBO learns stay on your device, and you can erase them anytime.</p></article>
-      </div>
-      <p class="more reveal">The keys work without Full Access; only the AI buttons need it. <a href="https://heyshubi.github.io/privacy/ios/">Read the privacy policy</a></p>
-    </div>
-  </div>
-</section>
-
 <!-- Pricing -->
-<section class="section alt" id="pricing">
+<section class="section" id="pricing" data-rail="Pricing">
   <div class="wrap">
     <div class="head reveal">
       <span class="kicker">Pricing</span>
@@ -358,7 +412,7 @@
 </section>
 
 <!-- FAQ -->
-<section class="section" id="faq">
+<section class="section alt" id="faq" data-rail="FAQ">
   <div class="wrap">
     <div class="head reveal">
       <span class="kicker">FAQ</span>
@@ -378,7 +432,7 @@
 </section>
 
 <!-- Download -->
-<section class="section cta" id="download">
+<section class="section cta" id="download" data-rail="Download">
   <div class="wrap">
     <div class="cta-box reveal">
       <h2>Write better in every app.</h2>
