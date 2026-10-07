@@ -586,8 +586,9 @@ p { margin: 0; }
 .stat span { font-size: 15px; color: var(--muted); }
 @media (max-width: 700px) { .stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 28px; } }
 
-/* Reviews: a floating wall of real reviews, four columns drifting at
-   different speeds on a slight 3D tilt (transforms only), then the form. */
+/* Walls: ways to use KEYBO, then (once there are some) real reviews.
+   Four columns drifting at different speeds on a slight 3D tilt
+   (transforms only), then the review form. */
 .review-wall {
   position: relative; height: 560px; margin: 8px 0 64px; overflow: hidden; perspective: 1400px;
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 14%, #000 86%, transparent);
@@ -606,7 +607,10 @@ p { margin: 0; }
 .rcard .who { display: flex; align-items: center; gap: 10px; font-size: 13.5px; color: var(--muted); }
 .rcard .who b { color: var(--text); font-weight: 650; }
 .rcard .av { width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--btn); color: var(--ink); font-weight: 700; font-size: 13px; flex: none; }
-@media (max-width: 900px) { .review-wall { height: 460px; } .review-wall .wall-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); inset: -40px -10%; } .wall-col:nth-child(n+3) { display: none; } }
+.rcard.way p { margin: 12px 0 0; }
+.way-tag { display: inline-block; padding: 5px 11px; border-radius: 999px; background: var(--btn); color: var(--ink); font-family: var(--font-display); font-weight: 600; font-size: 12px; letter-spacing: .02em; }
+.review-head { margin-top: 8px; }
+@media (max-width: 900px) { .review-wall { height: 480px; } .review-wall .wall-inner { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; inset: -40px 4%; } .wall-col { gap: 12px; } .wall-col:nth-child(n+3) { display: none; } .rcard { padding: 15px; border-radius: 16px; } .rcard p { font-size: 13.5px; } .way-tag { font-size: 11px; padding: 4px 9px; } }
 @media (prefers-reduced-motion: reduce) { .wall-col { animation: none; } }
 .wall-tag { position: absolute; right: 16px; bottom: 10px; z-index: 2; padding: 4px 10px; border-radius: 999px; background: var(--ink); color: #CCFA00; font-size: 11px; font-weight: 700; letter-spacing: .04em; }
 

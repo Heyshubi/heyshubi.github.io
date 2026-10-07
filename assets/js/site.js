@@ -369,47 +369,47 @@
     o.observe(el);
   });
 
-  // Reviews. The wall shows real, approved reviews: from the reviews API
-  // once it is live (REVIEWS_API), else from assets/data/reviews.json. The
-  // form posts to the API; until the API is live it opens an email with the
-  // review filled in, so nothing anyone writes is lost.
+  // Walls: columns of cards drifting at different speeds on a slight 3D
+  // tilt. Each column's cards are repeated once so the drift loops.
+  const loopWall = wall => {
+    const cols = $$(".wall-col", wall);
+    const inner = document.createElement("div");
+    inner.className = "wall-inner";
+    cols.forEach((c, k) => {
+      inner.appendChild(c);
+      c.insertAdjacentHTML("beforeend", c.innerHTML);
+      c.style.setProperty("--t", (48 + k * 9) + "s");
+    });
+    wall.appendChild(inner);
+    wall.hidden = false;
+  };
+  const ways = $(".ways-wall");
+  if (ways) loopWall(ways);
+
+  // Reviews. A second wall shows real, approved reviews: from the reviews
+  // API once it is live (REVIEWS_API), else from assets/data/reviews.json.
+  // The form posts to the API; until the API is live it opens an email with
+  // the review filled in, so nothing anyone writes is lost.
   const REVIEWS_API = "";   // e.g. "https://ai-keyboard-backend-production.up.railway.app"
   const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const wall = $(".review-wall");
+  const wall = $("#real-reviews");
   const showWall = list => {
     list = (list || []).filter(r => r && r.text && r.name);
     if (!wall || list.length < 3) return;           // a wall needs a few real ones
     const cols = $$(".wall-col", wall);
-    const inner = document.createElement("div");
-    inner.className = "wall-inner";
-    cols.forEach(c => inner.appendChild(c));
-    wall.appendChild(inner);
     const card = r => `<article class="rcard"><div class="rstars" aria-label="${r.rating || 5} out of 5">${"★".repeat(r.rating || 5)}</div><p>${esc(r.text)}</p><div class="who"><span class="av">${esc(r.name.trim()[0] || "K").toUpperCase()}</span><span><b>${esc(r.name)}</b>${r.place ? " · " + esc(r.place) : ""}</span></div></article>`;
     cols.forEach((c, k) => {
       const mine = list.filter((_, j) => j % cols.length === k);
-      const html = (mine.length ? mine : list).map(card).join("");
-      c.innerHTML = html + html;                      // twice, so the drift loops seamlessly
-      c.style.setProperty("--t", (48 + k * 9) + "s");
+      c.innerHTML = (mine.length ? mine : list).map(card).join("");
     });
-    wall.hidden = false;
+    const head = $(".review-head");
+    if (head) head.hidden = false;
+    loopWall(wall);
   };
-  // On the owner's own machine (the local preview) the wall can show the
-  // sample reviews, marked as a preview. The live site never loads them,
-  // and the publish script never uploads them.
-  const localPreview = location.protocol === "file:" || ["127.0.0.1", "localhost", ""].includes(location.hostname);
   const source = REVIEWS_API ? fetch(REVIEWS_API + "/reviews").then(r => r.json())
     : location.protocol === "file:" ? Promise.resolve({ reviews: [] })
     : fetch("assets/data/reviews.json").then(r => r.json());
-  source.then(d => d.reviews || []).catch(() => []).then(real => {
-    if (real.length >= 3 || !localPreview) return showWall(real);
-    return new Promise(done => {
-      const sc = document.createElement("script");
-      sc.src = "assets/data/reviews-sample.js";
-      sc.onload = () => { showWall((window.KEYBO_SAMPLE_REVIEWS || {}).reviews); done(); };
-      sc.onerror = done;
-      document.head.appendChild(sc);
-    });
-  }).catch(() => {});
+  source.then(d => showWall(d.reviews)).catch(() => {});
 
   const form = $("#review-form");
   const stars = $$(".stars button");
