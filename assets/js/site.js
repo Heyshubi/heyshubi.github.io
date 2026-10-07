@@ -369,42 +369,41 @@
     o.observe(el);
   });
 
-  // Walls: columns of cards drifting at different speeds on a slight 3D
-  // tilt. Each column's cards are repeated once so the drift loops.
-  const loopWall = wall => {
-    const cols = $$(".wall-col", wall);
-    const inner = document.createElement("div");
-    inner.className = "wall-inner";
-    cols.forEach((c, k) => {
-      inner.appendChild(c);
-      c.insertAdjacentHTML("beforeend", c.innerHTML);
-      c.style.setProperty("--t", (48 + k * 9) + "s");
+  // Card rows: each row's cards are repeated once (hidden from screen
+  // readers) so the slide loops; the rows pause while off screen.
+  const loopRows = m => {
+    $$(".mq-track", m).forEach((t, k) => {
+      const n = t.children.length;
+      t.insertAdjacentHTML("beforeend", t.innerHTML);
+      [...t.children].slice(n).forEach(c => c.setAttribute("aria-hidden", "true"));
+      t.style.setProperty("--t", (n * 9 + k * 6) + "s");
     });
-    wall.appendChild(inner);
-    wall.hidden = false;
+    m.hidden = false;
+    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => m.classList.toggle("off", !e.isIntersecting)).observe(m);
   };
-  const ways = $(".ways-wall");
-  if (ways) loopWall(ways);
+  const ways = $("#ways");
+  if (ways) loopRows(ways);
 
-  // Reviews. A second wall shows real, approved reviews: from the reviews
-  // API once it is live (REVIEWS_API), else from assets/data/reviews.json.
-  // The form posts to the API; until the API is live it opens an email with
-  // the review filled in, so nothing anyone writes is lost.
+  // Reviews. A second set of rows shows real, approved reviews: from the
+  // reviews API once it is live (REVIEWS_API), else from
+  // assets/data/reviews.json. The form posts to the API; until the API is
+  // live it opens an email with the review filled in, so nothing anyone
+  // writes is lost.
   const REVIEWS_API = "";   // e.g. "https://ai-keyboard-backend-production.up.railway.app"
   const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const wall = $("#real-reviews");
   const showWall = list => {
     list = (list || []).filter(r => r && r.text && r.name);
     if (!wall || list.length < 3) return;           // a wall needs a few real ones
-    const cols = $$(".wall-col", wall);
-    const card = r => `<article class="rcard"><div class="rstars" aria-label="${r.rating || 5} out of 5">${"★".repeat(r.rating || 5)}</div><p>${esc(r.text)}</p><div class="who"><span class="av">${esc(r.name.trim()[0] || "K").toUpperCase()}</span><span><b>${esc(r.name)}</b>${r.place ? " · " + esc(r.place) : ""}</span></div></article>`;
-    cols.forEach((c, k) => {
-      const mine = list.filter((_, j) => j % cols.length === k);
-      c.innerHTML = (mine.length ? mine : list).map(card).join("");
+    const card = r => { const n = Math.max(1, Math.min(5, r.rating || 5)); return `<article class="rcard"><div class="ucard-top"><span class="uicon">${esc(r.name.trim()[0] || "K").toUpperCase()}</span><span><b>${esc(r.name)}</b>${r.place ? `<small>${esc(r.place)}</small>` : ""}</span><span class="rstars" aria-label="${n} out of 5">${"★".repeat(n)}</span></div><p>${esc(r.text)}</p></article>`; };
+    const tracks = $$(".mq-track", wall);
+    tracks.forEach((t, k) => {
+      const mine = list.filter((_, j) => j % tracks.length === k);
+      t.innerHTML = (mine.length ? mine : list).map(card).join("");
     });
     const head = $(".review-head");
     if (head) head.hidden = false;
-    loopWall(wall);
+    loopRows(wall);
   };
   const source = REVIEWS_API ? fetch(REVIEWS_API + "/reviews").then(r => r.json())
     : location.protocol === "file:" ? Promise.resolve({ reviews: [] })
