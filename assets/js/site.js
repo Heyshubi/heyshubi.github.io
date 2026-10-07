@@ -369,41 +369,34 @@
     o.observe(el);
   });
 
-  // Card rows: each row's cards are repeated once (hidden from screen
-  // readers) so the slide loops; the rows pause while off screen.
-  const loopRows = m => {
-    $$(".mq-track", m).forEach((t, k) => {
-      const n = t.children.length;
-      t.insertAdjacentHTML("beforeend", t.innerHTML);
-      [...t.children].slice(n).forEach(c => c.setAttribute("aria-hidden", "true"));
-      t.style.setProperty("--t", (n * 9 + k * 6) + "s");
-    });
-    m.hidden = false;
-    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => m.classList.toggle("off", !e.isIntersecting)).observe(m);
-  };
-  const ways = $("#ways");
-  if (ways) loopRows(ways);
-
-  // Reviews. A second set of rows shows real, approved reviews: from the
-  // reviews API once it is live (REVIEWS_API), else from
-  // assets/data/reviews.json. The form posts to the API; until the API is
-  // live it opens an email with the review filled in, so nothing anyone
-  // writes is lost.
+  // Reviews people post here. The form posts to the reviews API
+  // (REVIEWS_API) as "pending"; the owner approves, edits or deletes them
+  // in /admin/, and approved ones show as cards, newest first. Until the
+  // API is live the cards come from assets/data/reviews.json, and the form
+  // opens an email with the review filled in, so nothing anyone writes is
+  // lost.
   const REVIEWS_API = "";   // e.g. "https://ai-keyboard-backend-production.up.railway.app"
   const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-  const wall = $("#real-reviews");
-  const showWall = list => {
-    list = (list || []).filter(r => r && r.text && r.name);
-    if (!wall || list.length < 3) return;           // a wall needs a few real ones
-    const card = r => { const n = Math.max(1, Math.min(5, r.rating || 5)); return `<article class="rcard"><div class="ucard-top"><span class="uicon">${esc(r.name.trim()[0] || "K").toUpperCase()}</span><span><b>${esc(r.name)}</b>${r.place ? `<small>${esc(r.place)}</small>` : ""}</span><span class="rstars" aria-label="${n} out of 5">${"★".repeat(n)}</span></div><p>${esc(r.text)}</p></article>`; };
-    const tracks = $$(".mq-track", wall);
-    tracks.forEach((t, k) => {
-      const mine = list.filter((_, j) => j % tracks.length === k);
-      t.innerHTML = (mine.length ? mine : list).map(card).join("");
-    });
+  const wall = $("#real-reviews"), SHOW = 9;
+  let approved = [];
+  const when = iso => { const d = new Date(iso || ""); return isNaN(d) ? "" : d.toLocaleDateString(undefined, { month: "short", year: "numeric" }); };
+  const card = (r, mine) => {
+    const n = Math.max(1, Math.min(5, Math.round(r.rating) || 5));
+    const sub = [r.place, when(r.created_at)].filter(Boolean).map(esc).join(" · ");
+    return `<article class="rcard${mine ? " mine" : ""}"><div class="rtop"><span class="rav" aria-hidden="true">${esc(r.name.trim()[0] || "K").toUpperCase()}</span>` +
+      `<span><b>${esc(r.name)}</b>${sub ? `<small>${sub}</small>` : ""}</span><span class="rstars" role="img" aria-label="${n} out of 5 stars">${"★".repeat(n)}${"☆".repeat(5 - n)}</span></div>` +
+      `<p>${esc(r.text)}</p>${mine ? '<span class="rnote">Only you can see this until it\'s approved.</span>' : ""}</article>`;
+  };
+  const showWall = (list, mine) => {
+    approved = (list || []).filter(r => r && r.text && r.name);
+    if (!wall || (!approved.length && !mine)) return;
+    wall.innerHTML = (mine ? card(mine, true) : "") + approved.slice(0, SHOW).map(r => card(r)).join("") +
+      (approved.length > SHOW ? `<button class="btn btn-line reviews-more" type="button">Show all ${approved.length} reviews</button>` : "");
+    const more = $(".reviews-more", wall);
+    if (more) more.addEventListener("click", () => { more.insertAdjacentHTML("beforebegin", approved.slice(SHOW).map(r => card(r)).join("")); more.remove(); });
     const head = $(".review-head");
     if (head) head.hidden = false;
-    loopRows(wall);
+    wall.hidden = false;
   };
   const source = REVIEWS_API ? fetch(REVIEWS_API + "/reviews").then(r => r.json())
     : location.protocol === "file:" ? Promise.resolve({ reviews: [] })
@@ -442,8 +435,9 @@
       const body = `Rating: ${rating}/5\nName: ${review.name}\nFrom: ${review.place}\n\n${review.text}\n`;
       location.href = "mailto:hellokeybo@gmail.com?subject=" + encodeURIComponent(`KEYBO review: ${rating}/5`) + "&body=" + encodeURIComponent(body);
     }
+    if (sent) showWall(approved, review);           // their own card, until it's approved for everyone
     msg.classList.add("ok");
-    msg.textContent = sent ? "Thank you! Your review will appear once it's checked." : "Thanks! Your email app has it ready to send.";
+    msg.textContent = sent ? "Thank you! Your review will appear for everyone once it's checked." : "Thanks! Your email app has it ready to send.";
     storeBtn.hidden = rating < 4;
     form.reset(); rating = 0; stars.forEach(o => o.classList.remove("on"));
   });
