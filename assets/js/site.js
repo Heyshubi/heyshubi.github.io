@@ -198,17 +198,19 @@
   if (featuresSection) new IntersectionObserver(([e]) => rail.classList.toggle("aside", e.isIntersecting && pinned()),
     { rootMargin: "-30% 0px -30% 0px" }).observe(featuresSection);
 
-  // KEYBO's hero loop: large screens only, after load, paused off screen.
-  // Phones keep the still, which is the loop's own first frame.
+  // KEYBO's hero loop, after load, paused off screen: 1080 on large screens,
+  // 540 on phones. The still underneath is the loop's own first frame.
   const art = $("#hero-art");
-  if (art && !reduce && matchMedia("(min-width: 901px)").matches) {
+  if (art && !reduce) {
+    const small = matchMedia("(max-width: 900px)").matches;
+    const suffix = small ? "-540" : "";
     addEventListener("load", () => {
       const v = document.createElement("video");
       v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true;
       v.setAttribute("aria-hidden", "true");
-      v.width = 1080; v.height = 1080;
-      v.innerHTML = '<source src="assets/keybo/hero-loop.mov" type=\'video/mp4; codecs="hvc1"\'>' +
-                    '<source src="assets/keybo/hero-loop.webm" type="video/webm">';
+      v.width = small ? 540 : 1080; v.height = v.width;
+      v.innerHTML = `<source src="assets/keybo/hero-loop${suffix}.mov" type='video/mp4; codecs="hvc1"'>` +
+                    `<source src="assets/keybo/hero-loop${suffix}.webm" type="video/webm">`;
       v.addEventListener("playing", () => {
         const still = art.querySelector("img");
         if (still) still.style.visibility = "hidden";
@@ -410,32 +412,35 @@
   });
 
   // KEYBO, out for a walk, in the Animation session's Blender sprites.
-  // States: walk-r / walk-l (looping strips, moving along the floor),
-  // idle and look (the front, with the eye layer following the cursor),
-  // wobble (one poke), fall then down then getup (third poke), and dizzy
-  // then down then getup (a fast double tap on the head). Every strip
-  // starts and ends on the front or the lying frame, so they chain cleanly.
-  // Strip lengths at 24 fps: wobble 10, fall 14, getup 14, dizzy 20.
+  // It walks at its real stride (43.2 px per 16-frame cycle in a 320 cell,
+  // so the planted foot never slides). To stop, it finishes the step, turns
+  // to face us (8 frames), and stands with its eye layer following the
+  // cursor; to walk on, the turn plays backwards. Pokes: one wobbles it, the
+  // third knocks it over (fall, lie, get up); a fast double tap on the head
+  // spins it dizzy before it falls. Every strip starts and ends on the front
+  // or the lying frame, so they chain cleanly.
   const walker = $(".walker");
   if (walker) {
     const floor = walker.parentElement, say = $(".walker-say", walker);
-    const MS = { wobble: 417, fall: 583, down: 1100, getup: 583, dizzy: 833 };
-    const SPEED = 0.05;          // px per ms; tuned to the stride once it is known
-    let x = 40, dir = 1, state = "", until = 0, on = false, last = 0;
+    const MS = { wobble: 417, fall: 583, down: 1100, getup: 583, dizzy: 833, turn: 333, cycle: 667 };
+    const speed = () => 43.2 / 320 * walker.offsetWidth / MS.cycle;   // px per ms at the shown size
+    let x = 40, dir = 1, state = "", until = 0, on = false, last = 0, walkStart = 0, after = null;
     let mouse = null, pokes = 0, pokeTimer = 0, headTap = 0, sayTimer = 0;
     const W = () => floor.clientWidth - walker.offsetWidth;
     const set = (st, ms) => {
-      if (st === state) return;
       state = st; until = performance.now() + (ms || 0);
       walker.className = "walker " + st;
+      if (st.startsWith("walk")) walkStart = performance.now();
     };
-    const walk = () => set(dir > 0 ? "walk-r" : "walk-l");
+    const side = () => (dir > 0 ? "r" : "l");
+    const walkOn = () => set("unturn-" + side(), MS.turn);          // front -> walking pose, then walk
+    const stop = then => { after = then; set("stopping-" + side()); walker.className = "walker walk-" + side(); };
     const speak = text => {
       say.textContent = text; say.classList.add("show");
       clearTimeout(sayTimer); sayTimer = setTimeout(() => say.classList.remove("show"), 1300);
     };
     const eyes = (dx, dy) => {
-      const k = walker.offsetWidth / 320;            // the eye layer may move 7 x 4 px in a 320 cell
+      const k = walker.offsetWidth / 320;
       walker.style.setProperty("--ex", (Math.max(-1, Math.min(1, dx)) * 7 * k).toFixed(2) + "px");
       walker.style.setProperty("--ey", (Math.max(-1, Math.min(1, dy)) * 4 * k).toFixed(2) + "px");
     };
@@ -443,30 +448,46 @@
       const r = floor.getBoundingClientRect();
       return { cx: r.left + x + walker.offsetWidth / 2, cy: r.bottom - walker.offsetWidth * 0.55, top: r.top };
     };
+    const nearCursor = () => {
+      if (!mouse) return false;
+      const c = centre();
+      return Math.abs(mouse.x - c.cx) < 240 && mouse.y > c.top - 260 && mouse.y < c.top + 260;
+    };
     const frame = now => {
       if (!on) return;
       const dt = Math.min(50, now - (last || now)); last = now;
-      const once = ["wobble", "fall", "down", "getup", "dizzy"].includes(state);
-      if (once) {
-        if (now >= until) {
-          if (state === "fall" || state === "dizzy") { set("down", MS.down); walker.classList.add("landed"); }
-          else if (state === "down") { set("getup", MS.getup); speak("I'm okay!"); }
-          else set("idle", 350);
+      const walking = state === "walk-r" || state === "walk-l" || state.startsWith("stopping");
+      if (walking) {
+        x += dir * dt * speed();
+        // start stopping one step before the edge, so the last step ends on it
+        const edge = 22 / 160 * walker.offsetWidth;
+        x = Math.max(0, Math.min(W(), x));
+        if (state.startsWith("walk") && ((dir < 0 && x <= edge) || (dir > 0 && x >= W() - edge))) {
+          stop(() => { dir = -dir; set("idle", 600 + Math.random() * 900); });
+        } else if (state.startsWith("walk") && nearCursor()) {
+          stop(() => set("look"));
+        } else if (state.startsWith("walk") && Math.random() < 0.0012) {
+          stop(() => set("idle", 1000 + Math.random() * 1600));
         }
-      } else {
-        const c = centre();
-        const near = mouse && Math.abs(mouse.x - c.cx) < 240 && mouse.y > c.top - 260 && mouse.y < c.top + 260;
-        if (near) {
-          if (state !== "look") { set("look"); if (Math.random() < .5) speak(["Hi!", "Oh, hello", "👀"][(Math.random() * 3) | 0]); }
-          eyes((mouse.x - c.cx) / 160, (mouse.y - c.cy) / 160);
-        } else if (state === "look" || (state === "idle" && now >= until)) {
-          eyes(0, 0); walk();
-        } else if (state === "walk-r" || state === "walk-l") {
-          x += dir * dt * SPEED;
-          if (x <= 0 || x >= W()) { x = Math.max(0, Math.min(W(), x)); dir = -dir; set("idle", 700 + Math.random() * 1200); }
-          else if (Math.random() < 0.0012) set("idle", 900 + Math.random() * 1600);
-        } else if (!state) walk();
+        // a stop waits for the step to finish: walk frame 0 is where the turn begins
+        if (state.startsWith("stopping") && (now - walkStart) % MS.cycle < dt + 1 && now - walkStart > 60) {
+          set("turn-" + side(), MS.turn);
+        }
+      } else if (now >= until && state) {
+        if (state === "fall" || state === "dizzy") { set("down", MS.down); walker.classList.add("landed"); }
+        else if (state === "down") { set("getup", MS.getup); speak("I'm okay!"); }
+        else if (state === "getup" || state === "wobble") set("idle", 400);
+        else if (state.startsWith("turn")) { const f = after; after = null; f ? f() : set("idle", 800); }
+        else if (state.startsWith("unturn")) set("walk-" + side());
+        else if (state === "idle") { if (nearCursor()) set("look"); else walkOn(); }
+        else if (state === "look" && !nearCursor()) { eyes(0, 0); walkOn(); }
       }
+      if (state === "look" && mouse) {
+        const c = centre();
+        eyes((mouse.x - c.cx) / 160, (mouse.y - c.cy) / 160);
+        if (Math.random() < 0.004) speak(["Hi!", "Oh, hello", "👀"][(Math.random() * 3) | 0]);
+      }
+      if (!state) set("walk-" + side());
       walker.style.setProperty("--x", x.toFixed(1) + "px");
       requestAnimationFrame(frame);
     };
@@ -475,21 +496,22 @@
       const r = walker.getBoundingClientRect();
       const head = e.clientY && e.clientY < r.top + r.height * 0.5;
       const now = performance.now();
+      eyes(0, 0);
       if (head && now - headTap < 350) { headTap = 0; pokes = 0; speak("Wheee…"); set("dizzy", MS.dizzy); return; }
       if (head) headTap = now;
       pokes++;
       clearTimeout(pokeTimer); pokeTimer = setTimeout(() => { pokes = 0; }, 900);
       if (pokes >= 3) { pokes = 0; speak("Whoa!"); set("fall", MS.fall); }
-      else { speak(pokes === 1 ? "Hey!" : "Hey, stop it 😄"); state = ""; set("wobble", MS.wobble); }
+      else { speak(pokes === 1 ? "Hey!" : "Hey, stop it 😄"); set("wobble", MS.wobble); }
     };
     walker.addEventListener("click", poke);
     walker.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); poke({}); } });
     addEventListener("pointermove", e => { mouse = { x: e.clientX, y: e.clientY }; }, { passive: true });
     document.documentElement.addEventListener("pointerleave", () => { mouse = null; });
-    // Fetch the one-off strips ahead of the first poke, once KEYBO is near.
-    const preload = () => ["wobble", "fall", "getup", "dizzy"].forEach(n => { const i = new Image(); i.src = `assets/keybo/walker/${n}-strip.png`; });
+    const preload = () => ["wobble", "fall", "getup", "dizzy", "turn-from-right", "turn-from-left"]
+      .forEach(n => { const i = new Image(); i.src = `assets/keybo/walker/${n}-strip.png`; });
     let preloaded = false;
-    if (reduce) { walker.className = "walker idle"; }
+    if (reduce) walker.className = "walker idle";
     else new IntersectionObserver(([e]) => {
       on = e.isIntersecting; last = 0;
       if (on) { if (!preloaded) { preloaded = true; preload(); } requestAnimationFrame(frame); }

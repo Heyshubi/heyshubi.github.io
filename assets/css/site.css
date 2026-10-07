@@ -657,9 +657,11 @@ p { margin: 0; }
 
 /* one strip per state */
 .walker.walk-r .w-front, .walker.walk-l .w-front, .walker.wobble .w-front, .walker.fall .w-front,
-.walker.down .w-front, .walker.getup .w-front, .walker.dizzy .w-front { display: none; }
+.walker.down .w-front, .walker.getup .w-front, .walker.dizzy .w-front,
+.walker.turn-r .w-front, .walker.turn-l .w-front, .walker.unturn-r .w-front, .walker.unturn-l .w-front { display: none; }
 .walker.walk-r .w-strip, .walker.walk-l .w-strip, .walker.wobble .w-strip, .walker.fall .w-strip,
-.walker.down .w-strip, .walker.getup .w-strip, .walker.dizzy .w-strip { display: block; }
+.walker.down .w-strip, .walker.getup .w-strip, .walker.dizzy .w-strip,
+.walker.turn-r .w-strip, .walker.turn-l .w-strip, .walker.unturn-r .w-strip, .walker.unturn-l .w-strip { display: block; }
 .walker.walk-r .w-strip { --n: 16; background-image: url("../keybo/walker/walk-strip.png"); animation: sprite .667s steps(15, jump-none) infinite; }
 .walker.walk-l .w-strip { --n: 16; background-image: url("../keybo/walker/walk-left-strip.png"); animation: sprite .667s steps(15, jump-none) infinite; }
 .walker.wobble .w-strip { --n: 10; background-image: url("../keybo/walker/wobble-strip.png"); animation: sprite .417s steps(9, jump-none) forwards; }
@@ -667,6 +669,10 @@ p { margin: 0; }
 .walker.down .w-strip { --n: 14; background-image: url("../keybo/walker/fall-strip.png"); background-position-x: 100%; }
 .walker.getup .w-strip { --n: 14; background-image: url("../keybo/walker/getup-strip.png"); animation: sprite .583s steps(13, jump-none) forwards; }
 .walker.dizzy .w-strip { --n: 20; background-image: url("../keybo/walker/dizzy-strip.png"); animation: sprite .833s steps(19, jump-none) forwards; }
+/* turning to face us when it stops, and back again to walk on (8 frames) */
+.walker.turn-r .w-strip, .walker.unturn-r .w-strip { --n: 8; background-image: url("../keybo/walker/turn-from-right-strip.png"); animation: sprite .333s steps(7, jump-none) forwards; }
+.walker.turn-l .w-strip, .walker.unturn-l .w-strip { --n: 8; background-image: url("../keybo/walker/turn-from-left-strip.png"); animation: sprite .333s steps(7, jump-none) forwards; }
+.walker.unturn-r .w-strip, .walker.unturn-l .w-strip { animation-direction: reverse; }
 @keyframes sprite { from { background-position-x: 0%; } to { background-position-x: 100%; } }
 
 .walker-dust { position: absolute; left: 50%; bottom: calc(var(--s) * 43 / 320); width: 0; height: 0; }
