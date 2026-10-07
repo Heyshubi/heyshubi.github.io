@@ -9,10 +9,8 @@
 
   // Theme: white and lime, or dark and lime. The choice is remembered.
   const themeBtn = $(".theme-btn");
-  const themeColor = $('meta[name="theme-color"]');
   const applyTheme = t => {
     root.setAttribute("data-theme", t);
-    themeColor.setAttribute("content", t === "dark" ? "#0A0A0A" : "#FFFFFF");
     themeBtn.setAttribute("aria-label", t === "dark" ? "Switch to light theme" : "Switch to dark theme");
   };
   applyTheme(root.getAttribute("data-theme") || "light");

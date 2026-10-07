@@ -119,8 +119,14 @@ p { margin: 0; }
 
 /* ---------- Header ---------- */
 
-.site-header { position: sticky; top: 0; z-index: 50; background: var(--bg); border-bottom: 1px solid transparent; transition: border-color .2s ease; }
-.site-header.scrolled { border-bottom-color: var(--line); }
+.site-header { position: sticky; top: 0; z-index: 50; background: transparent; border-bottom: 1px solid transparent; transition: background-color .2s ease, border-color .2s ease; }
+.site-header.scrolled, .site-header.open { background: var(--bg); border-bottom-color: var(--line); }
+/* At the top the header sits on the lime, like the app's home: ink on lime. */
+.site-header:not(.scrolled):not(.open) .wordmark { color: var(--ink); }
+.site-header:not(.scrolled):not(.open) .nav-links a { color: rgba(20, 23, 8, .7); }
+.site-header:not(.scrolled):not(.open) .nav-links a:hover { color: var(--ink); background: rgba(20, 23, 8, .07); }
+.site-header:not(.scrolled):not(.open) .theme-btn, .site-header:not(.scrolled):not(.open) .menu-btn { background: rgba(20, 23, 8, .08); color: var(--ink); }
+.site-header:not(.scrolled):not(.open) .btn-lime { background: var(--ink); color: #CCFA00; box-shadow: none; }
 .nav { display: flex; align-items: center; height: 68px; gap: 14px; }
 .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; margin-right: auto; }
 .brand img { width: 34px; height: 34px; border-radius: 9px; }
@@ -152,28 +158,34 @@ p { margin: 0; }
 
 /* ---------- Hero ---------- */
 
-.hero { position: relative; padding: 56px 0 88px; overflow: hidden; }
-.hero::before {
-  content: ""; position: absolute; top: -260px; right: -220px; width: 900px; height: 900px; pointer-events: none;
-  background: radial-gradient(closest-side, rgba(222, 247, 119, .55), rgba(222, 247, 119, 0));
+/* The top of the page is the app's home header: the icon's lime gradient,
+   ink type, KEYBO on the right, and the page rising over it on a rounded
+   sheet. It stays lime in the dark theme too, as it does in the app. */
+.hero {
+  position: relative; overflow: hidden; color: var(--ink);
+  margin-top: -69px; padding: 125px 0 124px;
+  background: linear-gradient(135deg, #EFFCBD 0%, #DEF777 34%, #C8E84B 68%, #B6DB33 100%);
 }
-:root[data-theme="dark"] .hero::before { background: radial-gradient(closest-side, rgba(200, 232, 75, .14), rgba(200, 232, 75, 0)); }
+.sheet { position: relative; margin-top: -36px; border-radius: 36px 36px 0 0; background: var(--bg); }
 .hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); align-items: center; gap: 32px; }
 .pill {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px 6px 6px; border-radius: 999px;
-  background: var(--card); box-shadow: inset 0 0 0 1px var(--line); font-size: 14px; font-weight: 600; color: var(--muted);
+  display: inline-flex; align-items: center; gap: 9px; padding: 8px 15px 8px 13px; border-radius: 999px;
+  background: var(--ink); color: #fff; font-size: 14px; font-weight: 600;
 }
-.pill i { font-style: normal; padding: 3px 10px; border-radius: 999px; background: var(--lime); color: var(--ink); font-size: 12px; font-weight: 700; }
+.pill i { width: 8px; height: 8px; border-radius: 50%; background: #CCFA00; }
 .hero h1 { margin: 22px 0 20px; }
-.hero .lede { font-size: clamp(18px, 1.5vw, 20px); color: var(--muted); max-width: 32em; margin-bottom: 32px; }
-.hero-ticks { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 26px; font-size: 14.5px; color: var(--muted); }
+.hero .lede { font-size: clamp(18px, 1.5vw, 20px); color: rgba(20, 23, 8, .74); max-width: 32em; margin-bottom: 32px; }
+.hero .store { background: var(--ink); color: #fff; }
+.hero .store-note { color: rgba(20, 23, 8, .7); }
+.hero .store-note b { color: var(--ink); }
+.hero-ticks { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 26px; font-size: 14.5px; font-weight: 500; color: rgba(20, 23, 8, .78); }
 .hero-ticks span { display: inline-flex; align-items: center; gap: 7px; }
-.hero-ticks .icon { width: 17px; height: 17px; color: var(--accent); stroke-width: 2.4; }
+.hero-ticks .icon { width: 17px; height: 17px; color: var(--ink); stroke-width: 2.4; }
 .hero-art { position: relative; width: 100%; max-width: 480px; justify-self: center; aspect-ratio: 1; }
-.hero-art::before { content: ""; position: absolute; inset: 13%; border-radius: 50%; background: var(--card-2); }
+.hero-art::before { content: ""; position: absolute; inset: 6%; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 255, 255, .5), rgba(255, 255, 255, 0)); }
 .hero-art img, .hero-art video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
 @media (max-width: 900px) {
-  .hero { padding: 24px 0 64px; }
+  .hero { padding: 88px 0 92px; }
   .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
   .hero-art { max-width: 300px; order: -1; }
 }
