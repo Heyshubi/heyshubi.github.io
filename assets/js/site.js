@@ -1,5 +1,5 @@
 // KEYBO website: theme toggle, header, side rail, the stacking feature
-// cards, the demos, and KEYBO's hero loop.
+// cards with their recordings, and KEYBO's hero loop.
 // Scroll work is one requestAnimationFrame at most, transforms only.
 
 (() => {
@@ -104,17 +104,23 @@
     addEventListener("resize", onScroll, { passive: true });
   }
 
-  // Feature videos, once they exist: only the card on top plays.
+  // The feature recordings: only the card on top plays, and a clip loads
+  // only when its card comes up. With reduced motion they wait for a tap.
   let playing = -1;
   function playActive(i) {
-    if (i === playing) return;
+    if (i === playing || reduce) return;
     playing = i;
     cards.forEach((c, k) => {
       const v = c.querySelector("video");
       if (!v) return;
-      if (k === i && !reduce) v.play().catch(() => {}); else v.pause();
+      if (k === i) { v.preload = "auto"; v.play().catch(() => {}); } else v.pause();
     });
   }
+  if (reduce) $$(".clip video").forEach(v => v.controls = true);
+  // Off screen, nothing plays.
+  if (stack) new IntersectionObserver(([e]) => {
+    if (!e.isIntersecting) { $$(".clip video").forEach(v => v.pause()); playing = -1; }
+  }).observe(stack);
 
   // KEYBO's hero loop: large screens only, after load, paused off screen.
   // Phones keep the still, which is the loop's own first frame.
@@ -135,47 +141,6 @@
       new IntersectionObserver(([e]) => { e.isIntersecting ? v.play().catch(() => {}) : v.pause(); }).observe(art);
     }, { once: true });
   }
-
-  // Reply demo: tap an answer and it is sent into the thread.
-  const thread = $("#reply-thread");
-  $$("#reply-demo .reply").forEach(btn => btn.addEventListener("click", () => {
-    $$("#reply-demo .reply").forEach(b => b.classList.toggle("picked", b === btn));
-    $$(".bubble.out", thread).forEach(b => b.remove());
-    const out = document.createElement("div");
-    out.className = "bubble out";
-    out.textContent = btn.lastChild.textContent.trim();
-    thread.appendChild(out);
-  }));
-
-  // A row of chips that swaps the text in a field.
-  const swapper = (chipSel, fieldSel, texts, key) => {
-    const field = $(fieldSel);
-    if (!field) return;
-    $$(chipSel).forEach(btn => btn.addEventListener("click", () => {
-      $$(chipSel).forEach(b => b.classList.toggle("on", b === btn));
-      field.textContent = texts[btn.dataset[key]];
-    }));
-  };
-  swapper("#tone-demo [data-tone]", "#tone-field", {
-    original: "hey can we move the meeting to tomorrow, something came up",
-    friendly: "Hey! Would it be okay to move our meeting to tomorrow? Something came up on my end 😊",
-    professional: "Hi, would it be possible to reschedule our meeting to tomorrow? Something unexpected has come up. Apologies for the short notice.",
-    funny: "Plot twist: life happened 🙃 Any chance we can move the meeting to tomorrow?",
-    custom: "Something's come up, so can we move the meeting to tomorrow? Same time works for me."
-  }, "tone");
-  swapper("#fix-demo [data-fix]", "#fix-field", {
-    original: "i realy wanna se u tmrw, its been to long since we talk",
-    fix: "I really want to see you tomorrow. It's been too long since we talked.",
-    rewrite: "I'd love to see you tomorrow! It feels like ages since we last caught up."
-  }, "fix");
-
-  // Translate demo: one line, many languages.
-  const out = $("#translation");
-  $$("#translate-demo [data-t]").forEach(btn => btn.addEventListener("click", () => {
-    $$("#translate-demo [data-t]").forEach(b => b.classList.toggle("on", b === btn));
-    out.textContent = btn.dataset.t;
-    out.dir = /[؀-ۿ]/.test(btn.dataset.t) ? "rtl" : "ltr";
-  }));
 
   // Setup: iPhone or Android, picked for the visitor's phone.
   const tabs = $$('[role="tab"]');

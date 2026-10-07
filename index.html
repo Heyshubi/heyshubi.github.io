@@ -70,6 +70,8 @@
     <symbol id="i-cloudoff" viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.7-8.95A6 6 0 0 1 17.6 9 4.25 4.25 0 0 1 18 18.5z"/><path d="m4 3.5 16 17"/></symbol>
     <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.1 7.6 7.5 9 4.4-1.4 7.5-4.4 7.5-9V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+    <symbol id="i-key" viewBox="0 0 24 24"><circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 8.7-8.7M16.5 6.5l2.5 2.5M14 9l2 2"/></symbol>
     <symbol id="i-tick" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
@@ -118,7 +120,7 @@
     <div>
       <span class="pill"><i></i>Private AI keyboard for iPhone, iPad &amp; Android</span>
       <h1>Write better.<br>Stay private.</h1>
-      <p class="lede">KEYBO replies, fixes, rewrites and translates in one tap, right inside the app you're typing in. And your text leaves your phone only when you tap.</p>
+      <p class="lede">KEYBO replies, fixes, rewrites and translates in one tap, right inside the app you're typing in. Private by design, from the very first key.</p>
       <div class="stores">
         <a class="store" data-appstore href="https://apps.apple.com/app/id6816461506" rel="noopener" aria-label="Download on the App Store">
           <svg><use href="#logo-apple"/></svg><span><small>Download on the</small><b>App Store</b></span>
@@ -157,12 +159,12 @@
       <div>
         <span class="kicker">Privacy first</span>
         <h2>Your words stay yours.</h2>
-        <p class="intro">A keyboard sees everything you type, so KEYBO is built to look away. Nothing leaves your phone until you ask for it.</p>
+        <p class="intro">KEYBO is built so your words stay yours: on your phone, encrypted on the move, and never sold.</p>
         <div class="promises">
-          <article class="promise"><svg class="icon"><use href="#i-tap"/></svg><h3>Sent only when you tap</h3><p>Text leaves your phone only when you tap an AI button, over an encrypted connection. Never while you type.</p></article>
-          <article class="promise"><svg class="icon"><use href="#i-cloudoff"/></svg><h3>Not stored, never sold</h3><p>Your text is used to write the answer, then it's gone. No keystroke logging.</p></article>
-          <article class="promise"><svg class="icon"><use href="#i-lock"/></svg><h3>Passwords stay sealed</h3><p>Nothing typed in a password field is ever read or sent.</p></article>
-          <article class="promise"><svg class="icon"><use href="#i-phone"/></svg><h3>Learning stays on your phone</h3><p>Suggestions and the words KEYBO learns stay on your device. Erase them anytime.</p></article>
+          <article class="promise"><svg class="icon"><use href="#i-phone"/></svg><h3>Private by design</h3><p>What you type stays on your phone.</p></article>
+          <article class="promise"><svg class="icon"><use href="#i-lock"/></svg><h3>Encrypted</h3><p>Every AI request travels over an encrypted connection.</p></article>
+          <article class="promise"><svg class="icon"><use href="#i-shield"/></svg><h3>Never sold or shared</h3><p>Your data is yours. No ads, no tracking.</p></article>
+          <article class="promise"><svg class="icon"><use href="#i-key"/></svg><h3>Passwords stay private</h3><p>AI switches off in password fields.</p></article>
         </div>
         <p class="more">The keys work without Full Access; only the AI buttons need it. <a href="https://heyshubi.github.io/privacy/ios/">Read the privacy policy →</a></p>
       </div>
@@ -192,16 +194,7 @@
           </ul>
         </div>
         <div class="visual">
-          <div class="demo" id="reply-demo">
-            <div class="demo-top"><span class="av">R</span><span><b>Riya</b>Message you copied</span></div>
-            <div class="thread" id="reply-thread"><div class="bubble in">Are you coming tonight? Everyone's asking about you 🎉</div></div>
-            <div class="strip" aria-hidden="true"><span class="chip on static">Reply</span><span class="chip static">Friendly ▾</span><span class="chip static">Fix</span><span class="chip static">Rewrite</span><span class="chip static">Translate</span></div>
-            <div class="replies">
-              <button class="reply" type="button"><small>Short</small>Yes! See you there 🎉</button>
-              <button class="reply" type="button"><small>Medium</small>Yes, I'll be there! Running a little late, see you by 9.</button>
-              <button class="reply" type="button"><small>Long <span class="tag">Premium</span></small>Yes, I'm coming! Stuck at work a bit longer, so I'll be there by 9. Save me a seat!</button>
-            </div>
-          </div>
+          <div class="clip"><video muted loop playsinline preload="none" poster="assets/videos/reply.jpg" width="600" height="1304" aria-label="KEYBO writing a reply to a copied message: Reply, Medium, Friendly, then one tap puts it in the message box"><source src="assets/videos/reply.mp4" type="video/mp4"></video></div>
         </div>
       </article>
 
@@ -217,17 +210,7 @@
           </ul>
         </div>
         <div class="visual">
-          <div class="demo" id="tone-demo">
-            <div class="demo-top"><span class="av">✍️</span><span><b>Your message</b>Tap a tone</span></div>
-            <div class="field" id="tone-field" aria-live="polite">hey can we move the meeting to tomorrow, something came up</div>
-            <div class="chips" role="group" aria-label="Tones">
-              <button class="chip on" type="button" data-tone="original">Original</button>
-              <button class="chip" type="button" data-tone="friendly">😊 Friendly</button>
-              <button class="chip" type="button" data-tone="professional">💼 Professional</button>
-              <button class="chip" type="button" data-tone="funny">😄 Funny</button>
-              <button class="chip" type="button" data-tone="custom">⭐ Calm &amp; clear <span class="tag">Your own</span></button>
-            </div>
-          </div>
+          <div class="clip"><video muted loop playsinline preload="none" poster="assets/videos/tones.jpg" width="600" height="1304" aria-label="KEYBO rewriting a message in a Professional tone, with three versions to pick from"><source src="assets/videos/tones.mp4" type="video/mp4"></video></div>
         </div>
       </article>
 
@@ -243,43 +226,23 @@
           </ul>
         </div>
         <div class="visual">
-          <div class="demo" id="fix-demo">
-            <div class="demo-top"><span class="av">✓</span><span><b>Your message</b>Tap Fix or Rewrite</span></div>
-            <div class="field" id="fix-field" aria-live="polite">i realy wanna se u tmrw, its been to long since we talk</div>
-            <div class="chips" role="group" aria-label="Fix or Rewrite">
-              <button class="chip on" type="button" data-fix="original">Original</button>
-              <button class="chip" type="button" data-fix="fix">✓ Fix</button>
-              <button class="chip" type="button" data-fix="rewrite">✨ Rewrite</button>
-            </div>
-          </div>
+          <div class="clip"><video muted loop playsinline preload="none" poster="assets/videos/fix-rewrite.jpg" width="600" height="1304" aria-label="KEYBO fixing typos with Fix, then offering three versions with Rewrite"><source src="assets/videos/fix-rewrite.mp4" type="video/mp4"></video></div>
         </div>
       </article>
 
       <article class="stack-card" style="--i:3" data-video="translate">
         <div class="copy">
-          <span class="num">04 · Translate &amp; Hinglish</span>
+          <span class="num">04 · Translate</span>
           <h3>Write in yours. Send in theirs.</h3>
-          <p class="desc">Translate into 35 languages without leaving the chat, or turn any message into natural Hinglish.</p>
+          <p class="desc">Translate a message into 35 languages without leaving the chat.</p>
           <ul class="ticks">
-            <li><b>35 languages</b>, including Hindi, Bengali, Spanish, Arabic and Japanese</li>
+            <li><b>35 languages</b>, including Spanish, French, German, Arabic and Japanese</li>
             <li><b>The whole message or a selection</b>, straight from the keyboard</li>
-            <li><b>Hinglish</b> the way you'd actually text it</li>
+            <li><b>Undo</b> brings your original back in a tap</li>
           </ul>
         </div>
         <div class="visual">
-          <div class="demo" id="translate-demo">
-            <div class="demo-top"><span class="av">🌍</span><span><b>See you tomorrow!</b>Pick a language</span></div>
-            <div class="chips" role="group" aria-label="Languages">
-              <button class="chip on" type="button" data-t="कल मिलते हैं!">Hindi</button>
-              <button class="chip" type="button" data-t="Kal milte hain! 👋">Hinglish</button>
-              <button class="chip" type="button" data-t="¡Nos vemos mañana!">Spanish</button>
-              <button class="chip" type="button" data-t="À demain !">French</button>
-              <button class="chip" type="button" data-t="また明日！">Japanese</button>
-              <button class="chip" type="button" data-t="أراك غدًا!">Arabic</button>
-            </div>
-            <div class="label">Result</div>
-            <div class="out-line" id="translation" aria-live="polite">कल मिलते हैं!</div>
-          </div>
+          <div class="clip"><video muted loop playsinline preload="none" poster="assets/videos/translate.jpg" width="600" height="1304" aria-label="KEYBO translating a message into Spanish, then Undo bringing the original back"><source src="assets/videos/translate.mp4" type="video/mp4"></video></div>
         </div>
       </article>
 
