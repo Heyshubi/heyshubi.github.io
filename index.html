@@ -33,7 +33,7 @@
     d.classList.add("js");
   })();
 </script>
-<link rel="stylesheet" href="assets/css/site.css?v=20261007162215">
+<link rel="stylesheet" href="assets/css/site.css?v=20261007165016">
 
 <script type="application/ld+json">
 {
@@ -75,6 +75,8 @@
     <symbol id="i-tick" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
     <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
     <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
+    <symbol id="i-chev" viewBox="0 0 24 24"><path d="m7 10 5 5 5-5"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 3.2l2.7 5.5 6 .9-4.35 4.25 1.03 6L12 17l-5.38 2.85 1.03-6L3.3 9.6l6-.9z"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
     <symbol id="logo-apple" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></symbol>
     <symbol id="logo-play" viewBox="0 0 24 24">
@@ -103,7 +105,13 @@
       <svg class="icon moon"><use href="#i-moon"/></svg>
       <svg class="icon sun"><use href="#i-sun"/></svg>
     </button>
-    <a class="btn btn-lime" href="#download">Download</a>
+    <div class="dl">
+      <button class="btn btn-lime dl-btn" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="dl-menu">Download<svg class="icon chev"><use href="#i-chev"/></svg></button>
+      <div class="dl-menu" id="dl-menu" role="menu" hidden>
+        <a class="dl-item" role="menuitem" data-store="ios" href="https://apps.apple.com/app/id6816461506" target="_blank" rel="noopener"><svg><use href="#logo-apple"/></svg><span><b>iPhone &amp; iPad</b><small>App Store</small></span></a>
+        <a class="dl-item" role="menuitem" data-store="android" href="https://play.google.com/store/apps/details?id=com.aikeyboard.app" target="_blank" rel="noopener"><svg><use href="#logo-play"/></svg><span><b>Android</b><small>Google Play</small></span></a>
+      </div>
+    </div>
     <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
       <svg class="icon"><use href="#i-menu"/></svg>
     </button>
@@ -122,10 +130,10 @@
       <h1>Write better.<br>Stay private.</h1>
       <p class="lede">KEYBO replies, fixes, rewrites and translates in one tap, right inside the app you're typing in. Private by design, from the very first key.</p>
       <div class="stores">
-        <a class="store" data-appstore href="https://apps.apple.com/app/id6816461506" rel="noopener" aria-label="Download on the App Store">
+        <a class="store" data-store="ios" href="https://apps.apple.com/app/id6816461506" target="_blank" rel="noopener" aria-label="Download on the App Store">
           <svg><use href="#logo-apple"/></svg><span><small>Download on the</small><b>App Store</b></span>
         </a>
-        <a class="store" href="#download" aria-label="Get it on Google Play">
+        <a class="store" data-store="android" href="https://play.google.com/store/apps/details?id=com.aikeyboard.app" target="_blank" rel="noopener" aria-label="Get it on Google Play">
           <svg><use href="#logo-play"/></svg><span><small>GET IT ON</small><b>Google Play</b></span>
         </a>
       </div>
@@ -137,6 +145,10 @@
       </div>
     </div>
     <div class="hero-art" id="hero-art">
+      <div class="live" aria-hidden="true">
+        <div class="live-top"><span class="live-tone">Original</span><span class="live-hint">rewritten by KEYBO</span></div>
+        <p class="live-text">hey can u send me the file</p>
+      </div>
       <img src="assets/keybo/hero-still-720.png" srcset="assets/keybo/hero-still-720.png 720w, assets/keybo/hero-loop-poster.png 1080w" sizes="(max-width: 900px) 300px, 480px" alt="KEYBO, the keyboard mascot" width="720" height="720" fetchpriority="high">
     </div>
   </div>
@@ -155,6 +167,7 @@
           <circle cx="100" cy="121" r="7" fill="#141708"/>
           <rect x="96.5" y="123" width="7" height="15" rx="3.5" fill="#141708"/>
         </svg>
+        <div class="cipher" aria-hidden="true"><span class="cipher-text">See you at 8 tonight</span><small>encrypted on the way</small></div>
       </div>
       <div>
         <span class="kicker">Privacy first</span>
@@ -172,90 +185,64 @@
   </div>
 </section>
 
-<!-- AI features: one at a time. On large screens the section holds still
-     while you scroll and the features take turns; on phones they are a list. -->
+<!-- KEYBO in numbers -->
+<section class="stats" aria-label="KEYBO in numbers">
+  <div class="wrap stats-grid">
+    <div class="stat reveal"><b data-count="1">1</b><span>tap to reply, fix or translate</span></div>
+    <div class="stat reveal"><b data-count="15">15</b><span>tones, plus your own</span></div>
+    <div class="stat reveal"><b data-count="35">35</b><span>languages</span></div>
+    <div class="stat reveal"><b data-count="0">0</b><span>ads or trackers</span></div>
+  </div>
+</section>
+
+<!-- AI features: one at a time. On large screens the section holds still,
+     one scroll moves one feature, and the big panel on the left swaps with
+     its video on the right. On phones they are a plain list. -->
 <section class="features" id="features" data-rail="AI features">
+  <div class="wrap head reveal features-head">
+    <span class="kicker">AI features</span>
+    <h2>Everything you write, <span class="hl">better in one tap</span>.</h2>
+    <p>Six AI tools sit right above your keys. Scroll through them, one at a time.</p>
+  </div>
   <div class="tour" style="--steps:6">
     <div class="tour-pin wrap">
       <div class="tour-side">
-        <div class="tour-head">
-          <span class="kicker">AI features</span>
-          <h2>Everything you write, <span class="hl">better in one tap</span>.</h2>
+        <div class="tour-progress">
+          <span class="tour-count"><b>01</b> / 06</span>
+          <div class="tour-bars" role="group" aria-label="AI features"><button class="tour-tab on" type="button" data-step="0" aria-label="Reply"></button><button class="tour-tab" type="button" data-step="1" aria-label="Tones"></button><button class="tour-tab" type="button" data-step="2" aria-label="Fix &amp; Rewrite"></button><button class="tour-tab" type="button" data-step="3" aria-label="Translate"></button><button class="tour-tab" type="button" data-step="4" aria-label="Voice notes"></button><button class="tour-tab" type="button" data-step="5" aria-label="Toolbar"></button></div>
         </div>
-        <ol class="tour-list" role="list">
-        <li class="tour-item on" style="--o:0">
-          <button class="tour-tab" type="button" data-step="0"><span class="n">01</span><span class="t">Smart Reply</span></button>
-          <div class="tour-body"><div>
-            <h3>Copy a message. Get the perfect reply.</h3>
-            <p>Don't know what to say? Copy what you got, tap Reply, and pick an answer.</p>
-            <ul class="ticks">
-              <li><b>Short, medium or long</b>: a quick "on my way" or a proper answer</li>
-            <li><b>In your tone</b>: friendly for friends, professional for work</li>
-            <li><b>One tap</b> puts it in your message box</li>
-            </ul>
-          </div></div>
-        </li>
-        <li class="tour-item" style="--o:2">
-          <button class="tour-tab" type="button" data-step="1"><span class="n">02</span><span class="t">Tones</span></button>
-          <div class="tour-body"><div>
-            <h3>Same message. The right tone.</h3>
-            <p>Type it once and let KEYBO say it the way it should sound.</p>
-            <ul class="ticks">
-              <li><b>15 tones</b>, from Friendly and Professional to Funny and Romantic</li>
-            <li><b>Your own tones</b>: describe one, like "calm and to the point"</li>
-            <li><b>Sticky tones</b> keep every reply in your tone (Premium)</li>
-            </ul>
-          </div></div>
-        </li>
-        <li class="tour-item" style="--o:4">
-          <button class="tour-tab" type="button" data-step="2"><span class="n">03</span><span class="t">Fix &amp; Rewrite</span></button>
-          <div class="tour-body"><div>
-            <h3>Clean, confident writing in a tap.</h3>
-            <p>Typos, grammar and clumsy sentences, sorted before you hit send.</p>
-            <ul class="ticks">
-              <li><b>Fix</b> corrects spelling, grammar and punctuation, keeping your words</li>
-            <li><b>Rewrite</b> gives three clearer versions to choose from</li>
-            <li><b>Undo and redo</b> up to ten AI edits</li>
-            </ul>
-          </div></div>
-        </li>
-        <li class="tour-item" style="--o:6">
-          <button class="tour-tab" type="button" data-step="3"><span class="n">04</span><span class="t">Translate</span></button>
-          <div class="tour-body"><div>
-            <h3>Write in yours. Send in theirs.</h3>
-            <p>Translate a message into 35 languages without leaving the chat.</p>
-            <ul class="ticks">
-              <li><b>35 languages</b>, including Spanish, French, German, Arabic and Japanese</li>
-            <li><b>The whole message or a selection</b>, straight from the keyboard</li>
-            <li><b>Undo</b> brings your original back in a tap</li>
-            </ul>
-          </div></div>
-        </li>
-        <li class="tour-item" style="--o:8">
-          <button class="tour-tab" type="button" data-step="4"><span class="n">05</span><span class="t">Voice notes</span></button>
-          <div class="tour-body"><div>
-            <h3>Got a voice note? Read it instead.</h3>
-            <p>Share a voice note to KEYBO and it turns into text, right on your phone.</p>
-            <ul class="ticks">
-              <li><b>Transcribed on your device</b>; the audio never leaves it</li>
-            <li><b>Reply in a tap</b> once you've read it</li>
-            <li><b>Free</b>, with no daily limit</li>
-            </ul>
-          </div></div>
-        </li>
-        <li class="tour-item" style="--o:10">
-          <button class="tour-tab" type="button" data-step="5"><span class="n">06</span><span class="t">Your AI toolbar</span></button>
-          <div class="tour-body"><div>
-            <h3>Your AI, your way, in every app.</h3>
-            <p>Chats, email, notes, social: anywhere there's a text box, KEYBO is there.</p>
-            <ul class="ticks">
-              <li><b>Arrange the AI buttons</b> so the ones you use most come first</li>
-            <li><b>Your favourite tone</b> is always one tap away</li>
-            <li><b>Works everywhere</b> you type</li>
-            </ul>
-          </div></div>
-        </li>
-        </ol>
+        <div class="tour-panels">
+        <article class="tour-panel on" style="--o:0" data-step="0">
+          <span class="tour-name">Smart Reply</span>
+          <h3>Copy a message. Get the perfect reply.</h3>
+          <p>Copy what you got, tap Reply, pick an answer. Done.</p>
+        </article>
+        <article class="tour-panel" style="--o:2" data-step="1">
+          <span class="tour-name">Tones</span>
+          <h3>Same message. The right tone.</h3>
+          <p>15 tones, plus your own. Three versions every time.</p>
+        </article>
+        <article class="tour-panel" style="--o:4" data-step="2">
+          <span class="tour-name">Fix &amp; Rewrite</span>
+          <h3>Clean, confident writing in a tap.</h3>
+          <p>Fix the typos, then rewrite it clearer, in one tap each.</p>
+        </article>
+        <article class="tour-panel" style="--o:6" data-step="3">
+          <span class="tour-name">Translate</span>
+          <h3>Write in yours. Send in theirs.</h3>
+          <p>35 languages, right from the keyboard.</p>
+        </article>
+        <article class="tour-panel" style="--o:8" data-step="4">
+          <span class="tour-name">Voice notes</span>
+          <h3>Got a voice note? Read it instead.</h3>
+          <p>Share it to KEYBO and read it as text, transcribed on your phone.</p>
+        </article>
+        <article class="tour-panel" style="--o:10" data-step="5">
+          <span class="tour-name">Your AI toolbar</span>
+          <h3>Your AI, your way, in every app.</h3>
+          <p>Put your favourite AI buttons first. Works in every app.</p>
+        </article>
+        </div>
       </div>
       <div class="tour-stage">
         <div class="tour-visual on" style="--o:1" data-step="0">
@@ -374,6 +361,33 @@
   </div>
 </section>
 
+<!-- Review -->
+<section class="section alt" id="review" data-rail="Review">
+  <div class="wrap">
+    <div class="review card reveal">
+      <div class="review-copy">
+        <span class="kicker">Your review</span>
+        <h2>Loving KEYBO? <span class="hl">Say it in stars.</span></h2>
+        <p>Your rating helps more people find KEYBO, and your notes tell us what to build next.</p>
+      </div>
+      <div class="review-box">
+        <div class="stars" role="radiogroup" aria-label="Your rating">
+          <button type="button" role="radio" aria-checked="false" data-v="1" aria-label="1 star"><svg><use href="#i-star"/></svg></button>
+          <button type="button" role="radio" aria-checked="false" data-v="2" aria-label="2 stars"><svg><use href="#i-star"/></svg></button>
+          <button type="button" role="radio" aria-checked="false" data-v="3" aria-label="3 stars"><svg><use href="#i-star"/></svg></button>
+          <button type="button" role="radio" aria-checked="false" data-v="4" aria-label="4 stars"><svg><use href="#i-star"/></svg></button>
+          <button type="button" role="radio" aria-checked="false" data-v="5" aria-label="5 stars"><svg><use href="#i-star"/></svg></button>
+        </div>
+        <p class="review-msg" aria-live="polite">Tap a star to rate KEYBO.</p>
+        <div class="review-actions" hidden>
+          <a class="btn btn-ink review-store" data-store="ios" data-review href="https://apps.apple.com/app/id6816461506?action=write-review" target="_blank" rel="noopener"><svg class="icon" style="fill:currentColor;stroke:none"><use href="#logo-apple"/></svg>Review on the App Store</a>
+          <a class="btn btn-line review-mail" href="mailto:hellokeybo@gmail.com">Email us</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- FAQ -->
 <section class="section alt" id="faq" data-rail="FAQ">
   <div class="wrap">
@@ -401,10 +415,10 @@
       <h2>Write better in every app.</h2>
       <p>Get KEYBO free on iPhone and iPad. Android is coming soon.</p>
       <div class="stores">
-        <a class="store" data-appstore href="https://apps.apple.com/app/id6816461506" rel="noopener" aria-label="Download on the App Store">
+        <a class="store" data-store="ios" href="https://apps.apple.com/app/id6816461506" target="_blank" rel="noopener" aria-label="Download on the App Store">
           <svg><use href="#logo-apple"/></svg><span><small>Download on the</small><b>App Store</b></span>
         </a>
-        <a class="store" href="mailto:hellokeybo@gmail.com?subject=Tell%20me%20when%20KEYBO%20is%20on%20Android" aria-label="Get it on Google Play">
+        <a class="store" data-store="android" href="https://play.google.com/store/apps/details?id=com.aikeyboard.app" target="_blank" rel="noopener" aria-label="Get it on Google Play">
           <svg><use href="#logo-play"/></svg><span><small>GET IT ON</small><b>Google Play</b></span>
         </a>
       </div>
@@ -432,6 +446,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261007162215" defer></script>
+<script src="assets/js/site.js?v=20261007165016" defer></script>
 </body>
 </html>
