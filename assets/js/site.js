@@ -580,16 +580,23 @@
     const floorEl = walker.closest(".walk-floor"), MODEL = "assets/keybo/3d/keybo.glb";
     const webgl = (() => { try { return !!document.createElement("canvas").getContext("webgl2"); } catch (e) { return false; } })();
     if (webgl && location.protocol !== "file:") {
-      const io3d = new IntersectionObserver(([e]) => {
-        if (!e.isIntersecting) return;
-        io3d.disconnect();
+      // Fetch it quietly once the page has loaded and gone idle, so KEYBO is
+      // ready long before anyone scrolls down to it.
+      let started = false;
+      const go = () => {
+        if (started) return; started = true;
         fetch(MODEL, { method: "HEAD" }).then(r => {
           if (!r.ok) return;
           return import(new URL("assets/js/keybo3d.js", document.baseURI).href)
             .then(m => m.start({ host: floorEl, modelUrl: MODEL, reduce }))
             .then(api => { window.KEYBO3D = api; retired = true; on = false; walker.hidden = true; floorEl.classList.add("is-3d"); });
         }).catch(() => {});
-      }, { rootMargin: "600px 0px" });
+      };
+      const idle = window.requestIdleCallback || (f => setTimeout(f, 1200));
+      if (document.readyState === "complete") idle(go, { timeout: 2500 });
+      else addEventListener("load", () => idle(go, { timeout: 2500 }), { once: true });
+      // and straight away if someone gets there first
+      const io3d = new IntersectionObserver(([e]) => { if (e.isIntersecting) { io3d.disconnect(); go(); } }, { rootMargin: "900px 0px" });
       io3d.observe(floorEl);
     }
   }

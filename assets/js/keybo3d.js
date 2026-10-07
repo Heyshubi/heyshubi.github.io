@@ -29,7 +29,8 @@ export async function start({ host, modelUrl, reduce }) {
   if (host.__keybo3d) return host.__keybo3d;          // one KEYBO per floor
   const canvas = document.createElement("canvas");
   canvas.className = "kb3d";
-  host.appendChild(canvas);
+  canvas.setAttribute("aria-hidden", "true");
+  document.body.appendChild(canvas);
 
   const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "low-power" });
   renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
@@ -86,6 +87,12 @@ export async function start({ host, modelUrl, reduce }) {
     body: bone("body"), eyeL: bone("eye_L"), eyeR: bone("eye_R"),
     keys: ["key_K", "key_E", "key_Y", "key_B", "key_O", "key_space"].map(bone).filter(Boolean),
   };
+  // Every bone this code nudges is put back to its rest pose each frame
+  // before the animation and the springs are applied. Without this, a bone
+  // the current clip happens not to write keeps last frame's nudge, and the
+  // next nudge goes on top of it: the head spins faster and faster.
+  const driven = [B.body, B.eyeL, B.eyeR, ...B.keys].filter(Boolean)
+    .map(o => ({ o, q: o.quaternion.clone(), p: o.position.clone(), s: o.scale.clone() }));
   const morphMeshes = [];
   model.traverse(o => { if (o.isMesh && o.morphTargetDictionary) morphMeshes.push(o); });
   const face = { blink: 0, squint: 0, surprised: 0, smile: 0, mouth_open: 0 };
@@ -120,38 +127,43 @@ export async function start({ host, modelUrl, reduce }) {
     keys: B.keys.map((_, i) => spring(240 + i * 18, 5.5)),
   };
 
-  // ---------- the stage ----------
-  let W = 1, H = 1;
+  // ---------- the stage: a transparent layer over the whole window ----------
+  // KEYBO's floor is the walkway's dashed line, wherever the page has
+  // scrolled it to; world y = 0 there and one metre is PPU pixels. The
+  // layer lets clicks through to the page, so KEYBO can walk the full
+  // width, be carried anywhere, and fall back down.
+  let W = 1, H = 1, PPU = 170, camD = 10, floorY = 0;
+  const EL = THREE.MathUtils.degToRad(8);
   const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0), hit = new THREE.Vector3();
   const resize = () => {
-    W = host.clientWidth; H = host.clientHeight;
+    W = innerWidth; H = innerHeight;
+    PPU = W < 700 ? 128 : 165;
     renderer.setSize(W, H, false);
     camera.aspect = W / H;
-    const ppu = Math.min(185, Math.max(120, H * 0.42));      // pixels per metre, so KEYBO is about this tall
-    const d = H / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * ppu);
-    const lookY = (H / 2 - 20) / ppu;                         // the floor sits 20 px above the bottom
-    const el = THREE.MathUtils.degToRad(10);
-    camera.position.set(0, lookY + Math.sin(el) * d, Math.cos(el) * d);
-    camera.lookAt(0, lookY, 0);
+    camD = H / (2 * Math.tan(THREE.MathUtils.degToRad(camera.fov / 2)) * PPU);
     camera.updateProjectionMatrix();
   };
-  resize();
-  new ResizeObserver(resize).observe(host);
+  const placeCamera = () => {
+    floorY = host.getBoundingClientRect().bottom;          // the dashed line, in the window
+    const lookY = (floorY - H / 2) / PPU;                   // world y at the middle of the window
+    camera.position.set(0, lookY + Math.sin(EL) * camD, Math.cos(EL) * camD);
+    camera.lookAt(0, lookY, 0);
+    camera.updateMatrixWorld();
+  };
+  resize(); placeCamera();
+  addEventListener("resize", resize, { passive: true });
   const toWorld = (cx, cy) => {
-    const r = canvas.getBoundingClientRect();
-    ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+    ndc.set((cx / W) * 2 - 1, -(cy / H) * 2 + 1);
     ray.setFromCamera(ndc, camera);
     return ray.ray.intersectPlane(plane, hit) ? { x: hit.x, y: hit.y } : { x: 0, y: 0 };
   };
-  const toScreen = (x, y) => {
-    const v = new THREE.Vector3(x, y, 0).project(camera);
-    return { x: (v.x + 1) / 2 * W, y: (1 - v.y) / 2 * H };
-  };
-  const halfW = () => Math.abs(toWorld(canvas.getBoundingClientRect().right - 2, canvas.getBoundingClientRect().bottom - 24).x) - width * 0.75;
-  const topY = () => toWorld(canvas.getBoundingClientRect().left + W / 2, canvas.getBoundingClientRect().top + 8).y - 1.05;
+  const v3 = new THREE.Vector3();
+  const toScreen = (x, y) => { v3.set(x, y, 0).project(camera); return { x: (v3.x + 1) / 2 * W, y: (1 - v3.y) / 2 * H }; };
+  const span = () => W / 2 / PPU + width;                   // off-screen on either side, by a body width
 
   // ---------- state ----------
-  const P = { x: -halfW() * 0.5, y: 0, vx: 0, vy: 0, dir: 1 };
+  const P = { x: -W / 4 / PPU, y: 0, vx: 0, vy: 0, dir: 1 };
+  let following = false;                                  // the page follows a long fall down
   let mode = "walk", modeT = 0, mouse = null, grab = null, pokes = 0, pokeAt = 0, headTapAt = 0, waved = 0;
   const swing = { a: 0, w: 0, len: 0.6 };
   const topple = { a: 0, v: 0 };
@@ -178,59 +190,68 @@ export async function start({ host, modelUrl, reduce }) {
   };
 
   // ---------- speech ----------
-  const say = host.querySelector(".walker-say-3d");
+  const say = document.createElement("span");
+  say.className = "walker-say kb3d-say"; say.setAttribute("aria-hidden", "true");
+  document.body.appendChild(say);
   let sayTimer = 0;
   const speak = text => {
-    if (!say) return;
     say.textContent = text; say.classList.add("show");
     clearTimeout(sayTimer); sayTimer = setTimeout(() => say.classList.remove("show"), 1400);
   };
 
   // ---------- input ----------
+  // The layer itself takes no clicks; the window listens, and only a press
+  // that lands on KEYBO is his.
   const busy = () => ["topple", "down", "getup", "dizzy"].includes(mode);
+  const onScreen = () => { const t = toScreen(P.x, P.y + 1.2), b = toScreen(P.x, P.y - 0.1); return b.y > -20 && t.y < H + 20 && t.x > -PPU && t.x < W + PPU; };
   const hits = (cx, cy) => {
+    if (busy() || !onScreen()) return false;
     const w = toWorld(cx, cy);
-    return !busy() && Math.abs(w.x - P.x) < width * 0.6 && w.y > P.y - 0.05 && w.y < P.y + 1.08;
+    return Math.abs(w.x - P.x) < width * 0.6 && w.y > P.y - 0.05 && w.y < P.y + 1.08;
   };
-  let downAt = null;
-  canvas.style.cursor = "default";
-  canvas.addEventListener("pointerdown", e => {
-    if (!hits(e.clientX, e.clientY)) return;
-    e.preventDefault();
-    canvas.setPointerCapture(e.pointerId);
+  let downAt = null, hovering = false;
+  const cursor = c => { document.documentElement.style.cursor = c; };
+  addEventListener("pointerdown", e => {
+    if ((e.pointerType === "mouse" && e.button !== 0) || !hits(e.clientX, e.clientY)) return;
+    e.preventDefault(); e.stopPropagation();
     const w = toWorld(e.clientX, e.clientY);
+    mouse = { x: e.clientX, y: e.clientY };
     downAt = { x: e.clientX, y: e.clientY, head: w.y > P.y + 0.6 };
     grab = { gx: w.x - P.x, gy: Math.max(0.35, w.y - P.y), tx: w.x, ty: w.y, px: w.x, pvx: 0, last: performance.now() };
-  });
-  canvas.addEventListener("pointermove", e => {
+    document.documentElement.style.userSelect = "none";
+    following = false;
+  }, { capture: true });
+  addEventListener("pointermove", e => {
     mouse = { x: e.clientX, y: e.clientY };
-    if (!grab) { canvas.style.cursor = hits(e.clientX, e.clientY) ? "grab" : "default"; return; }
+    if (!grab) {
+      const h = hits(e.clientX, e.clientY);
+      if (h !== hovering) { hovering = h; cursor(h ? "grab" : ""); }
+      return;
+    }
     const moved = downAt && Math.hypot(e.clientX - downAt.x, e.clientY - downAt.y) > 6;
     if (moved && mode !== "held") {
       set("held"); speak("Whoa, put me down!"); play("dangle", 0.15);
       faceT.surprised = 1; faceT.smile = 0;
       swing.len = Math.max(0.3, grab.gy - 0.42); swing.a = 0; swing.w = 0;
-      canvas.style.cursor = "grabbing";
+      cursor("grabbing");
     }
-    if (mode === "held") {
-      const w = toWorld(e.clientX, e.clientY);
-      grab.tx = Math.max(-halfW() - 0.2, Math.min(halfW() + 0.2, w.x));
-      grab.ty = Math.max(grab.gy, Math.min(topY() + grab.gy, w.y));
-    }
-  });
+  }, { passive: true });
   const release = () => {
     if (!grab) return;
     if (mode === "held") {
       set("air"); play("flail", 0.12);
-      canvas.style.cursor = "default";
+      following = floorY > H - 40;                          // dropped above a floor that is off screen: follow him down
     } else if (downAt) poke(downAt.head);
-    grab = null; downAt = null;
+    grab = null; downAt = null; hovering = false;
+    cursor(""); document.documentElement.style.userSelect = "";
   };
-  canvas.addEventListener("pointerup", release);
-  canvas.addEventListener("pointercancel", release);
-  addEventListener("pointermove", e => { mouse = { x: e.clientX, y: e.clientY }; }, { passive: true });
-  document.documentElement.addEventListener("pointerleave", () => { mouse = null; });
-  canvas.addEventListener("touchstart", e => { const t = e.touches[0]; if (t && hits(t.clientX, t.clientY)) e.preventDefault(); }, { passive: false });
+  addEventListener("pointerup", release, true);
+  addEventListener("pointercancel", release, true);
+  document.documentElement.addEventListener("pointerleave", () => { if (!grab) mouse = null; });
+  addEventListener("touchstart", e => { const t = e.touches[0]; if (t && hits(t.clientX, t.clientY)) e.preventDefault(); }, { passive: false, capture: true });
+  // any scrolling of their own stops the page following him
+  addEventListener("wheel", () => { following = false; }, { passive: true });
+  addEventListener("touchmove", () => { if (!grab) following = false; }, { passive: true });
 
   function poke(head) {
     if (busy() || mode === "air") return;
@@ -258,7 +279,7 @@ export async function start({ host, modelUrl, reduce }) {
   };
 
   const tick = () => {
-    if (!running) return;
+    if (!floorNear && !grab && mode !== "air" && mode !== "held") { running = false; if (drawn) { renderer.clear(); drawn = false; } return; }
     const dt = Math.min(0.033, clock.getDelta());
     modeT += dt;
     const isNear = near();
@@ -269,12 +290,14 @@ export async function start({ host, modelUrl, reduce }) {
       S.yaw.t = P.dir * WALK_YAW;
       const along = Math.min(1, Math.abs(Math.sin(S.yaw.x)) / Math.sin(WALK_YAW));   // no gliding while turning
       P.x += P.dir * STRIDE_SPEED * Math.sin(WALK_YAW) * along * dt;
-      if (Math.abs(P.x) > halfW()) { P.x = Math.sign(P.x) * halfW(); P.dir = -P.dir; set("idle"); }
-      else if (Math.random() < dt * 0.05) set("idle");
+      // off one side of the window, in from the other
+      if (P.x > span()) P.x = -span(); else if (P.x < -span()) P.x = span();
+      if (Math.random() < dt * 0.05) set("idle");
       if (isNear) set("look");
     } else if (mode === "idle") {
       play("idle"); S.yaw.t = 0;
-      if (isNear) set("look"); else if (modeT > 1.6) set("walk");
+      if (isNear) set("look");
+      else if (modeT > 1.6) { if (Math.random() < 0.25) P.dir = -P.dir; set("walk"); }
     } else if (mode === "look") {
       if (cur !== "wave") play("idle");
       S.yaw.t = 0; faceT.smile = 0.45;
@@ -285,6 +308,16 @@ export async function start({ host, modelUrl, reduce }) {
       }
       if (!isNear) { faceT.smile = 0; set("idle"); modeT = 1.2; }
     } else if (mode === "held") {
+      // Near the top or bottom of the window the page scrolls, so he can be
+      // carried all the way up (or down).
+      if (mouse) {
+        const edgeZ = 80;
+        if (mouse.y < edgeZ) scrollBy(0, -Math.ceil((edgeZ - mouse.y) * 0.4));
+        else if (mouse.y > H - edgeZ) scrollBy(0, Math.ceil((mouse.y - (H - edgeZ)) * 0.4));
+        placeCamera();
+        const w = toWorld(mouse.x, mouse.y);
+        grab.tx = w.x; grab.ty = Math.max(grab.gy, w.y);
+      }
       // The hold point follows the pointer; KEYBO hangs below it as a
       // pendulum, pushed by the hold point's sideways acceleration.
       const now = performance.now(), ddt = Math.max(0.008, (now - grab.last) / 1000);
@@ -298,8 +331,13 @@ export async function start({ host, modelUrl, reduce }) {
       P.x = nx; P.y = ny;
       S.yaw.t = 0;
     } else if (mode === "air") {
-      P.vy -= G * dt; P.x += P.vx * dt; P.y += P.vy * dt;
-      if (Math.abs(P.x) > halfW() + 0.2) { P.x = Math.sign(P.x) * (halfW() + 0.2); P.vx *= -0.4; }
+      P.vy = Math.max(-16, P.vy - G * dt);                       // terminal velocity for a long fall
+      P.x += P.vx * dt; P.y += P.vy * dt;
+      if (Math.abs(P.x) > span()) P.x = -Math.sign(P.x) * span();
+      if (following) {                                          // keep him in view on the way down
+        const sy = toScreen(P.x, P.y + 0.5).y;
+        if (sy > H * 0.55) { scrollBy(0, Math.round(sy - H * 0.55)); placeCamera(); }
+      }
       swing.w += (-(G / swing.len) * Math.sin(swing.a) * 0.15 - 2.0 * swing.w) * dt; swing.a += swing.w * dt;
       if (P.y <= 0) {
         const impact = -P.vy; P.y = 0;
@@ -309,7 +347,7 @@ export async function start({ host, modelUrl, reduce }) {
         dust(P.x, Math.min(1, impact / 9));
         if (impact > 3.4) { P.vy = impact * 0.3; P.vx *= 0.55; }      // bounce, lower each time
         else {
-          P.vy = 0; P.vx = 0; faceT.surprised = 0; set("land");
+          P.vy = 0; P.vx = 0; faceT.surprised = 0; following = false; set("land");
           if (A.land) { play("land", 0.08); } else play("idle", 0.2);
           speak(impact > 2.2 ? "Oof!" : "Phew.");
         }
@@ -361,6 +399,7 @@ export async function start({ host, modelUrl, reduce }) {
     if (blinkIn <= 0) { faceT.blink = 1; setTimeout(() => { faceT.blink = 0; }, 90); blinkIn = 2.2 + Math.random() * 3.2; }
 
     // --- pose ---
+    driven.forEach(d => { d.o.quaternion.copy(d.q); d.o.position.copy(d.p); d.o.scale.copy(d.s); });
     mixer.update(dt);
     applyFace(dt);
     yawer.rotation.y = S.yaw.x + spinA;
@@ -390,11 +429,18 @@ export async function start({ host, modelUrl, reduce }) {
     // lights and the shadow follow KEYBO
     for (const l of lights) { l.position.set(P.x + l.userData.off.x, l.userData.off.y, l.userData.off.z); l.target.position.set(P.x, 0.586, 0); }
 
-    if (say) { const s = toScreen(P.x, P.y + 1.12); say.style.left = s.x + "px"; say.style.bottom = (H - s.y) + "px"; }
-    motionBlur(held ? P.vx : 0, mode === "air" ? P.vy : 0);
-    renderer.render(scene, camera);
+    placeCamera();
+    const sp = toScreen(P.x, P.y + 1.12);
+    say.style.left = sp.x + "px"; say.style.top = sp.y + "px";
+    const visible = onScreen();
+    if (visible) {
+      motionBlur(held ? P.vx : 0, mode === "air" ? P.vy : 0);
+      renderer.render(scene, camera);
+      drawn = true;
+    } else if (drawn) { renderer.clear(); drawn = false; }
     schedule(tick);
   };
+  let drawn = false;
   // a hidden page gets no animation frames; keep time moving so it never stalls
   const schedule = f => (document.hidden ? setTimeout(f, 33) : requestAnimationFrame(f));
 
@@ -404,29 +450,31 @@ export async function start({ host, modelUrl, reduce }) {
     for (let i = 0; i < 6; i++) {
       const d = document.createElement("i");
       d.className = "kb3d-dust";
-      d.style.left = s.x + "px"; d.style.top = (s.y - 9) + "px";
+      d.style.left = s.x + "px"; d.style.top = (s.y - 9) + "px"; d.style.position = "fixed";
       d.style.setProperty("--dx", ((i - 2.5) * 22 * (0.6 + amount)).toFixed(0) + "px");
       d.style.setProperty("--s", (0.6 + amount * 0.9).toFixed(2));
-      host.appendChild(d);
+      document.body.appendChild(d);
       setTimeout(() => d.remove(), 700);
     }
   }
 
-  new IntersectionObserver(([e]) => {
-    const was = running;
-    running = e.isIntersecting;
-    if (running && !was) { clock.getDelta(); schedule(tick); }
-  }, { rootMargin: "120px 0px" }).observe(host);
+  let floorNear = true;
+  const wake = () => { if (!running) { running = true; clock.getDelta(); schedule(tick); } };
+  new IntersectionObserver(([e]) => { floorNear = e.isIntersecting; if (floorNear) wake(); }, { rootMargin: "100% 0px" }).observe(host);
+  addEventListener("pointerdown", () => { if (grab) wake(); }, true);
   running = true; clock.getDelta(); schedule(tick);
 
   // For checking the physics by hand from the console.
   return host.__keybo3d = {
     canvas,
     get state() {
-      const r = canvas.getBoundingClientRect(), m = toScreen(P.x, P.y + 0.5);
-      return { mode, x: +P.x.toFixed(3), y: +P.y.toFixed(3), vy: +P.vy.toFixed(2), squash: +S.squash.x.toFixed(3), topple: +topple.a.toFixed(2), swing: +swing.a.toFixed(2), anim: cur, sx: Math.round(r.left + m.x), sy: Math.round(r.top + m.y) };
+      const m = toScreen(P.x, P.y + 0.5);
+      return { mode, x: +P.x.toFixed(3), y: +P.y.toFixed(3), vy: +P.vy.toFixed(2), squash: +S.squash.x.toFixed(3), topple: +topple.a.toFixed(2), swing: +swing.a.toFixed(2), anim: cur, sx: Math.round(m.x), sy: Math.round(m.y), following,
+        headTurn: B.body ? +(2 * Math.acos(Math.min(1, Math.abs(B.body.quaternion.w)))).toFixed(3) : 0 };
     },
     drop(height = 1.6) { P.y = height; P.vx = 0; P.vy = 0; swing.a = 0.25; swing.w = 0; set("air"); play("flail", 0.1); },
     poke,
+    // keep drawing even when the browser says it is off screen (testing only)
+    forceRun() { floorNear = true; wake(); },
   };
 }

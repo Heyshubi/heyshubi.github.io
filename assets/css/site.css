@@ -708,12 +708,12 @@ p { margin: 0; }
 @keyframes dust { from { opacity: .9; transform: translate(-8px, -4px) scale(.6); } to { opacity: 0; transform: translate(calc(var(--dx) - 8px), calc(var(--dy, -10px))) scale(1.6); } }
 @media (max-width: 700px) { .walk-floor { height: 160px; } .walker { --s: 128px; } }
 
-/* Real-time 3D KEYBO (keybo3d.js). The floor grows tall enough to be
-   picked up and dropped from a height. */
-.walk-floor.is-3d { height: 400px; }
-.kb3d { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
-.walker-say-3d { position: absolute; transform: translate(-50%, 6px) scale(.9); }
-.walker-say-3d.show { transform: translate(-50%, 0) scale(1); }
-.kb3d-dust { position: absolute; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: color-mix(in srgb, var(--muted) 30%, transparent); pointer-events: none; animation: kbdust .7s ease-out forwards; }
+/* Real-time 3D KEYBO (keybo3d.js): a transparent layer over the whole
+   window that takes no clicks (the script hit-tests KEYBO itself), so he
+   can walk the full width, be carried anywhere and fall back to his floor,
+   the walkway's dashed line. Below the header, above the page. */
+.kb3d { position: fixed; inset: 0; width: 100vw; height: 100vh; display: block; pointer-events: none; z-index: 45; }
+.kb3d-say { position: fixed; z-index: 46; left: 0; top: 0; bottom: auto; transform: translate(-50%, calc(-100% + 6px)) scale(.9); }
+.kb3d-say.show { transform: translate(-50%, -100%) scale(1); }
+.kb3d-dust { position: fixed; z-index: 44; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: color-mix(in srgb, var(--muted) 30%, transparent); pointer-events: none; animation: kbdust .7s ease-out forwards; }
 @keyframes kbdust { from { opacity: .85; transform: translate(0, 0) scale(calc(var(--s) * .5)); } to { opacity: 0; transform: translate(var(--dx), -26px) scale(calc(var(--s) * 1.8)); } }
-@media (max-width: 700px) { .walk-floor.is-3d { height: 320px; } }
