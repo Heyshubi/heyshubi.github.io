@@ -1,29 +1,38 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KEYBO – The AI keyboard that writes with you</title>
-<meta name="description" content="KEYBO is an AI keyboard for iPhone, iPad and Android. Reply to any message in one tap, change its tone, fix grammar, translate into 35 languages, and type Hinglish to get Hindi. Private by design.">
-<meta name="theme-color" content="#C8E84B" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)">
-<meta name="color-scheme" content="light dark">
+<meta name="description" content="KEYBO is an AI keyboard for iPhone, iPad and Android. Reply to any message in one tap, change its tone, fix grammar, rewrite, and translate into 35 languages, right inside every app. Private by design.">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="canonical" href="https://heyshubi.github.io/">
 <link rel="icon" type="image/png" href="assets/favicon-64.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/Poppins-Bold.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="preload" href="assets/keybo/hero-loop-poster.png" as="image">
+<link rel="preload" href="assets/keybo/hero-still-720.png" as="image">
 
-<link rel="canonical" href="https://heyshubi.github.io/">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://heyshubi.github.io/">
 <meta property="og:site_name" content="KEYBO">
 <meta property="og:title" content="KEYBO – The AI keyboard that writes with you">
-<meta property="og:description" content="Reply, change tone, fix grammar and translate into 35 languages, right from your keyboard. Type Hinglish, get Hindi.">
+<meta property="og:description" content="Reply, change tone, fix grammar, rewrite and translate into 35 languages, right from your keyboard.">
 <meta property="og:image" content="https://heyshubi.github.io/assets/keybo/social-card.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 
+<script>
+  // Theme before first paint, so there is no flash: white and lime unless
+  // this visitor picked dark and lime last time.
+  (function () {
+    var t = "light";
+    try { t = localStorage.getItem("keybo-theme") || "light"; } catch (e) {}
+    var d = document.documentElement;
+    d.setAttribute("data-theme", t === "dark" ? "dark" : "light");
+    d.classList.add("js");
+  })();
+</script>
 <link rel="stylesheet" href="assets/css/site.css">
 
 <script type="application/ld+json">
@@ -33,565 +42,356 @@
   "name": "KEYBO - Ai Keyboard",
   "operatingSystem": "iOS, iPadOS, Android",
   "applicationCategory": "UtilitiesApplication",
-  "description": "An AI keyboard: one-tap replies, 15 tones, grammar fixes, translation into 35 languages and Hinglish to Hindi.",
+  "description": "An AI keyboard: one-tap replies, 15 tones and your own, grammar fixes, rewrites and translation into 35 languages.",
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "INR" },
-  "email": "hellokeybo@gmail.com",
   "url": "https://heyshubi.github.io/",
-  "image": "https://heyshubi.github.io/assets/keybo/social-card.png"
+  "image": "https://heyshubi.github.io/assets/keybo/social-card.png",
+  "email": "hellokeybo@gmail.com"
 }
 </script>
 </head>
 <body>
 
-<!-- Icons, drawn once and reused. 24×24, stroked, like the app's symbols. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <defs>
     <symbol id="i-reply" viewBox="0 0 24 24"><path d="M9 14 4 9l5-5"/><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"/></symbol>
     <symbol id="i-wand" viewBox="0 0 24 24"><path d="m4 20 11-11"/><path d="m13 7 2-2 4 4-2 2"/><path d="M6 3v3M4.5 4.5h3M19 14v3M17.5 15.5h3"/></symbol>
+    <symbol id="i-own" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M3 20c.8-3.6 3.2-5.5 6-5.5 1.3 0 2.5.4 3.5 1.1"/><path d="M17.5 12.5l1 2.5 2.5 1-2.5 1-1 2.5-1-2.5-2.5-1 2.5-1z"/></symbol>
     <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="m8.5 12.5 2.5 2.5 4.5-5"/></symbol>
-    <symbol id="i-tick" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
     <symbol id="i-sparkles" viewBox="0 0 24 24"><path d="M11 3.5 12.8 8 17.5 9.8 12.8 11.6 11 16.2 9.2 11.6 4.5 9.8 9.2 8z"/><path d="M18.5 14.5l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/></symbol>
     <symbol id="i-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v8a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 4v-4h0A2.5 2.5 0 0 1 4 13.5z"/><path d="M8.5 8.5h7M8.5 11.5h4"/></symbol>
+    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 3.5h6l-1 5 3.5 3.5v1.5h-11V12L10 8.5z"/><path d="M12 13.5V21"/></symbol>
     <symbol id="i-undo" viewBox="0 0 24 24"><path d="M3.5 12a8.5 8.5 0 1 0 2.6-6.1L3.5 8.5"/><path d="M3.5 3.5v5h5"/></symbol>
-    <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5V6a3 3 0 0 1 3-3h13v15H7a3 3 0 0 0-3 3z"/><path d="M8 7h8M8 11h5"/></symbol>
-    <symbol id="i-swipe" viewBox="0 0 24 24"><path d="M3.5 16c2.5-5 5-7.5 7.5-4.5s5 2.5 7.5-4"/><circle cx="19" cy="6.5" r="1.8"/></symbol>
-    <symbol id="i-trackpad" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="3"/><path d="M12 9v6M9 12h6"/></symbol>
-    <symbol id="i-backspace" viewBox="0 0 24 24"><path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7z"/><path d="m12 9.5 5 5M17 9.5l-5 5"/></symbol>
-    <symbol id="i-numpad" viewBox="0 0 24 24"><rect x="4" y="3.5" width="4" height="4" rx="1"/><rect x="10" y="3.5" width="4" height="4" rx="1"/><rect x="16" y="3.5" width="4" height="4" rx="1"/><rect x="4" y="10" width="4" height="4" rx="1"/><rect x="10" y="10" width="4" height="4" rx="1"/><rect x="16" y="10" width="4" height="4" rx="1"/><rect x="10" y="16.5" width="4" height="4" rx="1"/></symbol>
-    <symbol id="i-smile" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8.5 14.5a4.5 4.5 0 0 0 7 0"/><path d="M9 9.5h.01M15 9.5h.01"/></symbol>
-    <symbol id="i-palette" viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.6-.8 1.6-1.6 0-.9-.7-1.4-.7-2.2 0-.9.7-1.6 1.7-1.6H17a4 4 0 0 0 4-4C21 6.8 17 3 12 3z"/><path d="M7.5 11.5h.01M10 7.5h.01M15 7.5h.01"/></symbol>
-    <symbol id="i-clip" viewBox="0 0 24 24"><rect x="5.5" y="4.5" width="13" height="16.5" rx="2.5"/><path d="M9 4.5V3h6v1.5"/><path d="M9 10h6M9 14h4"/></symbol>
-    <symbol id="i-zap" viewBox="0 0 24 24"><path d="M13 2.5 4.5 13.5h6.5l-1 8 8.5-11h-6.5z"/></symbol>
     <symbol id="i-wave" viewBox="0 0 24 24"><path d="M4 10v4M8 7v10M12 4v16M16 8v8M20 10v4"/></symbol>
-    <symbol id="i-sliders" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></symbol>
-    <symbol id="i-tablet" viewBox="0 0 24 24"><rect x="2.5" y="4" width="13" height="17" rx="2.5"/><rect x="17.5" y="9" width="4.5" height="12" rx="1.5"/><path d="M8 18h2"/></symbol>
-    <symbol id="i-move" viewBox="0 0 24 24"><path d="M12 3v18M3 12h18"/><path d="m9.5 5.5 2.5-2.5 2.5 2.5M9.5 18.5l2.5 2.5 2.5-2.5M5.5 9.5 3 12l2.5 2.5M18.5 9.5 21 12l-2.5 2.5"/></symbol>
-    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></symbol>
-    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4.5 6v6c0 4.6 3.1 7.6 7.5 9 4.4-1.4 7.5-4.4 7.5-9V6z"/><path d="m9 12 2.2 2.2L15.5 10"/></symbol>
+    <symbol id="i-toolbar" viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="10" rx="5"/><path d="M8 12h.01M12 12h.01M16 12h.01"/></symbol>
+    <symbol id="i-apps" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="2"/><rect x="13.5" y="3.5" width="7" height="7" rx="2"/><rect x="3.5" y="13.5" width="7" height="7" rx="2"/><rect x="13.5" y="13.5" width="7" height="7" rx="2"/></symbol>
     <symbol id="i-tap" viewBox="0 0 24 24"><path d="M9 11V5.5a1.75 1.75 0 0 1 3.5 0V10"/><path d="M12.5 9.5a1.75 1.75 0 0 1 3.5 0v1a1.75 1.75 0 0 1 3.5 0V15a6 6 0 0 1-6 6h-1.2a6 6 0 0 1-4.6-2.2L4 15.6a1.7 1.7 0 0 1 2.6-2.2L9 15"/></symbol>
     <symbol id="i-cloudoff" viewBox="0 0 24 24"><path d="M7 18.5a4.5 4.5 0 0 1-.7-8.95A6 6 0 0 1 17.6 9 4.25 4.25 0 0 1 18 18.5z"/><path d="m4 3.5 16 17"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4.5" y="10.5" width="15" height="10.5" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14.5v2.5"/></symbol>
     <symbol id="i-phone" viewBox="0 0 24 24"><rect x="6" y="2.5" width="12" height="19" rx="3"/><path d="M10.5 18.5h3"/></symbol>
-    <symbol id="i-key" viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6.5 10h.01M10 10h.01M14 10h.01M17.5 10h.01M7.5 14h9"/></symbol>
-    <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3.5v11"/><path d="m7.5 10.5 4.5 4.5 4.5-4.5"/><path d="M4.5 19.5h15"/></symbol>
-    <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 4.2v15.6a1 1 0 0 0 1.5.86l13-7.8a1 1 0 0 0 0-1.72l-13-7.8A1 1 0 0 0 6 4.2z"/></symbol>
+    <symbol id="i-tick" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></symbol>
+    <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6 6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4 6 18M18 6l1.4-1.4"/></symbol>
     <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
-    <symbol id="i-pin" viewBox="0 0 24 24"><path d="M9 3.5h6l-1 5 3.5 3.5v1.5h-11V12L10 8.5z"/><path d="M12 13.5V21"/></symbol>
-    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
-    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></symbol>
-    <symbol id="i-hindi" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="15" font-weight="700" fill="currentColor" stroke="none" font-family="sans-serif">अ</text></symbol>
-    <symbol id="spark" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M12 0c.6 6.2 5.8 11.4 12 12-6.2.6-11.4 5.8-12 12-.6-6.2-5.8-11.4-12-12C6.2 11.4 11.4 6.2 12 0z"/></symbol>
+    <symbol id="logo-apple" viewBox="0 0 24 24"><path fill="currentColor" stroke="none" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></symbol>
+    <symbol id="logo-play" viewBox="0 0 24 24">
+      <path stroke="none" fill="#00C3FF" d="M3.9 2.1 13.6 12l-9.7 9.9c-.4-.2-.65-.65-.65-1.2V3.3c0-.55.25-1 .65-1.2z"/>
+      <path stroke="none" fill="#00E07A" d="M3.9 2.1c.35-.2.8-.2 1.25.05L16.9 8.8 13.6 12z"/>
+      <path stroke="none" fill="#FFC400" d="M16.9 8.8l3.55 2c.95.55.95 1.85 0 2.4l-3.55 2L13.6 12z"/>
+      <path stroke="none" fill="#FF3D47" d="M13.6 12l3.3 3.2-11.75 6.65c-.45.25-.9.25-1.25.05z"/>
+    </symbol>
   </defs>
 </svg>
 
-<header class="site-header" id="top">
+<header class="site-header">
   <nav class="wrap nav" aria-label="Main">
     <a class="brand" href="#top" aria-label="KEYBO home">
-      <img src="assets/icon-512.png" alt="" width="38" height="38">
-      <span class="wordmark">Keybo</span>
+      <img src="assets/icon-512.png" alt="" width="34" height="34">
+      <span class="wordmark">KEYBO</span>
     </a>
     <ul class="nav-links" id="nav-links">
       <li><a href="#features">Features</a></li>
-      <li><a href="#tones">Tones</a></li>
+      <li><a href="#how">How it works</a></li>
       <li><a href="#privacy">Privacy</a></li>
       <li><a href="#pricing">Pricing</a></li>
-      <li><a href="#setup">Setup</a></li>
       <li><a href="#faq">FAQ</a></li>
     </ul>
-    <a class="btn btn-lime nav-cta" href="#download">Get KEYBO</a>
-    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Open menu">
+    <button class="theme-btn" type="button" aria-label="Switch to dark theme" title="Light / dark">
+      <svg class="icon moon"><use href="#i-moon"/></svg>
+      <svg class="icon sun"><use href="#i-sun"/></svg>
+    </button>
+    <a class="btn btn-lime" href="#download">Download</a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav-links" aria-label="Menu">
       <svg class="icon"><use href="#i-menu"/></svg>
     </button>
   </nav>
 </header>
 
-<main>
+<main id="top">
 
-<!-- ============ HERO ============ -->
+<!-- Hero -->
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <span class="eyebrow reveal"><span class="dot"><svg viewBox="0 0 24 24"><use href="#spark"/></svg></span>AI keyboard for iPhone, iPad &amp; Android</span>
-      <h1 class="reveal d1">The keyboard that <span class="hl">writes with you</span>.</h1>
-      <p class="lede reveal d2">Reply to any message in the right tone, fix your grammar or translate into 35 languages, right inside your chats, your email and every app you type in. Type Hinglish, get Hindi.</p>
-      <div class="hero-ctas reveal d3">
-        <a class="store-btn" data-appstore href="https://apps.apple.com/app/id6816461506" rel="noopener">
-          <svg class="icon"><use href="#i-download"/></svg>
-          <span><i>Download on the</i><b>App Store</b></span>
-          <em class="soon" style="font-style:normal">18 Oct</em>
+      <span class="pill"><i>AI</i>Keyboard for iPhone, iPad &amp; Android</span>
+      <h1>The keyboard that <span class="hl">writes with you</span>.</h1>
+      <p class="lede">Reply to any message, change its tone, fix your grammar or translate it into 35 languages, in one tap, right inside the app you're typing in.</p>
+      <div class="stores">
+        <a class="store" data-appstore href="https://apps.apple.com/app/id6816461506" rel="noopener" aria-label="Download on the App Store">
+          <svg><use href="#logo-apple"/></svg><span><small>Download on the</small><b>App Store</b></span>
         </a>
-        <a class="store-btn" href="#download">
-          <svg class="icon" style="stroke:none;fill:currentColor"><use href="#i-play"/></svg>
-          <span><i>Get it on</i><b>Google Play</b></span>
-          <em class="soon" style="font-style:normal">Soon</em>
+        <a class="store" href="#download" aria-label="Get it on Google Play">
+          <svg><use href="#logo-play"/></svg><span><small>GET IT ON</small><b>Google Play</b></span>
         </a>
       </div>
-      <div class="hero-meta reveal d3">
-        <span><svg class="icon"><use href="#i-tick"/></svg>Free, with 10 AI actions a day</span>
+      <p class="store-note" data-release-note><b>iPhone &amp; iPad:</b> out 18 October &nbsp;·&nbsp; <b>Android:</b> coming soon</p>
+      <div class="hero-ticks">
+        <span><svg class="icon"><use href="#i-tick"/></svg>Free to start</span>
         <span><svg class="icon"><use href="#i-tick"/></svg>Works in every app</span>
         <span><svg class="icon"><use href="#i-tick"/></svg>Private by design</span>
       </div>
     </div>
-
-    <div class="hero-art" aria-hidden="true">
-      <div class="halo"></div>
-      <div class="ring"></div>
-      <div class="shadow"></div>
-      <video class="keybo" id="hero-keybo" autoplay muted loop playsinline preload="auto" poster="assets/keybo/hero-loop-poster.png" width="1080" height="1080">
-        <source src="assets/keybo/hero-loop.mov" type='video/mp4; codecs="hvc1"'>
-        <source src="assets/keybo/hero-loop.webm" type="video/webm">
-      </video>
-      <svg class="sparkle s1"><use href="#spark"/></svg>
-      <svg class="sparkle s2"><use href="#spark"/></svg>
-      <div class="float f1"><span class="badge"><svg class="icon"><use href="#i-reply"/></svg></span>Reply · tap one</div>
-      <div class="float f2"><span class="badge"><svg class="icon"><use href="#i-wand"/></svg></span>Friendly 😊</div>
-      <div class="float f3"><span class="badge"><svg class="icon"><use href="#i-hindi"/></svg></span>kaise ho → <span class="dev">कैसे हो</span></div>
+    <div class="hero-art" id="hero-art">
+      <img src="assets/keybo/hero-still-720.png" srcset="assets/keybo/hero-still-720.png 720w, assets/keybo/hero-loop-poster.png 1080w" sizes="(max-width: 900px) 300px, 480px" alt="KEYBO, the keyboard mascot" width="720" height="720" fetchpriority="high">
     </div>
   </div>
 </section>
 
-<div class="strip" aria-hidden="true">
-  <div class="strip-track">
-    <span><svg><use href="#spark"/></svg>Reply in one tap</span>
-    <span><svg><use href="#spark"/></svg>15 tones</span>
-    <span><svg><use href="#spark"/></svg>Fix spelling &amp; grammar</span>
-    <span><svg><use href="#spark"/></svg>Translate into 35 languages</span>
-    <span><svg><use href="#spark"/></svg>Hinglish → हिंदी</span>
-    <span><svg><use href="#spark"/></svg>Swipe typing</span>
-    <span><svg><use href="#spark"/></svg>1,097 emoji</span>
-    <span><svg><use href="#spark"/></svg>11 themes</span>
-    <span><svg><use href="#spark"/></svg>iPhone &amp; iPad</span>
-    <span><svg><use href="#spark"/></svg>Private by design</span>
-    <span><svg><use href="#spark"/></svg>Reply in one tap</span>
-    <span><svg><use href="#spark"/></svg>15 tones</span>
-    <span><svg><use href="#spark"/></svg>Fix spelling &amp; grammar</span>
-    <span><svg><use href="#spark"/></svg>Translate into 35 languages</span>
-    <span><svg><use href="#spark"/></svg>Hinglish → हिंदी</span>
-    <span><svg><use href="#spark"/></svg>Swipe typing</span>
-    <span><svg><use href="#spark"/></svg>1,097 emoji</span>
-    <span><svg><use href="#spark"/></svg>11 themes</span>
-    <span><svg><use href="#spark"/></svg>iPhone &amp; iPad</span>
-    <span><svg><use href="#spark"/></svg>Private by design</span>
-  </div>
-</div>
-
-<!-- ============ AI TOOLS ============ -->
-<section class="section" id="features">
+<!-- Features -->
+<section class="section alt" id="features">
   <div class="wrap">
-    <div class="section-head center reveal">
-      <span class="kicker">AI, one tap away</span>
-      <h2>Everything you write, <span class="lime">better in a tap</span>.</h2>
-      <p>A row of AI buttons sits right above your keys. No copying into another app and no switching back. Tap, pick, send.</p>
+    <div class="head reveal">
+      <span class="kicker">What KEYBO does</span>
+      <h2>Everything you write, <span class="hl">better in one tap</span>.</h2>
+      <p>A row of AI buttons sits right above your keys. No copying into another app, no switching back.</p>
     </div>
-
-    <div class="tools">
-      <article class="card tool reveal">
-        <span class="ic"><svg class="icon"><use href="#i-reply"/></svg></span>
-        <h3>Reply</h3>
-        <p>Copy the message you got, tap Reply, and pick a short, medium or long answer written in the tone you want.</p>
-        <span class="tag">Short · Medium · Long</span>
-      </article>
-      <article class="card tool reveal d1">
-        <span class="ic"><svg class="icon"><use href="#i-wand"/></svg></span>
-        <h3>Tone</h3>
-        <p>Say it the way you mean it. 15 tones, from Friendly, Professional and Hinglish to Polite, Funny, Confident and Romantic.</p>
-        <span class="tag">15 tones · 3 versions to pick from</span>
-      </article>
-      <article class="card tool reveal d2">
-        <span class="ic"><svg class="icon"><use href="#i-check"/></svg></span>
-        <h3>Fix</h3>
-        <p>Spelling, grammar and punctuation, cleaned up in one tap. Your words stay yours; the mistakes just disappear.</p>
-        <span class="tag">Spelling · Grammar · Punctuation</span>
-      </article>
-      <article class="card tool reveal">
-        <span class="ic"><svg class="icon"><use href="#i-sparkles"/></svg></span>
-        <h3>Rewrite</h3>
-        <p>Clearer, smoother, more confident. Rewrite gives you three versions and you keep the one that sounds like you.</p>
-        <span class="tag">3 versions</span>
-      </article>
-      <article class="card tool reveal d1">
-        <span class="ic"><svg class="icon"><use href="#i-globe"/></svg></span>
-        <h3>Translate</h3>
-        <p>Into 35 languages, from the keyboard itself. Translate the whole message, or select a part and translate only that.</p>
-        <span class="tag">35 languages</span>
-      </article>
-      <article class="card tool reveal d2">
-        <span class="ic"><svg class="icon"><use href="#i-undo"/></svg></span>
-        <h3>Undo &amp; redo</h3>
-        <p>Changed your mind? Take back the last AI changes, up to ten of them, and put them back again.</p>
-        <span class="tag">Up to 10 steps</span>
-      </article>
+    <div class="features">
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-reply"/></svg></div><h3>Smart Reply</h3><p>Copy the message you got, tap Reply, and pick a short, medium or long answer, ready to send.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-wand"/></svg></div><h3>15 tones</h3><p>Friendly, Professional, Polite, Funny, Confident, Romantic and more, with three versions to pick from.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-own"/></svg></div><h3>Your own tones</h3><p>Name a tone, describe how it should sound, and it becomes a button on your keyboard.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-check"/></svg></div><h3>Fix grammar</h3><p>Spelling, grammar and punctuation corrected in one tap. Your words stay yours.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-sparkles"/></svg></div><h3>Rewrite</h3><p>Clearer, smoother, more confident. Get three versions and keep the one that sounds like you.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-globe"/></svg></div><h3>Translate</h3><p>Into 35 languages, the whole message or only the part you select.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-chat"/></svg></div><h3>Hinglish</h3><p>Turn any message into natural, everyday Hinglish, the way you'd actually text it.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-pin"/></svg></div><h3>Sticky tones <span class="tag">Premium</span></h3><p>Pin Professional or Friendly and every reply keeps that tone until you change it.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-undo"/></svg></div><h3>Undo &amp; redo</h3><p>Didn't like the change? Take back up to ten AI edits, and bring them back again.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-wave"/></svg></div><h3>Voice notes to text</h3><p>Share a voice note to KEYBO and it's transcribed on your phone. The audio never leaves it.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-toolbar"/></svg></div><h3>Your AI toolbar</h3><p>Put the AI buttons you use most first, and your favourite tone always one tap away.</p></article>
+      <article class="card feature reveal"><div class="ic"><svg class="icon"><use href="#i-apps"/></svg></div><h3>Works in every app</h3><p>Chats, email, notes, social: anywhere there's a text box, KEYBO is there.</p></article>
     </div>
   </div>
 </section>
 
-<!-- ============ REPLY DEMO ============ -->
-<section class="section" id="reply" style="padding-top:0">
-  <div class="wrap split">
-    <div class="copy reveal">
-      <img class="art" src="assets/keybo/pose-reply.png" alt="" loading="lazy" width="900" height="900">
-      <span class="kicker">Reply</span>
-      <h2>The right answer, before you've even thought of one.</h2>
-      <p>Got a message you don't know how to answer? Copy it, tap <b>Reply</b>, and KEYBO writes three answers for you to pick from. Tap one and it's in your message box, ready to send.</p>
-      <ul class="ticks">
-        <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>Short, medium or long:</b> a quick "on my way" or a proper answer.</span></li>
-        <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>In your tone:</b> pin Friendly, Professional or Hinglish and every reply keeps it.</span></li>
-        <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>Works everywhere:</b> chats, email, comments, anywhere there's a text box.</span></li>
-      </ul>
-    </div>
-
-    <div class="demo reveal d1" id="reply-demo">
-      <div class="demo-bar"><span class="av" style="font-weight:700;font-size:15px">R</span><span><b>Riya</b>Copied message</span></div>
-      <div class="thread" id="reply-thread">
-        <div class="bubble in">Are you coming tonight? Everyone's asking about you 🎉</div>
+<!-- Demos -->
+<section class="section" id="demos">
+  <div class="wrap">
+    <div class="split">
+      <div class="copy reveal">
+        <span class="kicker">Smart Reply</span>
+        <h2>The right answer, <span class="hl">in one tap</span>.</h2>
+        <p>Got a message and don't know what to say? Copy it, tap <b>Reply</b>, and KEYBO writes answers for you to pick from.</p>
+        <ul class="ticks">
+          <li><b>Short, medium or long:</b> a quick "on my way" or a proper answer.</li>
+          <li><b>In your tone:</b> friendly for friends, professional for work.</li>
+          <li><b>Tap and it's in:</b> the reply lands in your message box, ready to send.</li>
+        </ul>
       </div>
-      <div class="kb-strip" role="toolbar" aria-label="KEYBO AI buttons">
-        <button class="kb-btn on" type="button">Reply</button>
-        <button class="kb-btn" type="button" tabindex="-1">Friendly ▾</button>
-        <button class="kb-btn" type="button" tabindex="-1">Fix</button>
-        <button class="kb-btn" type="button" tabindex="-1">Rewrite</button>
-        <button class="kb-btn" type="button" tabindex="-1">Translate</button>
-      </div>
-      <div class="replies">
-        <button class="reply" type="button"><small>Short</small>Yes! See you there 🎉</button>
-        <button class="reply" type="button"><small>Medium</small>Yes, I'll be there! Running a little late, see you by 9.</button>
-        <button class="reply" type="button"><small>Long <span class="pro">Premium</span></small>Yes, I'm coming! I'm stuck at work a bit longer, so I'll be there by 9. Save me a seat, and tell everyone I said hi!</button>
-      </div>
-      <p class="demo-note">Try it: tap a reply. These are examples; KEYBO writes fresh ones for every message.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ TONES DEMO ============ -->
-<section class="section" id="tones" style="padding-top:0">
-  <div class="wrap split flip">
-    <div class="copy reveal">
-      <img class="art" src="assets/keybo/pose-tones.png" alt="" loading="lazy" width="900" height="900">
-      <span class="kicker">15 tones</span>
-      <h2>Same message. <span class="lime">Exactly the right tone.</span></h2>
-      <p>Too blunt for your boss, too stiff for your friends? Type it once and let KEYBO say it the way it should sound. You get three versions and keep the one you like.</p>
-      <div class="tone-cloud">
-        <span class="chip">😊 Friendly</span><span class="chip">💼 Professional</span><span class="chip">🇮🇳 Hinglish</span>
-        <span class="chip">🙏 Polite</span><span class="chip">🤝 Respectful</span><span class="chip">😄 Funny</span>
-        <span class="chip">⚡ Confident</span><span class="chip">🤗 Caring</span><span class="chip">😔 Apologetic</span>
-        <span class="chip">🙌 Grateful</span><span class="chip">❤️ Romantic</span><span class="chip">😏 Flirty</span>
-        <span class="chip">🙃 Sarcastic</span><span class="chip">✂️ Concise</span><span class="chip">😤 Angry</span>
+      <div class="card demo reveal" id="reply-demo">
+        <div class="demo-top"><span class="av">R</span><span><b>Riya</b>Message you copied</span></div>
+        <div class="thread" id="reply-thread"><div class="bubble in">Are you coming tonight? Everyone's asking about you 🎉</div></div>
+        <div class="strip" aria-hidden="true"><span class="chip on static">Reply</span><span class="chip static">Friendly ▾</span><span class="chip static">Fix</span><span class="chip static">Rewrite</span><span class="chip static">Translate</span></div>
+        <div class="replies">
+          <button class="reply" type="button"><small>Short</small>Yes! See you there 🎉</button>
+          <button class="reply" type="button"><small>Medium</small>Yes, I'll be there! Running a little late, see you by 9.</button>
+          <button class="reply" type="button"><small>Long <span class="tag">Premium</span></small>Yes, I'm coming! I'm stuck at work a bit longer, so I'll be there by 9. Save me a seat, and tell everyone I said hi!</button>
+        </div>
+        <p class="note">Tap a reply to send it. Examples only; KEYBO writes fresh ones for every message.</p>
       </div>
     </div>
 
-    <div class="demo reveal d1" id="tone-demo">
-      <div class="demo-bar"><span class="av">✍️</span><span><b>Your message</b>Tap a tone below</span></div>
-      <div class="field" id="tone-field" aria-live="polite">hey can we move the meeting to tomorrow, something came up<span class="caret"></span></div>
-      <div class="tones" role="group" aria-label="Tones">
-        <button class="kb-btn on" type="button" data-tone="original">Original</button>
-        <button class="kb-btn" type="button" data-tone="friendly">😊 Friendly</button>
-        <button class="kb-btn" type="button" data-tone="professional">💼 Professional</button>
-        <button class="kb-btn" type="button" data-tone="hinglish">🇮🇳 Hinglish</button>
-        <button class="kb-btn" type="button" data-tone="polite">🙏 Polite</button>
-        <button class="kb-btn" type="button" data-tone="funny">😄 Funny</button>
-        <button class="kb-btn" type="button" data-tone="confident">⚡ Confident</button>
-        <button class="kb-btn" type="button" data-tone="concise">✂️ Concise</button>
+    <div class="split flip">
+      <div class="copy reveal">
+        <span class="kicker">Tones</span>
+        <h2>Same message. <span class="hl">The right tone.</span></h2>
+        <p>Too blunt for your boss, too stiff for your friends? Type it once and let KEYBO say it the way it should sound.</p>
+        <ul class="ticks">
+          <li><b>15 tones</b>, from Friendly and Professional to Funny and Romantic.</li>
+          <li><b>Three versions</b> every time; keep the one you like.</li>
+          <li><b>Make your own:</b> describe a tone, like "calm and to the point", and it's yours.</li>
+        </ul>
       </div>
-      <p class="demo-note">Examples of what each tone does. In the app you get three fresh versions to pick from.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ============ HINGLISH + TRANSLATE ============ -->
-<section class="section" id="hinglish" style="padding-top:0">
-  <div class="wrap split">
-    <div class="copy reveal">
-      <img class="art" src="assets/keybo/pose-hinglish.png" alt="" loading="lazy" width="900" height="900">
-      <span class="kicker">Hinglish &amp; Translate</span>
-      <h2>Type the way you talk. <span class="lime">Read it in any language.</span></h2>
-      <p>Type Hindi in Roman letters, like "kaise ho", and KEYBO gives you हिंदी. Or write in English and send it in any of 35 languages, straight from the keyboard.</p>
-      <ul class="ticks">
-        <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>Hinglish to Hindi:</b> Devanagari typing from Roman letters, no Hindi keyboard to learn.</span></li>
-        <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>Hinglish tone:</b> turn any message into natural, everyday Hinglish.</span></li>
-        <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>35 languages:</b> translate the whole message or only the part you select.</span></li>
-      </ul>
+      <div class="card demo reveal" id="tone-demo">
+        <div class="demo-top"><span class="av">✍️</span><span><b>Your message</b>Tap a tone</span></div>
+        <div class="field" id="tone-field" aria-live="polite">hey can we move the meeting to tomorrow, something came up</div>
+        <div class="chips" role="group" aria-label="Tones">
+          <button class="chip on" type="button" data-tone="original">Original</button>
+          <button class="chip" type="button" data-tone="friendly">😊 Friendly</button>
+          <button class="chip" type="button" data-tone="professional">💼 Professional</button>
+          <button class="chip" type="button" data-tone="polite">🙏 Polite</button>
+          <button class="chip" type="button" data-tone="hinglish">Hinglish</button>
+          <button class="chip" type="button" data-tone="funny">😄 Funny</button>
+          <button class="chip" type="button" data-tone="concise">✂️ Concise</button>
+        </div>
+        <p class="note">Examples of what each tone does.</p>
+      </div>
     </div>
 
-    <div class="demo hinglish reveal d1">
-      <div class="demo-bar"><span class="av">🇮🇳</span><span><b>Hinglish → Hindi</b>Type in Roman, get Devanagari</span></div>
-      <div class="field" id="hi-field" aria-live="polite"><span id="hi-typed"></span><span class="caret"></span></div>
-      <div class="suggest" aria-hidden="true"><span id="hi-s1">kaise</span><span class="hit" id="hi-s2">कैसे हो</span><span id="hi-s3">kaisa</span></div>
-      <div class="demo-bar" style="margin:10px 0 0"><span class="av">🌍</span><span><b>Translate</b>"See you tomorrow!"</span></div>
-      <div class="lang-row" role="group" aria-label="Languages">
-        <button class="chip on" type="button" data-t="कल मिलते हैं!">Hindi</button>
-        <button class="chip" type="button" data-t="¡Nos vemos mañana!">Spanish</button>
-        <button class="chip" type="button" data-t="À demain !">French</button>
-        <button class="chip" type="button" data-t="また明日！">Japanese</button>
-        <button class="chip" type="button" data-t="কাল দেখা হবে!">Bengali</button>
-        <button class="chip" type="button" data-t="أراك غدًا!">Arabic</button>
-        <button class="chip" type="button" data-t="Bis morgen!">German</button>
+    <div class="split">
+      <div class="copy reveal">
+        <span class="kicker">Translate</span>
+        <h2>Write in yours. <span class="hl">Send in theirs.</span></h2>
+        <p>Translate a message into any of 35 languages without leaving the chat. Select a few words to translate only those.</p>
+        <ul class="ticks">
+          <li><b>35 languages</b>, including Hindi, Bengali, Spanish, Arabic and Japanese.</li>
+          <li><b>Whole message or a selection</b>, straight from the keyboard.</li>
+          <li><b>Undo</b> brings your original back in a tap.</li>
+        </ul>
       </div>
-      <div class="translation" id="translation" aria-live="polite">कल मिलते हैं!</div>
+      <div class="card demo reveal" id="translate-demo">
+        <div class="demo-top"><span class="av">🌍</span><span><b>See you tomorrow!</b>Pick a language</span></div>
+        <div class="chips" role="group" aria-label="Languages">
+          <button class="chip on" type="button" data-t="कल मिलते हैं!">Hindi</button>
+          <button class="chip" type="button" data-t="¡Nos vemos mañana!">Spanish</button>
+          <button class="chip" type="button" data-t="À demain !">French</button>
+          <button class="chip" type="button" data-t="また明日！">Japanese</button>
+          <button class="chip" type="button" data-t="কাল দেখা হবে!">Bengali</button>
+          <button class="chip" type="button" data-t="أراك غدًا!">Arabic</button>
+        </div>
+        <div class="label">Translation</div>
+        <div class="out-line" id="translation" aria-live="polite">कल मिलते हैं!</div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============ SCREENS ============ -->
-<section class="section night" id="screens">
-  <div class="wrap" style="position:relative">
-    <div class="section-head center reveal">
-      <span class="kicker">See it in action</span>
-      <h2>Built into your keyboard. <span class="lime">Not another app.</span></h2>
-      <p>KEYBO is a full keyboard, with the AI right where you're already typing.</p>
+<!-- Screens -->
+<section class="section alt" id="screens">
+  <div class="wrap">
+    <div class="head reveal">
+      <span class="kicker">In the app</span>
+      <h2>Built into your keyboard. <span class="hl">Not another app.</span></h2>
     </div>
     <div class="shots">
-      <div class="shot reveal"><img src="assets/screens/iphone-1-replies.jpg" alt="KEYBO writing a reply to a chat message on iPhone" loading="lazy" width="506" height="1100"></div>
-      <div class="shot reveal d1"><img src="assets/screens/iphone-2-tones.jpg" alt="KEYBO's tone list with three versions of a message" loading="lazy" width="506" height="1100"></div>
-      <div class="shot reveal d2"><img src="assets/screens/iphone-3-hinglish.jpg" alt="Typing Hinglish and getting Hindi with KEYBO" loading="lazy" width="506" height="1100"></div>
+      <div class="shot reveal"><img src="assets/screens/iphone-1-replies.jpg" alt="KEYBO writing a reply on iPhone" loading="lazy" decoding="async" width="506" height="1100"></div>
+      <div class="shot reveal"><img src="assets/screens/iphone-2-tones.jpg" alt="KEYBO's tones with three versions of a message" loading="lazy" decoding="async" width="506" height="1100"></div>
+      <div class="shot reveal"><img src="assets/screens/iphone-3-hinglish.jpg" alt="Hinglish with KEYBO" loading="lazy" decoding="async" width="506" height="1100"></div>
     </div>
   </div>
 </section>
 
-<!-- ============ TYPING ============ -->
-<section class="section" id="typing">
+<!-- How it works -->
+<section class="section" id="how">
   <div class="wrap">
-    <div class="section-head reveal">
-      <span class="kicker">Typing that keeps up</span>
-      <h2>A great keyboard first. <span class="lime">AI second.</span></h2>
-      <p>Even without a single AI tap, KEYBO is fast, smart and comfortable to type on. Suggestions and autocorrect run on your phone.</p>
+    <div class="head reveal">
+      <span class="kicker">How it works</span>
+      <h2>Type. Tap. <span class="hl">Send.</span></h2>
     </div>
-    <div class="feats">
-      <article class="card feat reveal"><span class="num lime">37,548</span><h3>Word dictionary</h3><p>Suggestions and completions as you type, plus next-word and next-phrase predictions.</p></article>
-      <article class="card feat reveal d1"><svg class="icon"><use href="#i-swipe"/></svg><h3>Swipe to type</h3><p>Glide from letter to letter and lift. KEYBO works out the word.</p></article>
-      <article class="card feat reveal d2"><svg class="icon"><use href="#i-trackpad"/></svg><h3>Space-bar trackpad</h3><p>Hold the space bar and slide to move the cursor exactly where you want it.</p></article>
-      <article class="card feat reveal d3"><svg class="icon"><use href="#i-backspace"/></svg><h3>Smart backspace</h3><p>Hold it down and it speeds up the longer you hold it.</p></article>
-      <article class="card feat reveal"><svg class="icon"><use href="#i-numpad"/></svg><h3>Number pads</h3><p>A proper number, decimal and phone pad for codes, PINs and amounts, just like the one you know.</p></article>
-      <article class="card feat reveal d1"><span class="num lime">1,097</span><h3>Emoji</h3><p>In 10 categories, one tap away from your letters.</p></article>
-      <article class="card feat reveal d2"><svg class="icon"><use href="#i-hindi"/></svg><h3>Hindi typing</h3><p>Devanagari from Roman letters. Type the way you text, read it in Hindi.</p></article>
-      <article class="card feat reveal d3"><svg class="icon"><use href="#i-tablet"/></svg><h3>iPhone &amp; iPad</h3><p>One app for both, with the keyboard laid out for whichever screen you're on.</p></article>
+    <div class="steps3">
+      <article class="card step reveal"><h3>Type, or copy a message</h3><p>Write in any app as usual. To answer someone, copy their message first.</p></article>
+      <article class="card step reveal"><h3>Tap a KEYBO button</h3><p>Reply, a tone, Fix, Rewrite or Translate, right above your keys.</p></article>
+      <article class="card step reveal"><h3>Pick it and send</h3><p>Choose the version you like. Not quite right? Undo and try another.</p></article>
     </div>
 
-    <div class="section-head reveal" style="margin-top:110px">
-      <span class="kicker">Make it yours</span>
-      <h2>Your keyboard, <span class="lime">your way</span>.</h2>
-    </div>
-    <div class="feats">
-      <article class="card feat reveal"><span class="num lime">11</span><h3>Themes</h3><p>Eleven looks, light and dark, with transparency if you like your wallpaper showing.</p></article>
-      <article class="card feat reveal d1"><svg class="icon"><use href="#i-sliders"/></svg><h3>Height &amp; width</h3><p>Sliders to size the keyboard to your hands, not the other way round.</p></article>
-      <article class="card feat reveal d2"><svg class="icon"><use href="#i-move"/></svg><h3>Move things around</h3><p>Put the symbols and AI buttons you use most exactly where your thumb expects them.</p></article>
-      <article class="card feat reveal d3"><svg class="icon"><use href="#i-clip"/></svg><h3>Clipboard</h3><p>Keeps what you copy, so you can paste it again later.</p></article>
-      <article class="card feat reveal"><svg class="icon"><use href="#i-zap"/></svg><h3>Text shortcuts</h3><p>Type a short code and get your address, email or a line you send all the time.</p></article>
-      <article class="card feat reveal d1 wide"><svg class="icon"><use href="#i-wave"/></svg><div><h3>Voice notes to text</h3><p>Share a voice note to KEYBO and it's transcribed on your device. The audio never leaves your phone.</p></div></article>
-      <article class="card feat reveal d2"><svg class="icon"><use href="#i-pin"/></svg><h3>Sticky tones</h3><p>Pin a tone and every reply keeps it, until you take it off. (Premium)</p></article>
+    <div class="card setup reveal">
+      <div class="setup-top">
+        <h3>Set up in a minute</h3>
+        <div class="tabs" role="tablist" aria-label="Device">
+          <button role="tab" type="button" aria-selected="true" aria-controls="setup-ios" id="tab-ios">iPhone &amp; iPad</button>
+          <button role="tab" type="button" aria-selected="false" aria-controls="setup-android" id="tab-android">Android</button>
+        </div>
+      </div>
+      <div role="tabpanel" id="setup-ios" aria-labelledby="tab-ios">
+        <div class="setup-cols">
+          <div><h4>1. Allow KEYBO</h4><ol><li>Open <b>Settings</b> from the KEYBO app</li><li>Tap <b>Keyboards</b> and turn on <b>KEYBO</b></li><li>Turn on <b>Allow Full Access</b>, then tap <b>Allow</b></li></ol></div>
+          <div><h4>2. Choose KEYBO</h4><ol><li>Tap any text box so a keyboard opens</li><li><b>Touch and hold</b> the 🌐 globe key</li><li>Slide to <b>KEYBO</b> and let go</li></ol></div>
+        </div>
+        <p class="hint">Full Access is only for the AI buttons, which need the internet. Typing works without it.</p>
+      </div>
+      <div role="tabpanel" id="setup-android" aria-labelledby="tab-android" hidden>
+        <div class="setup-cols">
+          <div><h4>1. Turn it on</h4><ol><li>Open KEYBO and tap <b>Open keyboard settings</b></li><li>Switch <b>KEYBO</b> on</li><li>Android shows its standard keyboard notice; tap <b>OK</b></li></ol></div>
+          <div><h4>2. Make it your keyboard</h4><ol><li>Back in the app, tap <b>Choose KEYBO</b></li><li>Pick <b>KEYBO</b> from the list</li><li>Type something and tap <b>Fix</b> to try it</li></ol></div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ============ PRIVACY ============ -->
-<section class="section night" id="privacy">
-  <div class="wrap privacy-grid" style="position:relative">
-    <div class="privacy-art reveal" aria-hidden="true">
-      <img src="assets/keybo/pose-privacy.png" alt="" width="900" height="900" loading="lazy">
-    </div>
+<!-- Privacy -->
+<section class="section alt" id="privacy">
+  <div class="wrap privacy">
+    <img class="privacy-art reveal" src="assets/keybo/pose-privacy-600.png" alt="KEYBO standing guard with a shield" loading="lazy" decoding="async" width="600" height="600">
     <div>
-      <div class="section-head reveal" style="margin-bottom:36px">
+      <div class="head reveal">
         <span class="kicker">Private by design</span>
-        <h2>Your words are yours. <span class="lime">Full stop.</span></h2>
-        <p>A keyboard sees everything you type, so we built KEYBO to look away. Here's exactly what happens to your text.</p>
+        <h2>Your words <span class="hl">stay yours</span>.</h2>
+        <p>A keyboard sees everything you type, so KEYBO is built to look away.</p>
       </div>
       <div class="promises">
-        <article class="card promise reveal"><svg class="icon"><use href="#i-tap"/></svg><h3>Sent only when you tap</h3><p>Text goes to our server only when you tap an AI button, over an encrypted connection. Never while you type.</p></article>
-        <article class="card promise reveal d1"><svg class="icon"><use href="#i-cloudoff"/></svg><h3>Not stored, never sold</h3><p>Your text is used to write the answer and isn't kept after the answer comes back. No keystroke logging.</p></article>
-        <article class="card promise reveal d2"><svg class="icon"><use href="#i-lock"/></svg><h3>Passwords stay sealed</h3><p>Nothing you type in a password field is ever read or sent. Not once.</p></article>
-        <article class="card promise reveal d3"><svg class="icon"><use href="#i-phone"/></svg><h3>Learning stays on your phone</h3><p>Words the keyboard learns stay on your device, and you can erase them in Settings anytime.</p></article>
+        <article class="card promise reveal"><svg class="icon"><use href="#i-tap"/></svg><h3>Sent only when you tap</h3><p>Text leaves your phone only when you tap an AI button, over an encrypted connection. Never while you type.</p></article>
+        <article class="card promise reveal"><svg class="icon"><use href="#i-cloudoff"/></svg><h3>Not stored, never sold</h3><p>Your text is used to write the answer and isn't kept afterwards. No keystroke logging.</p></article>
+        <article class="card promise reveal"><svg class="icon"><use href="#i-lock"/></svg><h3>Passwords stay sealed</h3><p>Nothing typed in a password field is ever read or sent.</p></article>
+        <article class="card promise reveal"><svg class="icon"><use href="#i-phone"/></svg><h3>Learning stays on your phone</h3><p>Words KEYBO learns stay on your device, and you can erase them anytime.</p></article>
       </div>
-      <p class="reveal" style="margin-top:26px;color:var(--night-muted);font-size:15px">The keys work fully without Full Access; only the AI buttons need it. Read the full <a href="https://heyshubi.github.io/privacy/ios/" style="color:var(--lime);font-weight:600">privacy policy</a>.</p>
+      <p class="more reveal">The keys work without Full Access; only the AI buttons need it. <a href="https://heyshubi.github.io/privacy/ios/">Read the privacy policy</a></p>
     </div>
   </div>
 </section>
 
-<!-- ============ MEET KEYBO ============ -->
-<section class="section" id="keybo">
+<!-- Pricing -->
+<section class="section" id="pricing">
   <div class="wrap">
-    <div class="section-head center reveal">
-      <span class="kicker">Meet KEYBO</span>
-      <h2>Your little <span class="lime">typing buddy</span>.</h2>
-      <p>KEYBO lives on the app's home page. It sips chai, gets to work, dances, and giggles when you tap it.</p>
-    </div>
-    <div class="meet">
-      <article class="card buddy reveal"><div class="stage"><video class="loop" muted loop playsinline preload="none" poster="assets/keybo/clip-idle.png" width="720" height="720" aria-label="KEYBO sipping chai from a kulhad"><source src="assets/keybo/loop-chai.mov" type='video/mp4; codecs="hvc1"'><source src="assets/keybo/loop-chai.webm" type="video/webm"></video></div><h3>Chai break</h3><p>A sip, a sigh, back to typing.</p></article>
-      <article class="card buddy reveal d1"><div class="stage"><video class="loop" muted loop playsinline preload="none" poster="assets/keybo/clip-idle.png" width="720" height="720" aria-label="KEYBO typing busily on a little laptop"><source src="assets/keybo/loop-laptop.mov" type='video/mp4; codecs="hvc1"'><source src="assets/keybo/loop-laptop.webm" type="video/webm"></video></div><h3>Deep work</h3><p>Busy typing so you don't have to.</p></article>
-      <article class="card buddy reveal d2"><div class="stage"><video class="loop" muted loop playsinline preload="none" poster="assets/keybo/clip-idle.png" width="720" height="720" aria-label="KEYBO thumb-typing a reply on a phone"><source src="assets/keybo/loop-phone.mov" type='video/mp4; codecs="hvc1"'><source src="assets/keybo/loop-phone.webm" type="video/webm"></video></div><h3>Reply sent</h3><p>Thumb-types, sends, nods.</p></article>
-      <article class="card buddy reveal d3"><div class="stage"><video class="loop" muted loop playsinline preload="none" poster="assets/keybo/clip-idle.png" width="720" height="720" aria-label="KEYBO dancing"><source src="assets/keybo/loop-dance.mov" type='video/mp4; codecs="hvc1"'><source src="assets/keybo/loop-dance.webm" type="video/webm"></video></div><h3>Dance break</h3><p>Two bars at 120 bpm.</p></article>
-    </div>
-  </div>
-</section>
-
-<!-- ============ PRICING ============ -->
-<section class="section" id="pricing" style="padding-top:0">
-  <div class="wrap">
-    <div class="section-head center reveal">
+    <div class="head reveal">
       <span class="kicker">Pricing</span>
-      <h2>Free to start. <span class="lime">Unlimited when you want it.</span></h2>
-      <p>The whole keyboard is free, with 10 AI actions every day. Go Premium when you can't stop tapping.</p>
+      <h2>Free to start. <span class="hl">Unlimited when you want.</span></h2>
     </div>
     <div class="plans">
       <article class="card plan reveal">
-        <span class="label">Free</span>
+        <span class="name">Free</span>
         <div class="price">₹0</div>
-        <p class="sub">Free forever. No card needed.</p>
+        <p class="sub">Free forever, no card needed.</p>
         <ul class="ticks">
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span>The full keyboard: swipe, suggestions, emoji, themes</span></li>
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>10 AI actions a day</b> across Reply, Tone, Fix, Rewrite and Translate</span></li>
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span>Short and medium replies</span></li>
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span>Hinglish to Hindi typing</span></li>
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span>Clipboard, text shortcuts, voice notes to text</span></li>
+          <li><b>10 AI actions a day</b> across Reply, Tone, Fix, Rewrite and Translate</li>
+          <li>All 15 tones and your own tones</li>
+          <li>Short and medium replies</li>
+          <li>Voice notes to text</li>
         </ul>
-        <a class="btn btn-ghost" href="#download">Get KEYBO free</a>
+        <a class="btn btn-line" href="#download">Get KEYBO free</a>
       </article>
-
-      <article class="card plan premium reveal d1">
-        <img class="crowned" src="assets/keybo/pose-premium.png" alt="" aria-hidden="true" loading="lazy" width="900" height="900">
-        <span class="label">Premium</span>
+      <article class="card plan pro reveal">
+        <img src="assets/keybo/pose-premium-500.png" alt="" aria-hidden="true" loading="lazy" decoding="async" width="500" height="500">
+        <span class="name">Premium</span>
         <div class="price">₹499<small> / month</small></div>
-        <p class="alt">or ₹4,749 / year</p>
+        <p class="sub">or ₹4,749 a year</p>
         <ul class="ticks">
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>Unlimited AI, every day:</b> no daily limit on anything</span></li>
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>All 15 tones</b>, as often as you like, three versions each</span></li>
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>Sticky tones:</b> pin Professional or Flirty and every reply keeps it</span></li>
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>Long replies</b> for messages that need more than a line</span></li>
-          <li><span class="tk"><svg class="icon"><use href="#i-tick"/></svg></span><span><b>Translate, Fix &amp; Rewrite</b> without limits</span></li>
+          <li><b>Unlimited AI</b>, every day</li>
+          <li><b>Sticky tones</b> that stay on for every reply</li>
+          <li><b>Long replies</b> for messages that need more</li>
+          <li>Translate, Fix and Rewrite without limits</li>
         </ul>
-        <a class="btn" href="#download">Start with KEYBO</a>
+        <a class="btn btn-lime" href="#download">Go Premium in the app</a>
       </article>
     </div>
-    <p class="fine reveal">Prices shown are for iPhone and iPad in India; the app shows your local price before you pay. Premium is an auto-renewing subscription, charged to your Apple ID or Google account when you confirm. It renews unless you cancel at least 24 hours before the end of the period. Manage or cancel it anytime in your store account's subscription settings.</p>
+    <p class="fine reveal">Prices are for India on iPhone and iPad; the app shows your local price before you pay. Premium is an auto-renewing subscription. It renews unless cancelled at least 24 hours before the period ends, and you can manage it anytime in your App Store or Google Play subscriptions.</p>
   </div>
 </section>
 
-<!-- ============ SETUP ============ -->
-<section class="section night" id="setup">
-  <div class="wrap" style="position:relative">
-    <div class="section-head center with-art reveal">
-      <img class="head-art" src="assets/keybo/pose-setup.png" alt="" loading="lazy" width="900" height="900">
-      <span class="kicker">Setup</span>
-      <h2>Ready in <span class="lime">under a minute</span>.</h2>
-      <p>The app walks you through it step by step. Here's what it looks like.</p>
-    </div>
-    <div style="text-align:center" class="reveal">
-      <div class="tabs" role="tablist" aria-label="Device">
-        <button role="tab" type="button" aria-selected="true" aria-controls="setup-ios" id="tab-ios">iPhone &amp; iPad</button>
-        <button role="tab" type="button" aria-selected="false" aria-controls="setup-android" id="tab-android">Android</button>
-      </div>
-    </div>
-
-    <div class="setup-panel" id="setup-ios" role="tabpanel" aria-labelledby="tab-ios">
-      <div class="steps">
-        <article class="card step reveal">
-          <header><span>Step 1 of 2</span></header>
-          <h3 style="margin-bottom:20px">Allow KEYBO</h3>
-          <ol>
-            <li>Open <b>Settings</b> (the KEYBO app has a button for it)</li>
-            <li>Tap <b>Keyboards</b></li>
-            <li>Turn on <b>KEYBO</b></li>
-            <li>Turn on <b>Allow Full Access</b>, then tap <b>Allow</b></li>
-            <li>Come back to KEYBO</li>
-          </ol>
-          <p class="note">Full Access is only for the AI buttons, which need the internet. Typing works without it.</p>
-        </article>
-        <article class="card step reveal d1">
-          <header><span>Step 2 of 2</span></header>
-          <h3 style="margin-bottom:20px">Choose KEYBO</h3>
-          <ol>
-            <li>Tap any text box so a keyboard opens</li>
-            <li><b>Touch and hold</b> the 🌐 globe key, bottom left</li>
-            <li>Slide to <b>KEYBO</b> and let go</li>
-          </ol>
-          <p class="note">That's it. KEYBO stays your keyboard until you switch back with the same globe key.</p>
-        </article>
-      </div>
-    </div>
-
-    <div class="setup-panel" id="setup-android" role="tabpanel" aria-labelledby="tab-android" hidden>
-      <div class="steps">
-        <article class="card step">
-          <header><span>Step 1 of 2</span></header>
-          <h3 style="margin-bottom:20px">Turn it on</h3>
-          <ol>
-            <li>Open the KEYBO app and tap <b>Open keyboard settings</b></li>
-            <li>Find <b>KEYBO</b> in the list and switch it on</li>
-            <li>Android shows a standard warning that keyboards can read what you type. It appears for every keyboard; tap <b>OK</b></li>
-          </ol>
-        </article>
-        <article class="card step">
-          <header><span>Step 2 of 2</span></header>
-          <h3 style="margin-bottom:20px">Make it your keyboard</h3>
-          <ol>
-            <li>Back in the app, tap <b>Choose KEYBO</b></li>
-            <li>Pick <b>KEYBO</b> from the list your phone shows</li>
-            <li>Type something and tap <b>Fix</b> above the keys to try it</li>
-          </ol>
-          <p class="note">You can switch back anytime from the keyboard icon in your navigation bar.</p>
-        </article>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============ FAQ ============ -->
-<section class="section" id="faq">
+<!-- FAQ -->
+<section class="section alt" id="faq">
   <div class="wrap">
-    <div class="section-head center with-art reveal">
-      <img class="head-art" src="assets/keybo/pose-thinking.png" alt="" loading="lazy" width="900" height="900">
+    <div class="head reveal">
       <span class="kicker">FAQ</span>
-      <h2>Questions, <span class="lime">answered</span>.</h2>
+      <h2>Questions, <span class="hl">answered</span>.</h2>
     </div>
     <div class="faq">
-      <details class="card reveal"><summary>Is KEYBO free?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>Yes. The whole keyboard is free, with 10 AI actions every day. Premium removes the daily limit and adds sticky tones and long replies.</p></div></details>
-
-      <details class="card reveal"><summary>Does KEYBO read everything I type?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>No. Typing, suggestions and autocorrect all happen on your phone. Your text leaves your phone only when you tap an AI button, and only the text that button needs. It travels over an encrypted connection, isn't stored after the answer comes back, and is never sold.</p><p>Anything typed in a password field is never read or sent.</p></div></details>
-
-      <details class="card reveal"><summary>Why does iPhone ask me to allow "Full Access"?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>Apple requires Full Access for any keyboard that connects to the internet, and the AI buttons need the internet to write your reply. Apple shows the same standard warning for every keyboard that asks for it.</p><p>Without Full Access, KEYBO still works as a full keyboard; only the AI buttons are greyed out.</p></div></details>
-
-      <details class="card reveal"><summary>How does Reply work on iPhone?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>Copy the message you received, open the reply box, and tap <b>Reply</b> on KEYBO. You'll get short, medium and long answers to choose from. iPhone doesn't let keyboards read other apps' screens, so copying the message is how KEYBO knows what to answer.</p><p>If iPhone keeps asking "Allow Paste", go to <b>Settings › Apps › KEYBO › Paste from Other Apps</b> and choose <b>Allow</b>.</p></div></details>
-
-      <details class="card reveal"><summary>Can I type by voice?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>On iPhone and iPad, Apple doesn't let keyboards use the microphone. Instead, share a voice note to KEYBO and it's turned into text on your device; the audio never leaves your phone.</p></div></details>
-
-      <details class="card reveal"><summary>Which languages does KEYBO support?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>Translate works in 35 languages, including Hindi, Bengali, Spanish, French, Arabic and Japanese. You can also type Hindi in Roman letters (Hinglish) and get Devanagari, or rewrite any message in natural Hinglish.</p></div></details>
-
-      <details class="card reveal"><summary>Does it work on iPad?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>Yes. KEYBO is one app for iPhone and iPad, and on iPad the keyboard is laid out big and clear for the larger screen.</p></div></details>
-
-      <details class="card reveal"><summary>How do I cancel Premium?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>On iPhone or iPad: <b>Settings › your name › Subscriptions › KEYBO</b>. On Android: <b>Play Store › your profile › Payments &amp; subscriptions</b>. Cancel at least 24 hours before it renews and you won't be charged again.</p></div></details>
-
-      <details class="card reveal"><summary>How do I get in touch?<span class="pm"><svg class="icon"><use href="#i-plus"/></svg></span></summary>
-        <div class="answer"><p>Write to <a href="mailto:hellokeybo@gmail.com">hellokeybo@gmail.com</a>. We read every message. There's more help on the <a href="https://heyshubi.github.io/privacy/support/">support page</a>.</p></div></details>
+      <details class="card"><summary>Is KEYBO free?</summary><div class="answer"><p>Yes. The keyboard is free, with 10 AI actions every day. Premium removes the daily limit and adds sticky tones and long replies.</p></div></details>
+      <details class="card"><summary>Does KEYBO read everything I type?</summary><div class="answer"><p>No. Typing, suggestions and autocorrect happen on your phone. Text leaves your phone only when you tap an AI button, over an encrypted connection. It isn't stored after the answer comes back, and it's never sold. Password fields are never read.</p></div></details>
+      <details class="card"><summary>Why does iPhone ask for "Full Access"?</summary><div class="answer"><p>Apple requires Full Access for any keyboard that uses the internet, and the AI buttons need it to write your answer. Without it, KEYBO still works as a full keyboard; only the AI buttons are greyed out.</p></div></details>
+      <details class="card"><summary>How does Reply work on iPhone?</summary><div class="answer"><p>Copy the message you received, tap <b>Reply</b> on KEYBO, and pick an answer. iPhone doesn't let keyboards read other apps' screens, so copying is how KEYBO knows what to answer.</p><p>If iPhone keeps asking "Allow Paste", go to <b>Settings › Apps › KEYBO › Paste from Other Apps</b> and choose <b>Allow</b>.</p></div></details>
+      <details class="card"><summary>Can I make my own tone?</summary><div class="answer"><p>Yes. In KEYBO's settings, open <b>Custom tones</b>, give it a name and describe how it should sound. It appears on your keyboard next to the built-in tones.</p></div></details>
+      <details class="card"><summary>Does it work on iPad?</summary><div class="answer"><p>Yes, KEYBO is one app for iPhone and iPad.</p></div></details>
+      <details class="card"><summary>How do I cancel Premium?</summary><div class="answer"><p>On iPhone or iPad: <b>Settings › your name › Subscriptions › KEYBO</b>. On Android: <b>Play Store › Payments &amp; subscriptions</b>. Cancel at least 24 hours before it renews.</p></div></details>
+      <details class="card"><summary>How do I contact you?</summary><div class="answer"><p>Email <a href="mailto:hellokeybo@gmail.com">hellokeybo@gmail.com</a>, or see the <a href="https://heyshubi.github.io/privacy/support/">support page</a>.</p></div></details>
     </div>
   </div>
 </section>
 
-<!-- ============ CTA ============ -->
-<section class="cta" id="download">
+<!-- Download -->
+<section class="section cta" id="download">
   <div class="wrap">
     <div class="cta-box reveal">
-      <div>
-        <h2>Say hi to <span class="lime">KEYBO</span>.</h2>
-        <p>Coming to the App Store on 18 October, for iPhone and iPad. Android is on its way.</p>
-        <div class="hero-ctas">
-          <a class="store-btn" data-appstore href="https://apps.apple.com/app/id6816461506" rel="noopener">
-            <svg class="icon"><use href="#i-download"/></svg>
-            <span><i>Download on the</i><b>App Store</b></span>
-            <em class="soon" style="font-style:normal">18 Oct</em>
-          </a>
-          <a class="store-btn" href="mailto:hellokeybo@gmail.com?subject=Tell%20me%20when%20KEYBO%20is%20on%20Android">
-            <svg class="icon" style="stroke:none;fill:currentColor"><use href="#i-play"/></svg>
-            <span><i>Get it on</i><b>Google Play</b></span>
-            <em class="soon" style="font-style:normal">Soon</em>
-          </a>
-        </div>
+      <h2>Write better in every app.</h2>
+      <p>Get KEYBO free on iPhone and iPad. Android is coming soon.</p>
+      <div class="stores">
+        <a class="store" data-appstore href="https://apps.apple.com/app/id6816461506" rel="noopener" aria-label="Download on the App Store">
+          <svg><use href="#logo-apple"/></svg><span><small>Download on the</small><b>App Store</b></span>
+        </a>
+        <a class="store" href="mailto:hellokeybo@gmail.com?subject=Tell%20me%20when%20KEYBO%20is%20on%20Android" aria-label="Get it on Google Play">
+          <svg><use href="#logo-play"/></svg><span><small>GET IT ON</small><b>Google Play</b></span>
+        </a>
       </div>
-      <img src="assets/keybo/pose-happy.png" alt="KEYBO, happy" loading="lazy" width="900" height="900">
+      <p class="store-note" data-release-note><b>iPhone &amp; iPad:</b> out 18 October &nbsp;·&nbsp; <b>Android:</b> coming soon</p>
     </div>
   </div>
 </section>
@@ -600,28 +400,18 @@
 
 <footer class="site-footer">
   <div class="wrap">
-    <div class="foot-grid">
+    <div class="foot">
       <div>
-        <a class="brand" href="#top"><img src="assets/icon-512.png" alt="" width="38" height="38"><span class="wordmark">Keybo</span></a>
-        <p class="about">The AI keyboard that writes with you. Reply, tone, fix, translate and Hinglish, right where you type.</p>
+        <a class="brand" href="#top"><img src="assets/icon-512.png" alt="" width="34" height="34"><span class="wordmark">KEYBO</span></a>
+        <p class="about">The AI keyboard that writes with you.</p>
       </div>
-      <div>
-        <h4>Product</h4>
-        <ul><li><a href="#features">Features</a></li><li><a href="#tones">Tones</a></li><li><a href="#pricing">Pricing</a></li><li><a href="#setup">Setup</a></li></ul>
-      </div>
-      <div>
-        <h4>Help</h4>
-        <ul><li><a href="#faq">FAQ</a></li><li><a href="https://heyshubi.github.io/privacy/support/">Support</a></li><li><a href="mailto:hellokeybo@gmail.com">hellokeybo@gmail.com</a></li></ul>
-      </div>
-      <div>
-        <h4>Legal</h4>
-        <ul><li><a href="https://heyshubi.github.io/privacy/ios/">Privacy (iPhone &amp; iPad)</a></li><li><a href="https://heyshubi.github.io/privacy/">Privacy (Android)</a></li><li><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a></li></ul>
+      <div class="foot-links">
+        <div><h4>Product</h4><ul><li><a href="#features">Features</a></li><li><a href="#how">How it works</a></li><li><a href="#pricing">Pricing</a></li></ul></div>
+        <div><h4>Help</h4><ul><li><a href="#faq">FAQ</a></li><li><a href="https://heyshubi.github.io/privacy/support/">Support</a></li><li><a href="mailto:hellokeybo@gmail.com">hellokeybo@gmail.com</a></li></ul></div>
+        <div><h4>Legal</h4><ul><li><a href="https://heyshubi.github.io/privacy/ios/">Privacy (iPhone &amp; iPad)</a></li><li><a href="https://heyshubi.github.io/privacy/">Privacy (Android)</a></li><li><a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/">Terms of Use</a></li></ul></div>
       </div>
     </div>
-    <div class="foot-bottom">
-      <span>© <span id="year">2026</span> KEYBO. All rights reserved.</span>
-      <span>Made with chai and a lot of keycaps.</span>
-    </div>
+    <p class="copyright">© <span id="year">2026</span> KEYBO. All rights reserved.</p>
   </div>
 </footer>
 
