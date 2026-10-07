@@ -577,7 +577,7 @@
           if (!r.ok) return;
           return import(new URL("assets/js/keybo3d.js", document.baseURI).href)
             .then(m => m.start({ host: floorEl, modelUrl: MODEL, reduce }))
-            .then(() => { retired = true; on = false; walker.hidden = true; floorEl.classList.add("is-3d"); });
+            .then(api => { window.KEYBO3D = api; retired = true; on = false; walker.hidden = true; floorEl.classList.add("is-3d"); });
         }).catch(() => {});
       }, { rootMargin: "600px 0px" });
       io3d.observe(floorEl);
