@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page not found – KEYBO</title>
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/png" href="/assets/favicon-64.png">
+<link rel="stylesheet" href="/assets/css/site.css">
+<style>
+  .lost { min-height: 100vh; display: grid; place-items: center; text-align: center; padding: 40px 24px; position: relative; overflow: hidden; }
+  .lost::before { content: ""; position: absolute; inset: 0; background: radial-gradient(50% 45% at 50% 30%, rgba(200,232,75,.35), transparent 70%); pointer-events: none; }
+  .lost > div { position: relative; max-width: 520px; }
+  .lost img { width: 240px; margin: 0 auto 8px; animation: bob 3.6s ease-in-out infinite; }
+  .lost .code { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: .32em; color: var(--lime-text); }
+  .lost h1 { font-size: clamp(36px, 6vw, 56px); margin: 10px 0 16px; }
+  .lost p { color: var(--muted); font-size: 18px; margin-bottom: 30px; }
+</style>
+</head>
+<body>
+  <main class="lost">
+    <div>
+      <img src="/assets/keybo/pose-thinking.png" alt="KEYBO, thinking">
+      <div class="code">404</div>
+      <h1>KEYBO looked everywhere.</h1>
+      <p>This page isn't here. It may have moved, or the link has a typo.</p>
+      <a class="btn btn-lime" href="/">Back to KEYBO</a>
+    </div>
+  </main>
+</body>
+</html>
