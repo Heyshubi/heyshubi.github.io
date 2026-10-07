@@ -375,7 +375,7 @@
   // API is live the cards come from assets/data/reviews.json, and the form
   // opens an email with the review filled in, so nothing anyone writes is
   // lost.
-  const REVIEWS_API = "";   // e.g. "https://ai-keyboard-backend-production.up.railway.app"
+  const REVIEWS_API = "https://ai-keyboard-backend-production.up.railway.app";
   const esc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const wall = $("#real-reviews"), SHOW = 9;
   let approved = [];
@@ -398,10 +398,10 @@
     if (head) head.hidden = false;
     wall.hidden = false;
   };
-  const source = REVIEWS_API ? fetch(REVIEWS_API + "/reviews").then(r => r.json())
-    : location.protocol === "file:" ? Promise.resolve({ reviews: [] })
-    : fetch("assets/data/reviews.json").then(r => r.json());
-  source.then(d => showWall(d.reviews)).catch(() => {});
+  // The server first; if its reviews part isn't live yet, the file.
+  const fromFile = () => location.protocol === "file:" ? { reviews: [] } : fetch("assets/data/reviews.json").then(r => r.json());
+  fetch(REVIEWS_API + "/reviews").then(r => { if (!r.ok) throw 0; return r.json(); }).catch(fromFile)
+    .then(d => showWall(d.reviews)).catch(() => {});
 
   const form = $("#review-form");
   const stars = $$(".stars button");

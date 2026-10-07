@@ -45,8 +45,9 @@
   </header>
 
   <div class="note" id="no-api" hidden>
-    <b>The reviews backend isn't connected yet.</b>
-    <p style="margin-top:6px;color:var(--muted)">Once the server has the endpoints in <code>notes/reviews-api.md</code>, put its address in <code>REVIEWS_API</code> at the top of this page's script (and in <code>assets/js/site.js</code>), then republish. Until then, reviews written on the site arrive by email at hellokeybo@gmail.com.</p>
+    <b>The reviews server isn't live yet.</b>
+    <p style="margin-top:6px;color:var(--muted)">This page is already connected to KEYBO's server, but the reviews part of it hasn't been deployed. The ANDROID KEYBO session has it built and tested, and deploys it to Railway once you say yes in its chat. This page starts working by itself the moment it's live. Until then, reviews written on the site arrive by email at hellokeybo@gmail.com.</p>
+    <button class="btn btn-line" type="button" id="retry" style="margin-top:12px">Check again</button>
   </div>
 
   <div class="login" id="login" hidden>
@@ -59,14 +60,16 @@
 
 <script>
 (() => {
-  const REVIEWS_API = "";   // same value as in assets/js/site.js, e.g. "https://ai-keyboard-backend-production.up.railway.app"
+  const REVIEWS_API = "https://ai-keyboard-backend-production.up.railway.app";   // same value as in assets/js/site.js
   const $ = s => document.querySelector(s);
   const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   let token = "";
   try { token = sessionStorage.getItem("keybo-admin") || ""; } catch (e) {}
   let filter = "pending";
 
-  if (!REVIEWS_API) { $("#no-api").hidden = false; return; }
+  // Is the reviews part of the server live? (A 404 or a blocked request means not yet.)
+  const live = () => fetch(REVIEWS_API + "/reviews", { cache: "no-store" }).then(r => r.ok).catch(() => false);
+  const notLive = () => { $("#no-api").hidden = false; $("#login").hidden = true; $("#list").innerHTML = ""; };
 
   const api = (path, opts = {}) => fetch(REVIEWS_API + path, {
     ...opts, headers: { "Content-Type": "application/json", "X-Admin-Token": token, ...(opts.headers || {}) }
@@ -119,7 +122,9 @@
     req.then(load).catch(err => { alert("Didn't work: " + err.message); b.disabled = false; });
   });
 
-  token ? load() : showLogin();
+  const start = () => live().then(ok => { if (!ok) return notLive(); $("#no-api").hidden = true; token ? load() : showLogin(); });
+  $("#retry").addEventListener("click", start);
+  start();
 })();
 </script>
 </body>
