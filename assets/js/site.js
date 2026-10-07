@@ -448,10 +448,18 @@
       const r = floor.getBoundingClientRect();
       return { cx: r.left + x + walker.offsetWidth / 2, cy: r.bottom - walker.offsetWidth * 0.55, top: r.top };
     };
+    // Close enough to stop and watch the cursor; and, along its own strip
+    // of floor, far enough that it walks over to it.
     const nearCursor = () => {
       if (!mouse) return false;
       const c = centre();
-      return Math.abs(mouse.x - c.cx) < 240 && mouse.y > c.top - 260 && mouse.y < c.top + 260;
+      return Math.abs(mouse.x - c.cx) < 120 * walker.offsetWidth / 160 && mouse.y > c.top - 260 && mouse.y < c.top + 260;
+    };
+    const cursorAhead = () => {
+      if (!mouse || nearCursor()) return 0;
+      const c = centre();
+      if (mouse.y < c.top - 200 || mouse.y > c.top + 230) return 0;
+      return Math.sign(mouse.x - c.cx);
     };
     const frame = now => {
       if (!on) return;
@@ -466,7 +474,9 @@
           stop(() => { dir = -dir; set("idle", 600 + Math.random() * 900); });
         } else if (state.startsWith("walk") && nearCursor()) {
           stop(() => set("look"));
-        } else if (state.startsWith("walk") && Math.random() < 0.0012) {
+        } else if (state.startsWith("walk") && cursorAhead() === -dir) {
+          stop(() => { dir = -dir; walkOn(); });          // the cursor is behind: turn round and go to it
+        } else if (state.startsWith("walk") && !cursorAhead() && Math.random() < 0.0012) {
           stop(() => set("idle", 1000 + Math.random() * 1600));
         }
         // a stop waits for the step to finish: walk frame 0 is where the turn begins
@@ -479,8 +489,8 @@
         else if (state === "getup" || state === "wobble") set("idle", 400);
         else if (state.startsWith("turn")) { const f = after; after = null; f ? f() : set("idle", 800); }
         else if (state.startsWith("unturn")) set("walk-" + side());
-        else if (state === "idle") { if (nearCursor()) set("look"); else walkOn(); }
-        else if (state === "look" && !nearCursor()) { eyes(0, 0); walkOn(); }
+        else if (state === "idle") { if (nearCursor()) set("look"); else { if (cursorAhead()) dir = cursorAhead(); walkOn(); } }
+        else if (state === "look" && !nearCursor()) { eyes(0, 0); if (cursorAhead()) dir = cursorAhead(); walkOn(); }
       }
       if (state === "look" && mouse) {
         const c = centre();
