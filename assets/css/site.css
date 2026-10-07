@@ -665,7 +665,7 @@ p { margin: 0; }
    by 5 rows of pitch (+20 up .. -20 down), 320 px cells. site.js eases the
    aim like a spring and picks the cell (--lx, --ly). The legs stay planted;
    the body turns about the hips like a head on a neck. */
-.w-look { position: absolute; inset: 0; display: none; background: url("../keybo/walker/look-grid.webp") no-repeat; background-size: 1700% 500%; background-position: var(--lx, 50%) var(--ly, 50%); }
+.w-look { position: absolute; inset: 0; display: none; background: url("../keybo/walker/look-grid.webp?v=keybo2") no-repeat; background-size: 1700% 500%; background-position: var(--lx, 50%) var(--ly, 50%); }
 .walker.look .w-look { display: block; }
 .walker.look .w-front { display: none; }
 .w-eyes { transform: translate(var(--ex, 0px), var(--ey, 0px)); transition: transform .12s ease-out; }
@@ -686,16 +686,16 @@ p { margin: 0; }
 .walker.walk-r .w-strip, .walker.walk-l .w-strip, .walker.wobble .w-strip, .walker.fall .w-strip,
 .walker.down .w-strip, .walker.getup .w-strip, .walker.dizzy .w-strip,
 .walker.turn-r .w-strip, .walker.turn-l .w-strip, .walker.unturn-r .w-strip, .walker.unturn-l .w-strip { display: block; }
-.walker.walk-r .w-strip { --n: 16; background-image: url("../keybo/walker/walk-strip.png"); animation: sprite .667s steps(16, jump-none) infinite; }
-.walker.walk-l .w-strip { --n: 16; background-image: url("../keybo/walker/walk-left-strip.png"); animation: sprite .667s steps(16, jump-none) infinite; }
-.walker.wobble .w-strip { --n: 10; background-image: url("../keybo/walker/wobble-strip.png"); animation: sprite .417s steps(10, jump-none) forwards; }
-.walker.fall .w-strip { --n: 14; background-image: url("../keybo/walker/fall-strip.png"); animation: sprite .583s steps(14, jump-none) forwards; }
-.walker.down .w-strip { --n: 14; background-image: url("../keybo/walker/fall-strip.png"); background-position-x: 100%; }
-.walker.getup .w-strip { --n: 14; background-image: url("../keybo/walker/getup-strip.png"); animation: sprite .583s steps(14, jump-none) forwards; }
-.walker.dizzy .w-strip { --n: 20; background-image: url("../keybo/walker/dizzy-strip.png"); animation: sprite .833s steps(20, jump-none) forwards; }
+.walker.walk-r .w-strip { --n: 16; background-image: url("../keybo/walker/walk-strip.png?v=keybo2"); animation: sprite .667s steps(16, jump-none) infinite; }
+.walker.walk-l .w-strip { --n: 16; background-image: url("../keybo/walker/walk-left-strip.png?v=keybo2"); animation: sprite .667s steps(16, jump-none) infinite; }
+.walker.wobble .w-strip { --n: 10; background-image: url("../keybo/walker/wobble-strip.png?v=keybo2"); animation: sprite .417s steps(10, jump-none) forwards; }
+.walker.fall .w-strip { --n: 14; background-image: url("../keybo/walker/fall-strip.png?v=keybo2"); animation: sprite .583s steps(14, jump-none) forwards; }
+.walker.down .w-strip { --n: 14; background-image: url("../keybo/walker/fall-strip.png?v=keybo2"); background-position-x: 100%; }
+.walker.getup .w-strip { --n: 14; background-image: url("../keybo/walker/getup-strip.png?v=keybo2"); animation: sprite .583s steps(14, jump-none) forwards; }
+.walker.dizzy .w-strip { --n: 20; background-image: url("../keybo/walker/dizzy-strip.png?v=keybo2"); animation: sprite .833s steps(20, jump-none) forwards; }
 /* turning to face us when it stops, and back again to walk on (8 frames) */
-.walker.turn-r .w-strip, .walker.unturn-r .w-strip { --n: 8; background-image: url("../keybo/walker/turn-from-right-strip.png"); animation: sprite .333s steps(8, jump-none) forwards; }
-.walker.turn-l .w-strip, .walker.unturn-l .w-strip { --n: 8; background-image: url("../keybo/walker/turn-from-left-strip.png"); animation: sprite .333s steps(8, jump-none) forwards; }
+.walker.turn-r .w-strip, .walker.unturn-r .w-strip { --n: 8; background-image: url("../keybo/walker/turn-from-right-strip.png?v=keybo2"); animation: sprite .333s steps(8, jump-none) forwards; }
+.walker.turn-l .w-strip, .walker.unturn-l .w-strip { --n: 8; background-image: url("../keybo/walker/turn-from-left-strip.png?v=keybo2"); animation: sprite .333s steps(8, jump-none) forwards; }
 .walker.unturn-r .w-strip, .walker.unturn-l .w-strip { animation-direction: reverse; }
 /* steps(n, jump-none) lands on n positions, 0% to 100%: exactly one per frame,
    since background-position k/(n-1) of an n-cell strip is cell k. */

@@ -564,8 +564,8 @@
     document.documentElement.addEventListener("pointerleave", () => { mouse = null; });
     const preload = () => {
       ["wobble", "fall", "getup", "dizzy", "turn-from-right", "turn-from-left"]
-        .forEach(n => { const i = new Image(); i.src = `assets/keybo/walker/${n}-strip.png`; });
-      new Image().src = "assets/keybo/walker/look-grid.webp";
+        .forEach(n => { const i = new Image(); i.src = `assets/keybo/walker/${n}-strip.png?v=keybo2`; });
+      new Image().src = "assets/keybo/walker/look-grid.webp?v=keybo2";
     };
     let preloaded = false, retired = false;
     if (reduce) walker.className = "walker idle";
