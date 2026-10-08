@@ -363,25 +363,6 @@
     }, { threshold: 0.3 }).observe(journey);
   }
 
-  // Numbers count up once, when they arrive.
-  $$("[data-count]").forEach(el => {
-    const end = +el.dataset.count;
-    if (reduce || end === 0) return;
-    el.textContent = "0";
-    const o = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) return;
-      o.disconnect();
-      const t0 = performance.now(), dur = 900;
-      const tick = now => {
-        const p = Math.min(1, (now - t0) / dur);
-        el.textContent = Math.round(end * (1 - Math.pow(1 - p, 3)));
-        if (p < 1) requestAnimationFrame(tick);
-      };
-      requestAnimationFrame(tick);
-    });
-    o.observe(el);
-  });
-
   // Reviews people post here. The form posts to the reviews API
   // (REVIEWS_API) as "pending"; the owner approves, edits or deletes them
   // in /admin/, and approved ones show as cards, newest first. Until the
