@@ -221,6 +221,25 @@
     }, { once: true });
   }
 
+  // From tablet width up, KEYBO holding the phone breathes and blinks: a
+  // 4 s transparent loop of the back layer (phone and hands pinned, so the
+  // screen hole never moves), after load and paused off screen. Its first
+  // frame matches the still, which hides once it plays.
+  const hold = $(".hold");
+  if (hold && !reduce && matchMedia("(min-width: 701px)").matches) {
+    addEventListener("load", () => {
+      const big = hold.offsetWidth * (devicePixelRatio || 1) > 900 ? "" : "-800";
+      const v = document.createElement("video");
+      v.className = "hold-loop"; v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true;
+      v.setAttribute("aria-hidden", "true");
+      v.innerHTML = `<source src="assets/keybo/hold/hold-loop${big}.mov?v=3" type='video/mp4; codecs="hvc1"'>` +
+                    `<source src="assets/keybo/hold/hold-loop${big}.webm?v=3" type="video/webm">`;
+      v.addEventListener("playing", () => { const still = $(".hold-back img", hold); if (still) still.style.visibility = "hidden"; }, { once: true });
+      hold.insertBefore(v, $(".hp-screen", hold));
+      new IntersectionObserver(([e]) => { e.isIntersecting ? v.play().catch(() => {}) : v.pause(); }).observe(hold);
+    }, { once: true });
+  }
+
   // The hero phone: the real keyboard's four feature clips in turn, two
   // video layers cross-fading. Starts after load; the next clip loads once
   // the current one is half way; everything pauses off screen. With reduced

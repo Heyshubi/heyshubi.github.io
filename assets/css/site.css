@@ -196,14 +196,6 @@ p { margin: 0; }
 .hold { position: relative; aspect-ratio: 1600 / 1200; }
 .hold-back img, .hold-front img, .hold-loop { position: absolute; inset: 0; width: 100%; height: 100%; }
 .hold-back img, .hold-loop { z-index: 1; }
-/* The render's contact shadow runs off the canvas's bottom and right edges;
-   fade them so no rectangle shows on the lime. */
-.hold-back img, .hold-loop {
-  -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 99.5%), linear-gradient(to right, transparent, #000 4%, #000 96.5%, transparent);
-  -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(to bottom, #000 88%, transparent 99.5%), linear-gradient(to right, transparent, #000 4%, #000 96.5%, transparent);
-  mask-composite: intersect;
-}
 .hp-screen { position: absolute; z-index: 2; left: 70.801%; top: 25.881%; width: 20.801%; height: 60.278%; border-radius: 13% / 5.98%; overflow: hidden; background: #F2F2F7 url(../videos/reply.jpg?v=2) center / cover; }
 .hold-front img { z-index: 3; }
 .hp-v { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s ease; }
