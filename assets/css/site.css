@@ -498,6 +498,8 @@ p { margin: 0; }
 .soon-pop b { display: block; font-family: var(--font-display); font-weight: 600; font-size: 16.5px; margin-right: 24px; }
 .soon-pop p { margin: 6px 0 14px; font-size: 14.5px; color: var(--muted); }
 .soon-pop .btn { min-height: 42px; font-size: 14px; width: 100%; }
+.soon-pop .soon-alt { display: block; margin-top: 10px; text-align: center; font-size: 13.5px; font-weight: 600; color: var(--accent); }
+.store-note a { color: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
 .soon-x { position: absolute; top: 10px; right: 10px; width: 28px; height: 28px; border-radius: 50%; border: 0; cursor: pointer; background: var(--card-2); font-size: 18px; line-height: 1; }
 
 /* Privacy: one message's journey. A person types it on their phone (a

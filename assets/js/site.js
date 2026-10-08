@@ -242,7 +242,10 @@
     ios: Date.now() >= Date.UTC(2026, 9, 18, 5, 0),
     android: false,
   };
-  if (LIVE.ios) $$("[data-release-note]").forEach(p => { p.innerHTML = "<b>iPhone &amp; iPad:</b> available now &nbsp;·&nbsp; <b>Android:</b> coming soon"; });
+  // Android is in Google Play's closed test: people send us their Gmail,
+  // the owner adds it to the testers list, then the testing link works.
+  const ANDROID_TEST = "https://play.google.com/apps/testing/com.aikeyboard.app";
+  if (LIVE.ios) $$("[data-release-note]").forEach(p => { p.innerHTML = '<b>iPhone &amp; iPad:</b> available now &nbsp;·&nbsp; <b>Android:</b> coming soon, <a href="#" data-store="android">join the test</a>'; });
   const pop = document.createElement("div");
   pop.className = "soon-pop"; pop.hidden = true; pop.setAttribute("role", "dialog");
   document.body.appendChild(pop);
@@ -250,9 +253,16 @@
   const openPop = (anchor, store, review) => {
     const ios = store === "ios";
     const title = review ? "App Store reviews open on 18 October" : ios ? "On the App Store from 18 October" : "KEYBO for Android is coming soon";
+    if (!ios && !review) {
+      // Android: the closed test
+      const join = "mailto:hellokeybo@gmail.com?subject=" + encodeURIComponent("Add me to the KEYBO Android test") + "&body=" + encodeURIComponent("The Gmail address on my Android phone: \n");
+      pop.innerHTML = `<button class="soon-x" type="button" aria-label="Close">×</button><b>${title}</b><p>Try it now in the Android test. Send us the Gmail address on your phone; once we've added you, open the test link on that phone and install KEYBO from Google Play.</p>` +
+        `<a class="btn btn-lime" href="${join}">Join the Android test</a><a class="soon-alt" href="${ANDROID_TEST}" target="_blank" rel="noopener">Already added? Open the test link</a>`;
+    } else {
     const line = review ? "That's the day KEYBO goes live. Until then, tell us what you think by email." : "Want a nudge when it's out? Drop us a line and we'll write back the day it lands.";
-    const subject = encodeURIComponent(review ? "KEYBO feedback" : ios ? "Tell me when KEYBO is on the App Store" : "Tell me when KEYBO is on Android");
+    const subject = encodeURIComponent(review ? "KEYBO feedback" : "Tell me when KEYBO is on the App Store");
     pop.innerHTML = `<button class="soon-x" type="button" aria-label="Close">×</button><b>${title}</b><p>${line}</p><a class="btn btn-lime" href="mailto:hellokeybo@gmail.com?subject=${subject}">${review ? "Email us" : "Email me when it's out"}</a>`;
+    }
     pop.hidden = false;
     const r = anchor.getBoundingClientRect(), w = Math.min(320, innerWidth - 24);
     pop.style.width = w + "px";
@@ -261,12 +271,15 @@
     pop.style.top = (below + h < innerHeight - 8 ? below : Math.max(8, r.top - h - 10)) + "px";
     pop.querySelector(".soon-x").addEventListener("click", closePop);
   };
-  $$("[data-store]").forEach(a => a.addEventListener("click", e => {
+  document.addEventListener("click", e => {
+    const a = e.target.closest("[data-store]");
+    if (!a) return;
     const store = a.dataset.store;
     if (LIVE[store]) return;
     e.preventDefault(); e.stopPropagation();
     openPop(a, store, a.hasAttribute("data-review"));
-  }));
+    if (a.closest("#dl-menu")) setTimeout(() => closeDl(), 0);   // this click doesn't reach the menu's own handler
+  }, true);
   addEventListener("click", e => { if (!pop.hidden && !pop.contains(e.target)) closePop(); });
   addEventListener("keydown", e => { if (e.key === "Escape") { closePop(); closeDl(); } });
   addEventListener("scroll", () => { if (!pop.hidden) closePop(); }, { passive: true });
