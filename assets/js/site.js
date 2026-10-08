@@ -200,7 +200,7 @@
 
   // KEYBO's hero loop, after load, paused off screen: 1080 on large screens,
   // 540 on phones. The still underneath is the loop's own first frame.
-  const art = $("#hero-art");
+  const art = $("#hero-art .hero-keybo");
   if (art && !reduce) {
     const small = matchMedia("(max-width: 900px)").matches;
     const suffix = small ? "-540" : "";
@@ -218,6 +218,38 @@
       art.appendChild(v);
       new IntersectionObserver(([e]) => { e.isIntersecting ? v.play().catch(() => {}) : v.pause(); }).observe(art);
     }, { once: true });
+  }
+
+  // The hero phone: the real keyboard's four feature clips in turn, two
+  // video layers cross-fading. Starts after load; the next clip loads once
+  // the current one is half way; everything pauses off screen. With reduced
+  // motion it stays on the first frame.
+  const phone = $(".hero-phone");
+  if (phone && !reduce) {
+    const CLIPS = [["reply", "Reply"], ["tones", "Tone"], ["fix-rewrite", "Fix & Rewrite"], ["translate", "Translate"]];
+    const vids = $$(".hp-v", phone), label = $(".hp-chip b"), dots = $$(".hp-dots i");
+    const src = i => `assets/videos/${CLIPS[i][0]}.mp4?v=2`;
+    let k = 0, cur = 0, visible = true, started = false;
+    const load = (v, i) => { v.dataset.k = i; v.src = src(i); v.preload = "auto"; v.load(); };
+    const show = () => { label.textContent = CLIPS[k][1]; dots.forEach((d, j) => d.classList.toggle("on", j === k)); };
+    const playCur = () => { if (started && visible) vids[cur].play().catch(() => {}); };
+    vids.forEach(v => {
+      v.addEventListener("timeupdate", () => {
+        const other = vids[1 - cur], next = (k + 1) % CLIPS.length;
+        if (v === vids[cur] && v.currentTime > v.duration / 2 && other.dataset.k !== String(next)) load(other, next);
+      });
+      v.addEventListener("ended", () => {
+        if (v !== vids[cur]) return;
+        k = (k + 1) % CLIPS.length;
+        const next = vids[1 - cur];
+        if (next.dataset.k !== String(k)) load(next, k);
+        next.currentTime = 0;
+        next.classList.add("on"); v.classList.remove("on");
+        cur = 1 - cur; show(); playCur();
+      });
+    });
+    addEventListener("load", () => { started = true; load(vids[0], 0); playCur(); }, { once: true });
+    new IntersectionObserver(([e]) => { visible = e.isIntersecting; visible ? playCur() : vids[cur].pause(); }).observe(phone);
   }
 
   // Setup: iPhone or Android, picked for the visitor's phone.
