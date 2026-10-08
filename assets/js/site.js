@@ -297,7 +297,6 @@
   // Android is in Google Play's closed test: people send us their Gmail,
   // the owner adds it to the testers list, then the testing link works.
   const ANDROID_TEST = "https://play.google.com/apps/testing/com.aikeyboard.app";
-  if (LIVE.ios) $$("[data-release-note]").forEach(p => { p.innerHTML = '<b>iPhone &amp; iPad:</b> available now &nbsp;·&nbsp; <b>Android:</b> coming soon, <a href="#" data-store="android">join the test</a>'; });
   const pop = document.createElement("div");
   pop.className = "soon-pop"; pop.hidden = true; pop.setAttribute("role", "dialog");
   document.body.appendChild(pop);
@@ -371,6 +370,41 @@
     };
     const hex = "0123456789abcdef";
     const code = len => Array.from({ length: len }, (_, i) => (i % 5 === 4 ? " " : hex[(Math.random() * 16) | 0])).join("");
+    // The tube: from the person's phone (62%, 42% of their clip) into
+    // KEYBO's laptop (16%, 72% of his), bowing through the middle of the
+    // lane. Redrawn whenever the layout changes. Each code stream is two
+    // identical halves sliding by one half, so it loops without a seam.
+    const tube = $(".tube", journey), tubePath = $("#tube-path", journey), lane = $(".lane", journey);
+    const lock = $(".pipe-lock", journey), packet = $(".packet", journey), tubeCap = $(".tube-cap", journey);
+    const streams = $$(".tube-code", journey).map(el => ({ el, tp: $("textPath", el), anim: $("animate", el), back: el.classList.contains("back") }));
+    streams.forEach(st => { const half = code(140); st.tp.insertBefore(document.createTextNode(half + " " + half + " "), st.anim); });
+    const layoutTube = () => {
+      const jr = journey.getBoundingClientRect();
+      if (!jr.width) return;
+      const at = (el, fx, fy) => { const r = el.getBoundingClientRect(); return { x: r.left - jr.left + r.width * fx, y: r.top - jr.top + r.height * fy }; };
+      const A = at(you.st, .62, .42), B = at(ai.st, .16, .72), M = at(lane, .5, .5);
+      const f = n => n.toFixed(1);
+      // on small screens the person is top left and KEYBO bottom right, so
+      // the tube is an S from the phone down into the laptop
+      const d = matchMedia("(max-width: 860px)").matches
+        ? `M${f(A.x)},${f(A.y)} C${f(A.x + 90)},${f(A.y)} ${f(B.x - 90)},${f(B.y)} ${f(B.x)},${f(B.y)}`
+        : `M${f(A.x)},${f(A.y)} C${f(A.x + (B.x - A.x) * .35)},${f(M.y)} ${f(A.x + (B.x - A.x) * .65)},${f(M.y)} ${f(B.x)},${f(B.y)}`;
+      tube.setAttribute("width", jr.width); tube.setAttribute("height", jr.height);
+      tube.setAttribute("viewBox", `0 0 ${jr.width} ${jr.height}`);
+      tubePath.setAttribute("d", d);
+      packet.style.offsetPath = `path("${d}")`;
+      const mid = tubePath.getPointAtLength(tubePath.getTotalLength() / 2);
+      lock.style.left = mid.x + "px"; lock.style.top = mid.y + "px";
+      tubeCap.style.left = mid.x + "px"; tubeCap.style.top = (mid.y - 40) + "px";
+      streams.forEach(st => {
+        const h = (st.el.getComputedTextLength() / 2).toFixed(1);
+        st.anim.setAttribute("values", st.back ? `0;-${h}` : `-${h};0`);
+      });
+    };
+    layoutTube();
+    if ("ResizeObserver" in window) new ResizeObserver(layoutTube).observe(journey);
+    addEventListener("load", layoutTube, { once: true });
+    if (tube.pauseAnimations) tube.pauseAnimations();
     let timers = [], shuffle = 0, on = false;
     const later = (ms, f) => timers.push(setTimeout(f, ms));
     const stopAll = () => { timers.forEach(clearTimeout); timers = []; clearInterval(shuffle); };
@@ -410,6 +444,7 @@
       if (e.isIntersecting === on) return;
       on = e.isIntersecting;
       journey.classList.toggle("run", on);
+      if (tube.pauseAnimations) on ? tube.unpauseAnimations() : tube.pauseAnimations();
       stacks.forEach(x => { if (on) { x.loop.preload = x.once.preload = "auto"; x.loop.play().catch(() => {}); } else { x.loop.pause(); x.once.pause(); } });
       if (on) run(); else stopAll();
     }, { threshold: 0.3 }).observe(journey);

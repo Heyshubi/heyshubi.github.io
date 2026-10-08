@@ -39,7 +39,7 @@
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
 } }
 </script>
-<link rel="stylesheet" href="assets/css/site.css?v=20261008173209">
+<link rel="stylesheet" href="assets/css/site.css?v=20261008173810">
 
 <script type="application/ld+json">
 {
@@ -171,7 +171,6 @@
           <svg><use href="#logo-play"/></svg><span><small>GET IT ON</small><b>Google Play</b></span>
         </a>
       </div>
-      <p class="store-note" data-release-note><b>iPhone &amp; iPad:</b> out 18 October &nbsp;·&nbsp; <b>Android:</b> coming soon, <a href="#" data-store="android">join the test</a></p>
       <div class="hero-ticks">
         <span><svg class="icon"><use href="#i-tick"/></svg>Private by design</span>
         <span><svg class="icon"><use href="#i-tick"/></svg>Works in every app</span>
@@ -225,6 +224,13 @@
         <p class="more">The keys work without Full Access; only the AI buttons need it. <a href="https://heyshubi.github.io/privacy/ios/">Read the privacy policy →</a></p>
       </div>
       <div class="journey" aria-label="A message typed on a phone is encrypted on its way to KEYBO, fixed, and sent back encrypted">
+        <!-- The encrypted tube from the person's phone into KEYBO's laptop,
+             drawn by site.js from where they stand, with code always
+             streaming through it: to KEYBO along the top, back below. -->
+        <svg class="tube" aria-hidden="true"><defs><path id="tube-path" d="M0,0"/></defs><use href="#tube-path" class="tube-glow"/><use href="#tube-path" class="tube-body"/><text class="tube-code to" dy="-2.5"><textPath href="#tube-path"><animate attributeName="startOffset" values="0;0" dur="18s" repeatCount="indefinite"/></textPath></text><text class="tube-code back" dy="9.5"><textPath href="#tube-path"><animate attributeName="startOffset" values="0;0" dur="22s" repeatCount="indefinite"/></textPath></text></svg>
+        <span class="cap tube-cap" aria-hidden="true">Encrypted, both ways</span>
+        <span class="pipe-lock" aria-hidden="true"><svg class="icon"><use href="#i-lock"/></svg></span>
+        <div class="packet" aria-hidden="true"><svg class="icon"><use href="#i-lock"/></svg><span class="pcode">a7f3 9c2e 41bd</span></div>
         <div class="actor you">
           <div class="pop">
             <div class="pop-top"><span class="pop-dot"></span>Message</div>
@@ -237,9 +243,6 @@
           <span class="cap">You, typing</span>
         </div>
         <div class="lane" aria-hidden="true">
-          <div class="wire"></div>
-          <div class="packet"><svg class="icon"><use href="#i-lock"/></svg><span class="pcode">a7f3 9c2e 41bd</span></div>
-          <span class="cap">Encrypted, both ways</span>
         </div>
         <div class="actor ai" aria-hidden="true">
           <div class="pop pop-ai"><span class="ai-status">Ready</span></div>
@@ -514,7 +517,6 @@
           <svg><use href="#logo-play"/></svg><span><small>GET IT ON</small><b>Google Play</b></span>
         </a>
       </div>
-      <p class="store-note" data-release-note><b>iPhone &amp; iPad:</b> out 18 October &nbsp;·&nbsp; <b>Android:</b> coming soon, <a href="#" data-store="android">join the test</a></p>
     </div>
   </div>
 </section>
@@ -557,6 +559,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261008173209" defer></script>
+<script src="assets/js/site.js?v=20261008173810" defer></script>
 </body>
 </html>
