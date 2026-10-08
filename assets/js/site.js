@@ -228,12 +228,12 @@
   const hold = $(".hold");
   if (hold && !reduce && matchMedia("(min-width: 701px)").matches) {
     addEventListener("load", () => {
-      const big = hold.offsetWidth * (devicePixelRatio || 1) > 900 ? "" : "-800";
+      const big = hold.offsetWidth * (devicePixelRatio || 1) > 1100 ? "" : "-1000";
       const v = document.createElement("video");
       v.className = "hold-loop"; v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true;
       v.setAttribute("aria-hidden", "true");
-      v.innerHTML = `<source src="assets/keybo/hold/hold-loop${big}.mov?v=3" type='video/mp4; codecs="hvc1"'>` +
-                    `<source src="assets/keybo/hold/hold-loop${big}.webm?v=3" type="video/webm">`;
+      v.innerHTML = `<source src="assets/keybo/hold/hold2-loop${big}.mov?v=1" type='video/mp4; codecs="hvc1"'>` +
+                    `<source src="assets/keybo/hold/hold2-loop${big}.webm?v=1" type="video/webm">`;
       v.addEventListener("playing", () => { const still = $(".hold-back img", hold); if (still) still.style.visibility = "hidden"; }, { once: true });
       hold.insertBefore(v, $(".hp-screen", hold));
       new IntersectionObserver(([e]) => { e.isIntersecting ? v.play().catch(() => {}) : v.pause(); }).observe(hold);
