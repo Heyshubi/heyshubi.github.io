@@ -198,12 +198,13 @@
   if (featuresSection) new IntersectionObserver(([e]) => rail.classList.toggle("aside", e.isIntersecting && pinned()),
     { rootMargin: "-30% 0px -30% 0px" }).observe(featuresSection);
 
-  // KEYBO's hero loop, after load, paused off screen: 1080 on large screens,
-  // 540 on phones. The still underneath is the loop's own first frame.
+  // On phones the hero is the phone alone with the small hello KEYBO in
+  // front: its loop (540) after load, paused off screen. The still
+  // underneath is the loop's own first frame.
   const art = $("#hero-art .hero-keybo");
-  if (art && !reduce) {
-    const small = matchMedia("(max-width: 900px)").matches;
-    const suffix = small ? "-540" : "";
+  if (art && !reduce && matchMedia("(max-width: 700px)").matches) {
+    const small = true;
+    const suffix = "-540";
     addEventListener("load", () => {
       const v = document.createElement("video");
       v.muted = true; v.loop = true; v.playsInline = true; v.autoplay = true;
@@ -224,7 +225,7 @@
   // video layers cross-fading. Starts after load; the next clip loads once
   // the current one is half way; everything pauses off screen. With reduced
   // motion it stays on the first frame.
-  const phone = $(".hero-phone");
+  const phone = $(".hp-screen");
   if (phone && !reduce) {
     const CLIPS = [["reply", "Reply"], ["tones", "Tone"], ["fix-rewrite", "Fix & Rewrite"], ["translate", "Translate"]];
     const vids = $$(".hp-v", phone), label = $(".hp-chip b"), dots = $$(".hp-dots i");

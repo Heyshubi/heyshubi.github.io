@@ -10,7 +10,7 @@
 <link rel="icon" type="image/png" href="assets/favicon-64.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <link rel="preload" href="assets/fonts/Poppins-Bold.ttf" as="font" type="font/ttf" crossorigin>
-<link rel="preload" href="assets/keybo/hero-still-720.png?v=keybo3" as="image">
+<link rel="preload" href="assets/keybo/hold/hold-back.png?v=1" as="image" media="(min-width: 1101px)">
 
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://heyshubi.github.io/">
@@ -39,7 +39,7 @@
   "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
 } }
 </script>
-<link rel="stylesheet" href="assets/css/site.css?v=20261008164616">
+<link rel="stylesheet" href="assets/css/site.css?v=20261008171208">
 
 <script type="application/ld+json">
 {
@@ -179,17 +179,20 @@
       </div>
     </div>
     <div class="hero-art" id="hero-art">
-      <!-- The real keyboard at work, recorded by iOS KEYBO: Reply, Tone,
-           Fix and Rewrite, Translate, one after another -->
-      <div class="hero-phone" role="img" aria-label="KEYBO on a phone: replying to a message, changing its tone, fixing and rewriting it, and translating it">
-        <div class="hp-screen">
+      <!-- KEYBO holding up a phone (layers from KEYBO ANIMATION:
+           assets/keybo/hold/, screen rect in hold-screen.json), with the real
+           keyboard playing in its screen: iOS KEYBO's recordings of Reply,
+           Tone, Fix and Rewrite, Translate, one after another. On phones it's
+           the phone on its own with the small hello KEYBO in front. -->
+      <div class="hold">
+        <picture class="hold-back"><source media="(max-width: 700px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><source media="(max-width: 1100px)" srcset="assets/keybo/hold/hold-back-800.png?v=1"><img src="assets/keybo/hold/hold-back.png?v=1" alt="" width="1600" height="1200" fetchpriority="high"></picture>
+        <div class="hp-screen" role="img" aria-label="KEYBO at work on a phone: replying to a message, changing its tone, fixing and rewriting it, and translating it">
           <video class="hp-v on" muted playsinline preload="none" poster="assets/videos/reply.jpg?v=2" aria-hidden="true"></video>
           <video class="hp-v" muted playsinline preload="none" aria-hidden="true"></video>
         </div>
-      </div>
-      <div class="hp-chip" aria-hidden="true"><b>Reply</b><span class="hp-dots"><i class="on"></i><i></i><i></i><i></i></span></div>
-      <div class="hero-keybo">
-        <img src="assets/keybo/hero-still-720.png?v=keybo3" srcset="assets/keybo/hero-still-720.png?v=keybo3 720w, assets/keybo/hero-loop-poster.png?v=keybo3 1080w" sizes="(max-width: 900px) 190px, 290px" alt="KEYBO, the keyboard mascot" width="720" height="720" fetchpriority="high">
+        <picture class="hold-front"><source media="(max-width: 700px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><source media="(max-width: 1100px)" srcset="assets/keybo/hold/hold-front-800.png?v=1"><img src="assets/keybo/hold/hold-front.png?v=1" alt="" width="1600" height="1200"></picture>
+        <div class="hp-chip" aria-hidden="true"><b>Reply</b><span class="hp-dots"><i class="on"></i><i></i><i></i><i></i></span></div>
+        <div class="hero-keybo"><picture><source media="(min-width: 701px)" srcset="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"><img src="assets/keybo/hero-still-720.png?v=keybo3" alt="" width="720" height="720"></picture></div>
       </div>
     </div>
   </div>
@@ -554,6 +557,6 @@
   </div>
 </footer>
 
-<script src="assets/js/site.js?v=20261008164616" defer></script>
+<script src="assets/js/site.js?v=20261008171208" defer></script>
 </body>
 </html>

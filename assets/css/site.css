@@ -183,29 +183,56 @@ p { margin: 0; }
 .hero-ticks { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 26px; font-size: 14.5px; font-weight: 500; color: rgba(20, 23, 8, .78); }
 .hero-ticks span { display: inline-flex; align-items: center; gap: 7px; }
 .hero-ticks .icon { width: 17px; height: 17px; color: var(--ink); stroke-width: 2.4; }
-/* The hero art: a big phone playing the real keyboard (Reply, Tone, Fix
-   and Rewrite, Translate in turn, cross-fading), a chip naming the feature
-   on screen, and KEYBO in front of the phone's lower left corner. */
-.hero-art { --pw: 296px; position: relative; width: 100%; max-width: 520px; justify-self: center; padding: 0 0 36px; }
-.hero-art::before { content: ""; position: absolute; left: 0; right: 0; top: 4%; bottom: 0; border-radius: 50%; background: radial-gradient(closest-side, rgba(255, 255, 255, .55), rgba(255, 255, 255, 0)); }
-.hero-phone { position: relative; width: var(--pw); margin-left: auto; padding: 10px; border-radius: calc(var(--pw) * .165); background: #141708; box-shadow: 0 44px 80px -20px rgba(20, 23, 8, .45), 0 0 0 1.5px rgba(255, 255, 255, .25), inset 0 0 0 2px rgba(255, 255, 255, .07); }
-.hp-screen { position: relative; aspect-ratio: 600 / 1304; border-radius: calc(var(--pw) * .135); overflow: hidden; background: #F2F2F7 url(../videos/reply.jpg?v=2) center / cover; }
+/* The hero art: KEYBO, big, holding up a phone and showing its screen,
+   where the real keyboard plays (Reply, Tone, Fix and Rewrite, Translate,
+   cross-fading). Layers on one 1600x1200 canvas: KEYBO and the phone, the
+   video in the screen hole, then the bit of his hand over the screen. The
+   hole is x 1132.82, y 310.57, w 332.82, h 723.33 (hold-screen.json). Above
+   phone width the text sits centred over the scene; on phones it's the
+   phone alone with the small hello KEYBO in front. */
+.hero-art { --aw: min(1232px, calc(100vw - 32px)); position: relative; width: var(--aw); max-width: none; margin: calc(var(--aw) * -.085) calc((100% - var(--aw)) / 2) calc(var(--aw) * -.02); pointer-events: none; }
+.hold { position: relative; aspect-ratio: 1600 / 1200; }
+.hold-back img, .hold-front img, .hold-loop { position: absolute; inset: 0; width: 100%; height: 100%; }
+.hold-back img, .hold-loop { z-index: 1; }
+/* The render's contact shadow runs off the canvas's bottom and right edges;
+   fade them so no rectangle shows on the lime. */
+.hold-back img, .hold-loop {
+  -webkit-mask-image: linear-gradient(to bottom, #000 88%, transparent 99.5%), linear-gradient(to right, transparent, #000 4%, #000 96.5%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(to bottom, #000 88%, transparent 99.5%), linear-gradient(to right, transparent, #000 4%, #000 96.5%, transparent);
+  mask-composite: intersect;
+}
+.hp-screen { position: absolute; z-index: 2; left: 70.801%; top: 25.881%; width: 20.801%; height: 60.278%; border-radius: 13% / 5.98%; overflow: hidden; background: #F2F2F7 url(../videos/reply.jpg?v=2) center / cover; }
+.hold-front img { z-index: 3; }
 .hp-v { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0; transition: opacity .5s ease; }
 .hp-v.on { opacity: 1; }
-.hp-chip { position: absolute; z-index: 3; top: 7%; left: 0; display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: #fff; font-family: var(--font-display); font-weight: 600; font-size: 15px; box-shadow: 0 14px 30px -10px rgba(20, 23, 8, .5); }
+.hp-chip { position: absolute; z-index: 4; left: 81.2%; top: 89%; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 10px 16px; border-radius: 999px; background: var(--ink); color: #fff; font-family: var(--font-display); font-weight: 600; font-size: 15px; white-space: nowrap; box-shadow: 0 14px 30px -10px rgba(20, 23, 8, .5); }
 .hp-chip b { font-weight: 600; min-width: 7.2em; }
 .hp-dots { display: inline-flex; gap: 5px; }
 .hp-dots i { width: 6px; height: 6px; border-radius: 3px; background: rgba(255, 255, 255, .3); transition: width .3s ease, background-color .3s ease; }
 .hp-dots i.on { width: 16px; background: #CCFA00; }
-.hero-keybo { position: absolute; z-index: 2; left: -2%; bottom: 0; width: 56%; aspect-ratio: 1; }
-.hero-keybo img, .hero-keybo video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-@media (max-width: 900px) {
-  .hero { padding: 88px 0 92px; }
-  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
-  .hero-art { --pw: 222px; max-width: 360px; margin-top: 44px; padding-bottom: 20px; }
-  .hp-chip { top: 5%; font-size: 13.5px; padding: 8px 13px; gap: 9px; }
-  .hero-keybo { width: 50%; left: -7%; bottom: -8px; }
+.hero-keybo { display: none; }
+@media (min-width: 701px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); justify-items: center; gap: 0; text-align: center; }
+  .hero .lede { margin-left: auto; margin-right: auto; }
+  .hero .stores, .hero-ticks { justify-content: center; }
+  .hero { padding-bottom: 60px; }
 }
+@media (max-width: 900px) {
+  .hero { padding: 88px 0 72px; }
+  .hp-chip { font-size: 13.5px; padding: 8px 13px; gap: 9px; }
+}
+@media (max-width: 700px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .hero-art { --aw: 100%; max-width: 360px; margin: 44px auto 0; padding-bottom: 20px; }
+  .hold { aspect-ratio: auto; }
+  .hold-back, .hold-front { display: none; }
+  .hp-screen { position: relative; left: auto; top: auto; width: 222px; height: auto; aspect-ratio: 600 / 1304; margin: 10px 10px 10px auto; border-radius: 30px; box-shadow: 0 0 0 10px #141708, 0 0 0 11.5px rgba(255, 255, 255, .25), 0 44px 80px -20px rgba(20, 23, 8, .45); }
+  .hp-chip { left: 0; top: 5%; transform: none; }
+  .hero-keybo { display: block; position: absolute; z-index: 3; left: -7%; bottom: -8px; width: 50%; aspect-ratio: 1; }
+  .hero-keybo img, .hero-keybo video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+}
+
 
 /* ---------- Sections ---------- */
 
