@@ -363,6 +363,19 @@
     }, { threshold: 0.3 }).observe(journey);
   }
 
+  // Works in every app: each row's icons are repeated once (hidden from
+  // screen readers) so the slide loops; the rows pause while off screen.
+  const appRows = $(".apps-rows");
+  if (appRows) {
+    $$(".apps-track", appRows).forEach((t, k) => {
+      const n = t.children.length;
+      t.insertAdjacentHTML("beforeend", t.innerHTML);
+      [...t.children].slice(n).forEach(c => c.setAttribute("aria-hidden", "true"));
+      t.style.setProperty("--t", (n * 3.6 + k * 4) + "s");
+    });
+    if ("IntersectionObserver" in window) new IntersectionObserver(([e]) => appRows.classList.toggle("off", !e.isIntersecting)).observe(appRows);
+  }
+
   // Reviews people post here. The form posts to the reviews API
   // (REVIEWS_API) as "pending"; the owner approves, edits or deletes them
   // in /admin/, and approved ones show as cards, newest first. Until the

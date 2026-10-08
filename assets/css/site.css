@@ -704,3 +704,24 @@ p { margin: 0; }
 .kb3d-say.show { transform: translate(-50%, -100%) scale(1); }
 .kb3d-dust { position: fixed; z-index: 44; width: 18px; height: 18px; margin-left: -9px; border-radius: 50%; background: color-mix(in srgb, var(--muted) 30%, transparent); pointer-events: none; animation: kbdust .7s ease-out forwards; }
 @keyframes kbdust { from { opacity: .85; transform: translate(0, 0) scale(calc(var(--s) * .5)); } to { opacity: 0; transform: translate(var(--dx), -26px) scale(calc(var(--s) * 1.8)); } }
+
+/* Works in every app: two rows of app icons sliding slowly, opposite
+   ways, fading at both ends. Transforms only; paused on hover and while
+   off screen. */
+.apps { padding: 96px 0 24px; background: var(--bg); }
+.apps .head { margin-bottom: 40px; }
+.apps-rows { display: grid; gap: 14px; max-width: var(--wrap); margin: 0 auto; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.apps-row { overflow: hidden; }
+.apps-track { display: flex; width: max-content; margin: 0; padding: 6px 0 4px; list-style: none; animation: apps-slide var(--t, 60s) linear infinite; will-change: transform; }
+.apps-row.rev .apps-track { animation-direction: reverse; }
+.apps-rows:hover .apps-track, .apps-rows.off .apps-track { animation-play-state: paused; }
+@keyframes apps-slide { to { transform: translateX(-50%); } }
+.app { flex: none; width: 112px; margin-right: 12px; display: grid; justify-items: center; gap: 10px; }
+.app i { width: 68px; height: 68px; border-radius: 19px; display: grid; place-items: center; background: var(--c); color: var(--g, #fff); box-shadow: 0 10px 22px rgba(20, 23, 8, .12), inset 0 0 0 1px rgba(0, 0, 0, .05); }
+.app.ig i { background: radial-gradient(circle at 30% 107%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285aeb 90%); color: #fff; }
+.app svg { width: 34px; height: 34px; fill: currentColor; }
+.app span { font-size: 13px; font-weight: 500; color: var(--muted); white-space: nowrap; }
+.apps-note { margin-top: 26px; text-align: center; font-size: 13px; color: var(--muted); }
+:root[data-theme="dark"] .app i { box-shadow: inset 0 0 0 1px rgba(255, 255, 255, .14); }
+@media (max-width: 700px) { .apps { padding-top: 72px; } .app { width: 86px; margin-right: 8px; } .app i { width: 56px; height: 56px; border-radius: 16px; } .app svg { width: 28px; height: 28px; } .app span { font-size: 12px; } }
+@media (prefers-reduced-motion: reduce) { .apps-row { overflow-x: auto; } .apps-track { animation: none; } }
